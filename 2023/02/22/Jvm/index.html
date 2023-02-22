@@ -2,11 +2,11 @@
 
 1、方法区
 方法区主要用于存储虚拟机加载的类信息、常量、静态变量，以及"><meta name="keywords"><meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport"><meta content="yes" name="apple-mobile-web-app-capable"><meta content="black" name="apple-mobile-web-app-status-bar-style"><meta content="telephone=no" name="format-detection"><meta name="renderer" content="webkit"><link rel="short icon" href="/images/favicon.png" type="image/x-icon"><link rel="stylesheet" href="/css/style.css"><link rel="stylesheet" href="/css/blog_basic.css"><link rel="stylesheet" href="/css/font-awesome.min.css"><link rel="alternate" type="application/atom+xml" title="ATOM 1.0" href="/atom.xml"><meta name="generator" content="Hexo 6.3.0"></head><body><div class="sidebar animated fadeInDown"><div class="logo-title"><div class="title"><img src="/images/logo@2x.png" style="width:127px;"><h3 title=""><a href="/">PJF</a></h3></div></div><ul class="social-links"></ul><div class="footer"><a target="_blank" href="/"><span>Theme by </span></a><a target="_blank" rel="noopener" href="https://www.caicai.me"> CaiCai </a><span>&</span><a target="_blank" rel="noopener" href="https://github.com/Ben02/hexo-theme-Anatole"> Ben</a><div class="by_farbox"><a href="https://hexo.io/zh-cn/" target="_blank">Proudly published with Hexo&#65281;</a></div></div></div><div class="main"><div class="page-top animated fadeInDown"><div class="nav"><li><a href="/">Home</a></li><li><a href="/about">Sobre</a></li><li><a href="/archives">Arquivo</a></li><li><a href="/links">Links</a></li></div><div class="information"><div class="back_btn"><li><a class="fa fa-chevron-left" onclick="window.history.go(-1)"> </a></li></div><div class="avatar"><img></div></div></div><div class="autopagerize_page_element"><div class="content"><div class="post-page"><div class="post animated fadeInDown"><div class="post-title"><h3><a>Jvm相关知识</a></h3></div><div class="post-content"><p>一、JVM 内存区域<br>Java虚拟机在运行时，会把内存空间分为若干个区域，根据《Java虚拟机规范（Java SE 7 版）》的规定，Java虚拟机所管理的内存区域分为如下部分：方法区、堆内存、虚拟机栈、本地方法栈、程序计数器。</p>
-<p><img src="C:\Users\86185\Desktop\笔记\Jvm_pic\Jvm内存模型.png" alt="Jvm"></p>
+<p><img src="/../Jvm_pic/Jvm%E5%86%85%E5%AD%98%E6%A8%A1%E5%9E%8B.png" alt="Jvm"></p>
 <p>1、方法区</p>
 <p>方法区主要用于存储虚拟机加载的类信息、常量、静态变量，以及编译器编译后的代码等数据。在jdk1.7及其之前，方法区是堆的一个“逻辑部分”（一片连续的堆空间），但为了与堆做区分，方法区还有个名字叫“非堆”，也有人用“永久代”（HotSpot对方法区的实现方法）来表示方法区。</p>
 <p>从jdk1.7已经开始准备“去永久代”的规划，jdk1.7的HotSpot中，已经把原本放在方法区中的静态变量、字符串常量池等移到堆内存中，（常量池除字符串常量池还有class常量池等），这里只是把字符串常量池移到堆内存中；在jdk1.8中，方法区已经不存在，原方法区中存储的类信息、编译后的代码数据等已经移动到了元空间（MetaSpace）中，元空间并没有处于堆内存上，而是直接占用的本地内存（NativeMemory）。根据网上的资料结合自己的理解对jdk1.3~1.6、jdk1.7、jdk1.8中方法区的变迁画了张图如下（如有不合理的地方希望读者指出）：</p>
-<p><img src="C:\Users\86185\Desktop\笔记\Jvm_pic\Jvm版本变迁.png"></p>
+<p><img src="/../Jvm_pic/Jvm%E7%89%88%E6%9C%AC%E5%8F%98%E8%BF%81.png"></p>
 <p>去永久代的原因有：</p>
 <p>（1）字符串存在永久代中，容易出现性能问题和内存溢出。</p>
 <p>（2）类及方法的信息等比较难确定其大小，因此对于永久代的大小指定比较困难，太小容易出现永久代溢出，太大则容易导致老年代溢出。</p>
@@ -17,7 +17,7 @@
 <p>程序计数器是一块非常小的内存空间，可以看做是当前线程执行字节码的行号指示器，每个线程都有一个独立的程序计数器，因此程序计数器是线程私有的一块空间，此外，程序计数器是Java虚拟机规定的唯一不会发生内存溢出的区域。</p>
 <p>4、虚拟机栈</p>
 <p>虚拟机栈也是每个线程私有的一块内存空间，它描述的是方法的内存模型，直接看下图所示：</p>
-<p><img src="C:\Users\86185\Desktop\笔记\Jvm_pic\虚拟机栈.png"></p>
+<p><img src="/../Jvm_pic/%E8%99%9A%E6%8B%9F%E6%9C%BA%E6%A0%88.png"></p>
 <p>虚拟机会为每个线程分配一个虚拟机栈，每个虚拟机栈中都有若干个栈帧，每个栈帧中存储了局部变量表、操作数栈、动态链接、返回地址等。一个栈帧就对应 Java 代码中的一个方法，当线程执行到一个方法时，就代表这个方法对应的栈帧已经进入虚拟机栈并且处于栈顶的位置，每一个 Java 方法从被调用到执行结束，就对应了一个栈帧从入栈到出栈的过程。</p>
 <p>5、本地方法栈</p>
 <p>本地方法栈与虚拟机栈的区别是，虚拟机栈执行的是 Java 方法，本地方法栈执行的是本地方法（Native Method）,其他基本上一致，在 HotSpot 中直接把本地方法栈和虚拟机栈合二为一，这里暂时不做过多叙述。</p>
