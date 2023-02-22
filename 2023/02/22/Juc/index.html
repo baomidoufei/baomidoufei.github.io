@@ -43,7 +43,7 @@ b.该变量没有包含在具有其他变量的不变式中。
 <p>六、<strong>volatile不适用的场景</strong><br> 1.volatile不适合复合操作<br>  例如，int++不是一个原子性操作，可以由读取、加、赋值3步组成，所以结果并不能达到30000。.</p>
 <p><img src="/../JUC_pic/juc1.png"></p>
 <p>  2.解决方法<br> （1）采用synchronized</p>
-<p><img src="/../JUC_pic%5Cjuc2.png"></p>
+<p><img src="/../JUC_pic/juc2.png"></p>
 <p> （2）采用Lock</p>
 <p><img src="/../JUC_pic/juc3.png"></p>
 <p> （3）采用java并发包中的原子操作类，原子操作类是通过CAS循环的方式来保证其原子性的</p>
