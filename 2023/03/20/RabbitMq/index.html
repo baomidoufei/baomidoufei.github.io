@@ -107,13 +107,22 @@ MQ,消息队列，储存消息的中间件
 <h3 id="工作消息队列（WorkQueue）"><a href="#工作消息队列（WorkQueue）" class="headerlink" title="工作消息队列（WorkQueue）"></a>工作消息队列（WorkQueue）</h3><p><img src="/../mq_pic/14.png"></p>
 <p>两个或者多个消费者是竞争关系，只有一个可以得到消息</p>
 <p>应用场景:对于任务过重或者任务较多的情况使用工作队列可以提高任务处理的速度</p>
-<h3 id="发布订阅（Publish-Subscribe）"><a href="#发布订阅（Publish-Subscribe）" class="headerlink" title="发布订阅（Publish Subscribe）"></a>发布订阅（Publish Subscribe）</h3><p>根据交换机类型不同分为三种</p>
+<p>通过在yml中设置prefetch来控制消费者预取的消息数量（先把消息拿过来，不一定马上处理）</p>
+<h3 id="发布订阅（Publish-Subscribe）"><a href="#发布订阅（Publish-Subscribe）" class="headerlink" title="发布订阅（Publish Subscribe）"></a>发布订阅（Publish Subscribe）</h3><p>发布订阅模式与之前案例的区别就是允许将同一消息发给多个消费者。实现方式是加入了交换机Exchange。</p>
+<p>交换机负责消息路由，而不是存储，路由失败则消息丢失。</p>
+<p><strong>SpringAMQP提供了声明交换机，队列，绑定关系的API</strong></p>
+<p><img src="/../mq_pic/22.png"></p>
+<p>根据交换机类型不同分为三种</p>
 <ul>
 <li>Fanout Exchange:广播</li>
 <li>Direct Exchange:路由</li>
 <li>Topic Exchange:主题</li>
 </ul>
 <p><img src="/../mq_pic/15.png"></p>
+<p>实现思路：</p>
+<p>1.在consumer服务中，利用代码声明队列，交换机，并将两者绑定</p>
+<p>2.在consumer服务中，编写两个消费者方法，分别监听fanout.queue1和fanout.queue2</p>
+<p>3.在publisher中编写测试方法，向it.fanout(交换机)中发送消息</p>
 <p><img src="/../mq_pic/16.png"></p>
 <p><img src="/../mq_pic/17.png"></p>
 <p><img src="/../mq_pic/18.png"></p>
