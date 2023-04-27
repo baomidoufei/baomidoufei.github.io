@@ -16,19 +16,19 @@
   <meta name="author" content="彭">
   <meta name="keywords" content="">
   
-    <meta name="description" content="索引索引是帮助MySQL高效获取数据的数据结构(有序)。  聚簇索引聚簇索引（Clustered Index）一般指的是主键索引（如果存在主键索引的话），聚簇索引也被称之为聚集索引。 聚簇索引在 InnoDB 中是使用 B+ 树实现的，比如我们创建一张 student 表，它的构建 SQL 如下：  以上 student 表中有一个聚簇索引（也就是主键索引）id，和一个非聚簇索引 class_id">
+    <meta name="description" content="索引索引是帮助MySQL高效获取数据的数据结构(有序)。  聚簇索引聚簇索引（Clustered Index）即索引结构和数据一起存放的索引，并不是一种单独的索引类型。InnoDB 中的主键索引就属于聚簇索引 聚簇索引（Clustered Index）一般指的是主键索引（如果存在主键索引的话），聚簇索引也被称之为聚集索引。 聚簇索引在 InnoDB 中是使用 B+ 树实现的，比如我们创建一张 st">
 <meta property="og:type" content="article">
 <meta property="og:title" content="MySQL">
 <meta property="og:url" content="http://example.com/2023/04/13/MySQL/index.html">
 <meta property="og:site_name" content="PJF">
-<meta property="og:description" content="索引索引是帮助MySQL高效获取数据的数据结构(有序)。  聚簇索引聚簇索引（Clustered Index）一般指的是主键索引（如果存在主键索引的话），聚簇索引也被称之为聚集索引。 聚簇索引在 InnoDB 中是使用 B+ 树实现的，比如我们创建一张 student 表，它的构建 SQL 如下：  以上 student 表中有一个聚簇索引（也就是主键索引）id，和一个非聚簇索引 class_id">
+<meta property="og:description" content="索引索引是帮助MySQL高效获取数据的数据结构(有序)。  聚簇索引聚簇索引（Clustered Index）即索引结构和数据一起存放的索引，并不是一种单独的索引类型。InnoDB 中的主键索引就属于聚簇索引 聚簇索引（Clustered Index）一般指的是主键索引（如果存在主键索引的话），聚簇索引也被称之为聚集索引。 聚簇索引在 InnoDB 中是使用 B+ 树实现的，比如我们创建一张 st">
 <meta property="og:locale" content="en_US">
 <meta property="og:image" content="http://example.com/mysql_pic/1.png">
 <meta property="og:image" content="http://example.com/mysql_pic/2.png">
 <meta property="og:image" content="http://example.com/mysql_pic/3.png">
 <meta property="og:image" content="http://example.com/mysql_pic/4.png">
 <meta property="article:published_time" content="2023-04-13T02:56:39.937Z">
-<meta property="article:modified_time" content="2023-04-16T15:01:03.377Z">
+<meta property="article:modified_time" content="2023-04-18T15:06:12.289Z">
 <meta property="article:author" content="彭">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:image" content="http://example.com/mysql_pic/1.png">
@@ -224,7 +224,7 @@
       <span class="post-meta mr-2">
         <i class="iconfont icon-chart"></i>
         
-          757 words
+          825 words
         
       </span>
     
@@ -280,7 +280,8 @@
                 
                 <h2 id="索引"><a href="#索引" class="headerlink" title="索引"></a>索引</h2><p>索引是帮助MySQL高效获取数据的数据结构(有序)。</p>
 <p><img src="/../mysql_pic/1.png" srcset="/img/loading.gif" lazyload></p>
-<h3 id="聚簇索引"><a href="#聚簇索引" class="headerlink" title="聚簇索引"></a>聚簇索引</h3><p>聚簇索引（Clustered Index）一般指的是主键索引（如果存在主键索引的话），聚簇索引也被称之为聚集索引。</p>
+<h3 id="聚簇索引"><a href="#聚簇索引" class="headerlink" title="聚簇索引"></a>聚簇索引</h3><p><strong>聚簇索引（Clustered Index）即索引结构和数据一起存放的索引，并不是一种单独的索引类型。InnoDB 中的主键索引就属于聚簇索引</strong></p>
+<p>聚簇索引（Clustered Index）一般指的是主键索引（如果存在主键索引的话），聚簇索引也被称之为聚集索引。</p>
 <p>聚簇索引在 InnoDB 中是使用 B+ 树实现的，比如我们创建一张 student 表，它的构建 SQL 如下：</p>
 <p><img src="/../mysql_pic/2.png" srcset="/img/loading.gif" lazyload></p>
 <p>以上 student 表中有一个聚簇索引（也就是主键索引）id，和一个非聚簇索引 class_id。</p>
@@ -358,6 +359,12 @@
                 <div class="post-prevnext my-3">
                   <article class="post-prev col-6">
                     
+                    
+                      <a href="/2023/04/22/SpringBoot/" title="SpringBoot">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">SpringBoot</span>
+                        <span class="visible-mobile">Previous</span>
+                      </a>
                     
                   </article>
                   <article class="post-next col-6">
