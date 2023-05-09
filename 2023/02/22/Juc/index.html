@@ -56,7 +56,7 @@
 <meta property="og:image" content="http://example.com/Juc_pic/28.png">
 <meta property="og:image" content="http://example.com/Juc_pic/29.png">
 <meta property="article:published_time" content="2023-02-22T08:59:34.207Z">
-<meta property="article:modified_time" content="2023-05-08T09:23:58.907Z">
+<meta property="article:modified_time" content="2023-05-09T01:33:17.599Z">
 <meta property="article:author" content="彭">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:image" content="http://example.com/JUC_pic/JUC.png">
@@ -725,7 +725,7 @@ b.该变量没有包含在具有其他变量的不变式中。
 <p>其中先看Normal,hashcode懂得都懂，age是JVM中新生代到老年代晋升的那个年龄，biased_lock是偏向锁(后面学习)，01是加锁状态。</p>
 <p><strong>64位虚拟机</strong></p>
 <p><img src="/../Juc_pic/19.png" srcset="/img/loading.gif" lazyload></p>
-<h3 id="synchronized-底层原理-Monitor"><a href="#synchronized-底层原理-Monitor" class="headerlink" title="synchronized 底层原理(Monitor)"></a>synchronized 底层原理(Monitor)</h3><p>Monitor 被翻译为<strong>监视器</strong>或<strong>管程</strong></p>
+<h2 id="synchronized"><a href="#synchronized" class="headerlink" title="synchronized"></a>synchronized</h2><h3 id="synchronized-底层原理-Monitor"><a href="#synchronized-底层原理-Monitor" class="headerlink" title="synchronized 底层原理(Monitor)"></a>synchronized 底层原理(Monitor)</h3><p>Monitor 被翻译为<strong>监视器</strong>或<strong>管程</strong></p>
 <p>每个 Java 对象都可以关联一个 Monitor 对象，如果使用 synchronized 给对象上锁（重量级）之后，该对象头的 Mark Word 中就被设置指向 Monitor 对象的指针</p>
 <p><img src="/../Juc_pic/20.png" srcset="/img/loading.gif" lazyload></p>
 <ul>
