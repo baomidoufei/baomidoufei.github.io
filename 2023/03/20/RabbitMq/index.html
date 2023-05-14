@@ -47,8 +47,9 @@
 <meta property="og:image" content="http://example.com/mq_pic/19.png">
 <meta property="og:image" content="http://example.com/mq_pic/20.png">
 <meta property="og:image" content="http://example.com/mq_pic/21.png">
+<meta property="og:image" content="http://example.com/mq_pic/25.png">
 <meta property="article:published_time" content="2023-03-20T00:40:39.578Z">
-<meta property="article:modified_time" content="2023-03-21T05:14:27.713Z">
+<meta property="article:modified_time" content="2023-05-14T15:15:07.977Z">
 <meta property="article:author" content="彭">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:image" content="http://example.com/mq_pic/1.png">
@@ -244,7 +245,7 @@
       <span class="post-meta mr-2">
         <i class="iconfont icon-chart"></i>
         
-          7.9k words
+          13k words
         
       </span>
     
@@ -255,7 +256,7 @@
         
         
         
-          66 mins
+          106 mins
         
       </span>
     
@@ -438,8 +439,10 @@
 <p><img src="/../mq_pic/19.png" srcset="/img/loading.gif" lazyload></p>
 <p>TopicExchange与DirectExchange类似，区别在于routingkey必须是多个单词的列表，并且以 “.”分割、eg:china.news     china.weather</p>
 <p><strong>TopicExchange指定BingdingKey时可以指定通配符</strong></p>
-<p><strong>#:代指0个或多个单词</strong></p>
-<p><em>：*<em>代指1个单词</em></em></p>
+<ul>
+<li>‘**’符号：有且只匹配一个词。比如 a.*可以匹配到”a.b”、”a.c”，但是匹配不了”a.b.c”。</li>
+<li>#符号：匹配一个或多个词。比如”rabbit.#”既可以匹配到”rabbit.a.b”、”rabbit.a”，也可以匹配到”rabbit.a.b.c”。</li>
+</ul>
 <p>TopicExchange与DirectExchange代码几乎一样，只有routingkey是包含通配符的，交换机类型是Topic的。</p>
 <h2 id="生产者与消费者流程"><a href="#生产者与消费者流程" class="headerlink" title="生产者与消费者流程"></a>生产者与消费者流程</h2><p><strong>生产者：</strong></p>
 <p>1.建立Connection</p>
@@ -481,6 +484,96 @@
 <figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs typescript"><span class="hljs-meta">@Bean</span><br>   <span class="hljs-keyword">public</span> <span class="hljs-title class_">MessageConverter</span> <span class="hljs-title function_">messageConversionException</span>(<span class="hljs-params"></span>)&#123;<br>       <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">Jackson2JsonMessageConverter</span>();<br>   &#125;<br></code></pre></td></tr></table></figure>
 
 <p>注意，在生产者和消费者都需要做以上步骤，引依赖和写转换器。</p>
+<h2 id="3-0-消息的可靠性投递"><a href="#3-0-消息的可靠性投递" class="headerlink" title="3.0 消息的可靠性投递"></a>3.0 消息的可靠性投递</h2><p>在使用 RabbitMQ 的时候，作为消息发送方希望杜绝任何消息丢失或者投递失败场景。RabbitMQ 为我们提 供了两种方式用来控制消息的投递可靠性模式。</p>
+<ul>
+<li><p>confirm 确认模式 </p>
+</li>
+<li><p>return 退回模式</p>
+</li>
+</ul>
+<p><img src="/../mq_pic/25.png" srcset="/img/loading.gif" lazyload></p>
+<p>大致的流程就是这样，所以要确保消息发送的可靠性，主要从两方面去确认：</p>
+<ul>
+<li><p>消息成功到达 Exchange (依靠confirm 确认模式)</p>
+</li>
+<li><p>消息成功到达 Queue (依靠return 退回模式)</p>
+</li>
+</ul>
+<p>如果能确认这两步，那么我们就可以认为消息发送成功了。</p>
+<ol>
+<li>确认消息到达 Exchange。</li>
+<li>确认消息到达 Queue。</li>
+</ol>
+<p><strong>如何打开confirm 确认模式和return 退回模式呢？</strong></p>
+<p>在 application.properties 中配置开启消息发送方确认机制，如下：</p>
+<figure class="highlight ini"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs ini"><span class="hljs-attr">spring.rabbitmq.publisher-confirm-type</span>=correlated<br><span class="hljs-attr">spring.rabbitmq.publisher-returns</span>=<span class="hljs-literal">true</span><br></code></pre></td></tr></table></figure>
+
+<h3 id="Confirm确认模式"><a href="#Confirm确认模式" class="headerlink" title="Confirm确认模式"></a>Confirm确认模式</h3><p><strong>Confirm确认模式：不管publisher发给exchange是否成功都会调用回调函数confirm</strong></p>
+<p>publisher-confirm-type有三个属性：</p>
+<ol>
+<li>none：表示禁用发布确认模式，默认即此。</li>
+<li>correlated：表示成功发布消息到交换器后会触发的回调方法。</li>
+<li>simple：类似 correlated，并且支持 <code>waitForConfirms()</code> 和 <code>waitForConfirmsOrDie()</code> 方法的调用。</li>
+</ol>
+<p>开启后，我们需要自定义<strong>confirm 确认模式</strong>的回调方法 <strong>confirm</strong>,不管是否成功都会调用</p>
+<p>消费者：</p>
+<figure class="highlight less"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs less"><span class="hljs-variable">@RabbitListener</span>(bindings = <span class="hljs-variable">@QueueBinding</span>(<br>            value = <span class="hljs-variable">@Queue</span>(name = <span class="hljs-string">&quot;simple.queue&quot;</span>),<br>            exchange = <span class="hljs-variable">@Exchange</span>(name = <span class="hljs-string">&quot;comfirm.exchange&quot;</span>,type = ExchangeTypes.DIRECT),<br>            key = &#123;<span class="hljs-string">&quot;confirm&quot;</span>&#125;<br>    ))<br>    public void <span class="hljs-built_in">confirm</span>(String msg)&#123;<br>        <span class="hljs-selector-tag">System</span><span class="hljs-selector-class">.out</span><span class="hljs-selector-class">.println</span>(<span class="hljs-string">&quot;comfirm.exchange收到消息队列得消息:&quot;</span>+msg);<br> &#125;<br></code></pre></td></tr></table></figure>
+
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-meta">@Test</span><br>    <span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">simple</span><span class="hljs-params">()</span> <span class="hljs-keyword">throws</span> InterruptedException &#123;<br>        rabbitTemplate.setConfirmCallback(<span class="hljs-keyword">new</span> <span class="hljs-title class_">RabbitTemplate</span>.ConfirmCallback() &#123;<br><br>            <span class="hljs-comment">/**</span><br><span class="hljs-comment">             * 确认</span><br><span class="hljs-comment">             *</span><br><span class="hljs-comment">             * <span class="hljs-doctag">@param</span> correlationData 相关配置数据</span><br><span class="hljs-comment">             * <span class="hljs-doctag">@param</span> b               ack，是否成功</span><br><span class="hljs-comment">             * <span class="hljs-doctag">@param</span> s               失败原因</span><br><span class="hljs-comment">             */</span><br>            <span class="hljs-meta">@Override</span><br>            <span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">confirm</span><span class="hljs-params">(CorrelationData correlationData, <span class="hljs-type">boolean</span> b, String s)</span> &#123;<br>                System.out.println(<span class="hljs-string">&quot;回调方法confirm被执行了&quot;</span>);<br>                <span class="hljs-keyword">if</span>(b)&#123;<br>                    System.out.println(<span class="hljs-string">&quot;交换机接受消息成功&quot;</span>);<br>                &#125;<span class="hljs-keyword">else</span>&#123;<br>                    System.out.println(<span class="hljs-string">&quot;交换机接受消息失败:&quot;</span>+s);<br>                &#125;<br>            &#125;<br>        &#125;);<br>        <span class="hljs-type">String</span> <span class="hljs-variable">msg</span> <span class="hljs-operator">=</span> <span class="hljs-string">&quot;你好confirm&quot;</span>;<br>        <span class="hljs-type">String</span> <span class="hljs-variable">exchange</span> <span class="hljs-operator">=</span><span class="hljs-string">&quot;comfirm.exchange&quot;</span>;<br>        rabbitTemplate.convertAndSend(exchange,<span class="hljs-string">&quot;confirm&quot;</span>,msg);<br>        Thread.sleep(<span class="hljs-number">100</span>);<br>    &#125;<br></code></pre></td></tr></table></figure>
+
+<p>输出：</p>
+<figure class="highlight stata"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs stata">回调方法<span class="hljs-keyword">confirm</span>被执行了<br>交换机接受消息成功<br></code></pre></td></tr></table></figure>
+
+<p>故意改错交换机名字</p>
+<figure class="highlight oxygene"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs oxygene">回调方法confirm被执行了<br>交换机接受消息失败:channel error<span class="hljs-punctuation">;</span> protocol <span class="hljs-keyword">method</span>: #<span class="hljs-keyword">method</span>&lt;<span class="hljs-title function_">channel</span>.<span class="hljs-title function_">close</span>&gt;<span class="hljs-params">(reply-code=404, reply-text=NOT_FOUND - no exchange <span class="hljs-string">&#x27;comfirm.exchange1&#x27;</span> <span class="hljs-keyword">in</span> vhost <span class="hljs-string">&#x27;/&#x27;</span>, <span class="hljs-keyword">class</span>-id=60, <span class="hljs-keyword">method</span>-id=40)</span><br></code></pre></td></tr></table></figure>
+
+
+
+<p>这里我们发现最后加一个Thread.sleep(100)才会显示调用信息？</p>
+<p>原因分析：<br>个人猜测：回调函数虽然被调用了但是，主线程已经结束，来不及输出日志？</p>
+<p>这里我们在主程序和回调函数里分别加一段代码获取当前线程id</p>
+<figure class="highlight reasonml"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs reasonml"><span class="hljs-module-access"><span class="hljs-module"><span class="hljs-identifier">System</span>.</span></span>out.println(<span class="hljs-module-access"><span class="hljs-module"><span class="hljs-identifier">Thread</span>.</span></span>current<span class="hljs-constructor">Thread()</span>.get<span class="hljs-constructor">Id()</span>);<br></code></pre></td></tr></table></figure>
+
+<figure class="highlight stata"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs stata">1<br>20<br>回调方法<span class="hljs-keyword">confirm</span>被执行了<br>交换机接受消息成功<br></code></pre></td></tr></table></figure>
+
+<p>发现回调函数会另外开启一个线程.所以以上猜测应该是正确的。</p>
+<h3 id="Return-回退模式"><a href="#Return-回退模式" class="headerlink" title="Return 回退模式"></a>Return 回退模式</h3><p>return 退回模式：消息发给Exchange后，Exchange路由到Queue失败时才会触发ReturnCallBack</p>
+<p>步骤：</p>
+<p>1.开启回退模式</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs sql">publisher<span class="hljs-operator">-</span><span class="hljs-keyword">returns</span>: <span class="hljs-literal">true</span><br></code></pre></td></tr></table></figure>
+
+<p>2.设置ReturnCallBack</p>
+<p>3.设置Exchange处理消息的模式</p>
+<p>​      3.1 如果消息没有路由到Queue，则丢弃消息(默认)(默认丢弃也不会触发回调函数)</p>
+<p>​	  3.2 如果消息没有路由到Queue,则返回给消息发送方ReturnCallBack</p>
+<figure class="highlight reasonml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><code class="hljs reasonml"><span class="hljs-comment">//设置消息处理失败消息的模式</span><br>        rabbitTemplate.set<span class="hljs-constructor">Mandatory(<span class="hljs-params">true</span>)</span>;<br>        rabbitTemplate.set<span class="hljs-constructor">ReturnCallback(<span class="hljs-params">new</span> RabbitTemplate.ReturnCallback()</span> &#123;<br>            <span class="hljs-comment">/**</span><br><span class="hljs-comment">             * 返回消息</span><br><span class="hljs-comment">             *</span><br><span class="hljs-comment">             * @param message 消息</span><br><span class="hljs-comment">             * @param i       错误码</span><br><span class="hljs-comment">             * @param s       错误信息</span><br><span class="hljs-comment">             * @param s1      交换机</span><br><span class="hljs-comment">             * @param s2      路由键</span><br><span class="hljs-comment">             */</span><br>            @Override<br>            public void returned<span class="hljs-constructor">Message(Message <span class="hljs-params">message</span>, <span class="hljs-params">int</span> <span class="hljs-params">i</span>, String <span class="hljs-params">s</span>, String <span class="hljs-params">s1</span>, String <span class="hljs-params">s2</span>)</span> &#123;<br>                <span class="hljs-module-access"><span class="hljs-module"><span class="hljs-identifier">System</span>.</span></span>out.println(<span class="hljs-string">&quot;return回调方法执行了&quot;</span>);<br>                <span class="hljs-module-access"><span class="hljs-module"><span class="hljs-identifier">System</span>.</span></span>out.println(message);<br>                <span class="hljs-module-access"><span class="hljs-module"><span class="hljs-identifier">System</span>.</span></span>out.println(i);<br>                <span class="hljs-module-access"><span class="hljs-module"><span class="hljs-identifier">System</span>.</span></span>out.println(s);<br>                <span class="hljs-module-access"><span class="hljs-module"><span class="hljs-identifier">System</span>.</span></span>out.println(s1);<br>                <span class="hljs-module-access"><span class="hljs-module"><span class="hljs-identifier">System</span>.</span></span>out.println(s2);<br>            &#125;<br>        &#125;);<br>        String msg = <span class="hljs-string">&quot;你好return&quot;</span>;<br>        String exchange =<span class="hljs-string">&quot;comfirm.exchange&quot;</span>;<br>        rabbitTemplate.convert<span class="hljs-constructor">AndSend(<span class="hljs-params">exchange</span>,<span class="hljs-string">&quot;confirm&quot;</span>,<span class="hljs-params">msg</span>)</span>;<br>    &#125;<br>    	<span class="hljs-module-access"><span class="hljs-module"><span class="hljs-identifier">Thread</span>.</span></span>sleep(<span class="hljs-number">100</span>);<br></code></pre></td></tr></table></figure>
+
+<p>默认方法是丢弃发送失败的消息，不会触发Return模式，我们需要</p>
+<figure class="highlight reasonml"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs reasonml">rabbitTemplate.set<span class="hljs-constructor">Mandatory(<span class="hljs-params">true</span>)</span>;<br></code></pre></td></tr></table></figure>
+
+<p>将模式设置为返回给发送方，这样才会调用ReturnCallBack</p>
+<p>我们故意将路由键改成错误的，输出：</p>
+<figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs routeros">return回调方法执行了<br>(Body:<span class="hljs-string">&#x27;&quot;你好return&quot;&#x27;</span> MessageProperties [headers=&#123;<span class="hljs-attribute">__TypeId__</span>=java.lang.String&#125;, <span class="hljs-attribute">contentType</span>=application/json, <span class="hljs-attribute">contentEncoding</span>=UTF-8, <span class="hljs-attribute">contentLength</span>=0, <span class="hljs-attribute">receivedDeliveryMode</span>=PERSISTENT, <span class="hljs-attribute">priority</span>=0, <span class="hljs-attribute">deliveryTag</span>=0])<br>312<br>NO_ROUTE<br>comfirm.exchange<br>confirm1<br></code></pre></td></tr></table></figure>
+
+<h3 id="Consumer-ACK"><a href="#Consumer-ACK" class="headerlink" title="Consumer ACK"></a>Consumer ACK</h3><p>ack指Acknowledge,确认。表示消费端收到消息后的确认方式。</p>
+<p>有三种确认方式：</p>
+<ul>
+<li><p>自动确认：acknowledge &#x3D; “none”</p>
+</li>
+<li><p>手动确认：acknowledge &#x3D; “manual”</p>
+</li>
+<li><p>根据异常情况确认：acknowledge &#x3D;“auto” (这种方式使用麻烦，不做讲解)</p>
+</li>
+</ul>
+<p>其中自动确认是指，当消息一旦被Consumer接收到，则自动确认收到，并将相应 message 从 RabbitMQ 的 消息缓存中移除。但是在实际业务处理中，很可能消息接收到，业务处理出现异常，那么该消息就会丢失。如 果设置了手动确认方式，则需要在业务处理成功后，调用channel.basicAck()，手动签收，如果出现异常，则 调用channel.basicNack()方法，让MQ自动重新发送消息。</p>
+<p>开启手动签收模式</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><code class="hljs yaml"><span class="hljs-attr">spring:</span><br>  <span class="hljs-attr">rabbitmq:</span><br>    <span class="hljs-attr">host:</span> <span class="hljs-string">xxxxxxxx</span> <span class="hljs-comment"># rabbitMQ的ip地址</span><br>    <span class="hljs-attr">port:</span> <span class="hljs-number">5672</span> <span class="hljs-comment"># 端口</span><br>    <span class="hljs-attr">username:</span> <span class="hljs-string">root</span><br>    <span class="hljs-attr">password:</span> <span class="hljs-number">123456</span><br>    <span class="hljs-attr">virtual-host:</span> <span class="hljs-string">/</span><br>    <span class="hljs-attr">listener:</span><br>      <span class="hljs-attr">direct:</span><br>        <span class="hljs-attr">acknowledge-mode:</span> <span class="hljs-string">manual</span><br></code></pre></td></tr></table></figure>
+
+<figure class="highlight aspectj"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><code class="hljs aspectj"><span class="hljs-meta">@RabbitListener</span>(bindings = <span class="hljs-meta">@QueueBinding</span>(<br>            value = <span class="hljs-meta">@Queue</span>(name = <span class="hljs-string">&quot;simple.queue&quot;</span>),<br>            exchange = <span class="hljs-meta">@Exchange</span>(name = <span class="hljs-string">&quot;comfirm.exchange&quot;</span>,type = ExchangeTypes.DIRECT),<br>            key = &#123;<span class="hljs-string">&quot;confirm&quot;</span>&#125;<br><br>    ))<br>    <span class="hljs-keyword">public</span> <span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">confirm</span><span class="hljs-params">( Channel channel, Message message)</span> <span class="hljs-keyword">throws</span> Exception </span>&#123;<br>        <span class="hljs-comment">//获取收获标签</span><br>        <span class="hljs-keyword">long</span> deliveryTag = message.getMessageProperties().getDeliveryTag();<br>        <span class="hljs-keyword">try</span> &#123;<br>            <span class="hljs-comment">//模拟处理业务逻辑</span><br>            System.out.println(<span class="hljs-string">&quot;处理业务&quot;</span>);<br>            <span class="hljs-comment">//接收转换消息</span><br>            System.out.println(<span class="hljs-string">&quot;comfirm.exchange收到消息队列得消息:&quot;</span>+<span class="hljs-keyword">new</span> String(message.getBody()));<br>            <span class="hljs-comment">//伪造一个错误</span><br>            <span class="hljs-keyword">int</span> i = <span class="hljs-number">3</span> / <span class="hljs-number">0</span>;<br>            <span class="hljs-comment">//手动签收</span><br>            channel.basicAck(deliveryTag,<span class="hljs-keyword">true</span>);<br><br>        &#125; <span class="hljs-keyword">catch</span> (Exception e) &#123;<br>            <span class="hljs-comment">//如果出现异常，可以拒接签收，让消息重回队列</span><br>            channel.basicNack(deliveryTag,<span class="hljs-keyword">true</span>,<span class="hljs-keyword">true</span>);<br>        &#125;<br>    &#125;<br></code></pre></td></tr></table></figure>
+
+<p>可以看到不断重试</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs">处理业务<br>处理业务<br>处理业务<br>处理业务<br></code></pre></td></tr></table></figure>
+
 
                 
               </div>
