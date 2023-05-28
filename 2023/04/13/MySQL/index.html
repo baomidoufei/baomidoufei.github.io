@@ -38,6 +38,15 @@
 <meta property="og:image" content="http://example.com/mysql_pic/25.png">
 <meta property="og:image" content="http://example.com/mysql_pic/26.png">
 <meta property="og:image" content="http://example.com/mysql_pic/27.png">
+<meta property="og:image" content="http://example.com/mysql_pic/28.png">
+<meta property="og:image" content="http://example.com/mysql_pic/29.png">
+<meta property="og:image" content="http://example.com/mysql_pic/30.png">
+<meta property="og:image" content="http://example.com/mysql_pic/31.png">
+<meta property="og:image" content="http://example.com/mysql_pic/32.png">
+<meta property="og:image" content="http://example.com/mysql_pic/33.png">
+<meta property="og:image" content="http://example.com/mysql_pic/34.png">
+<meta property="og:image" content="http://example.com/mysql_pic/35.png">
+<meta property="og:image" content="http://example.com/mysql_pic/36.png">
 <meta property="og:image" content="http://example.com/mysql_pic/5.png">
 <meta property="og:image" content="http://example.com/mysql_pic/6.png">
 <meta property="og:image" content="http://example.com/mysql_pic/7.png">
@@ -51,7 +60,7 @@
 <meta property="og:image" content="http://example.com/mysql_pic/15.png">
 <meta property="og:image" content="http://example.com/mysql_pic/16.png">
 <meta property="article:published_time" content="2023-04-13T02:56:39.937Z">
-<meta property="article:modified_time" content="2023-05-27T15:27:20.548Z">
+<meta property="article:modified_time" content="2023-05-28T04:19:18.193Z">
 <meta property="article:author" content="彭">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:image" content="http://example.com/mysql_pic/1.png">
@@ -247,7 +256,7 @@
       <span class="post-meta mr-2">
         <i class="iconfont icon-chart"></i>
         
-          8.7k words
+          10k words
         
       </span>
     
@@ -258,7 +267,7 @@
         
         
         
-          73 mins
+          87 mins
         
       </span>
     
@@ -426,6 +435,66 @@
 <hr>
 <p><img src="/../mysql_pic/27.png" srcset="/img/loading.gif" lazyload></p>
 <p>当客户端1使用DML语句时，给某条记录加上了行锁并且给全表加上了意向排他锁，此时客户端2无论是加表读锁还是表写锁都会阻塞，这也很好理解，我客户端1要修改某条数据，客户端1还未提交事务，数据还不确定，客户端2读取肯定是错的，那没必要读啊，那客户端2写就更不用说了，我客户端1都还没改完，你客户端2更别想改了(加表写锁)。</p>
+<h3 id="行级锁"><a href="#行级锁" class="headerlink" title="行级锁"></a>行级锁</h3><p><strong>介绍</strong></p>
+<p>行级锁，每次操作锁住对应的行数据。锁定粒度最小，发生锁冲突的概率最低，并发度最高。应用在 InnoDB存储引擎中。</p>
+<p>InnoDB的数据是基于索引组织的，行锁是通过对索引上的索引项加锁来实现的，而不是对记录加的 锁。对于行级锁，主要分为以下三类：</p>
+<ul>
+<li>行锁（Record Lock）：锁定单个行记录的锁，防止其他事务对此行进行update和delete。在 RC、RR隔离级别下都支持。</li>
+</ul>
+<p><img src="/../mysql_pic/28.png" srcset="/img/loading.gif" lazyload></p>
+<ul>
+<li>间隙锁（Gap Lock）：锁定索引记录间隙（不含该记录），确保索引记录间隙不变，防止其他事 务在这个间隙进行insert，产生幻读。在RR隔离级别下都支持。</li>
+</ul>
+<p><img src="/../mysql_pic/29.png" srcset="/img/loading.gif" lazyload></p>
+<ul>
+<li>临键锁（Next-Key Lock）：行锁和间隙锁组合，同时锁住数据，并锁住数据前面的间隙Gap。 在RR隔离级别下支持。</li>
+</ul>
+<p><img src="/../mysql_pic/30.png" srcset="/img/loading.gif" lazyload></p>
+<h4 id="行锁"><a href="#行锁" class="headerlink" title="行锁"></a>行锁</h4><p>InnoDB实现了以下两种类型的行锁：</p>
+<ul>
+<li>共享锁（S）：允许一个事务去读一行，阻止其他事务获得相同数据集的排它锁。</li>
+</ul>
+<p>（共享锁与共享锁不冲突，共享锁与排他锁冲突，排他锁与排他锁冲突).</p>
+<ul>
+<li>排他锁（X）：允许获取排他锁的事务更新数据，阻止其他事务获得相同数据集的共享锁和排他锁。</li>
+</ul>
+<p>两种行锁的兼容情况如下:</p>
+<p><img src="/../mysql_pic/31.png" srcset="/img/loading.gif" lazyload></p>
+<p>常见的SQL语句，在执行时，所加的行锁如下：</p>
+<p><img src="/../mysql_pic/32.png" srcset="/img/loading.gif" lazyload></p>
+<p>默认情况下，InnoDB在 REPEATABLE READ事务隔离级别运行，InnoDB使用 next-key 锁(临键锁)进行搜 索和索引扫描，以防止幻读。</p>
+<ul>
+<li>针对唯一索引进行检索时，对已存在的记录进行等值匹配时，将会自动优化为行锁。</li>
+<li>InnoDB的行锁是针对于索引加的锁，不通过索引条件检索数据，那么InnoDB将对表中的所有记 录加锁，此时 就会<strong>升级为表锁</strong>。</li>
+</ul>
+<p><img src="/../mysql_pic/33.png" srcset="/img/loading.gif" lazyload></p>
+<p>因为行锁是针对于索引加的锁，不通过索引条件检索数据，那么InnoDB将对表中的所有记 录加锁，此时 就会升级为表锁，name没有索引，所以使用update会加上表锁，客户端2就无法使用更新操作了，会阻塞。</p>
+<p>那么我们给name字段创建一个索引就不会升级为表锁了。create index xxx(名字) on table(name);</p>
+<p>可以通过以下SQL，查看意向锁及行锁的加锁情况：</p>
+<figure class="highlight axapta"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs axapta"><span class="hljs-keyword">select</span> object_schema,object_name,index_name,lock_type,lock_mode,lock_data <span class="hljs-keyword">from</span><br>performance_schema.data_locks;<br></code></pre></td></tr></table></figure>
+
+<h4 id="间隙锁-amp-临键锁"><a href="#间隙锁-amp-临键锁" class="headerlink" title="间隙锁&amp;临键锁"></a>间隙锁&amp;临键锁</h4><p>默认情况下，InnoDB在 REPEATABLE READ事务隔离级别运行，InnoDB使用 next-key 锁进行搜 索和索引扫描，以防止幻读。</p>
+<ul>
+<li>索引上的等值查询(唯一索引)，给<strong>不存在</strong>的记录加锁时, 优化为间隙锁 。</li>
+</ul>
+<p><img src="/../mysql_pic/34.png" srcset="/img/loading.gif" lazyload></p>
+<p>当给id为5的数据进行修改操作时，表中没有id为5的数据，那么会给id为3与8之间的间隙加间隙锁，当右侧客户端插入一条id为7的数据时，操作被阻塞。</p>
+<ul>
+<li>索引上的等值查询(<strong>非唯一普通索引</strong>)，向右遍历时最后一个值不满足查询需求时，next-key lock 退化为间隙锁(间隙锁唯一的目的是防止其他事务插入间隙，间隙锁可以共存，一个事务采用的间隙锁不会阻止另一个事务在同一间隙上采用间隙锁)。</li>
+</ul>
+<p><img src="/../mysql_pic/35.png" srcset="/img/loading.gif" lazyload></p>
+<p>我们知道InnoDB的B+树索引，叶子节点是有序的双向链表。 假如，我们要根据这个二级索引查询值 为18的数据，并加上共享锁，我们是只锁定18这一行就可以了吗？ 并不是，因为是非唯一索引，这个 结构中可能有多个18的存在(<strong>非唯一普通索引</strong>)，所以，在加锁时会继续往后找，找到一个不满足条件的值（当前案例中也 就是29）。此时会对18加临键锁，并对29之前的间隙加锁。</p>
+<ul>
+<li>索引上的范围查询(唯一索引)–会访问到不满足条件的第一个值为止。</li>
+</ul>
+<p><img src="/../mysql_pic/36.png" srcset="/img/loading.gif" lazyload></p>
+<p>查询的条件为id&gt;&#x3D;19，并添加共享锁。 此时我们可以根据数据库表中现有的数据，将数据分为三个部 分：</p>
+<ul>
+<li>[19]</li>
+<li>(19,25]</li>
+<li>(25,+∞]</li>
+</ul>
+<p>所以数据库数据在加锁时，就是将19加了行锁，25的临键锁（包含25及25之前的间隙），正无穷的临 键锁(正无穷及之前的间隙)。</p>
 <h2 id="InnoDB存储引擎"><a href="#InnoDB存储引擎" class="headerlink" title="InnoDB存储引擎"></a>InnoDB存储引擎</h2><h3 id="逻辑存储结构"><a href="#逻辑存储结构" class="headerlink" title="逻辑存储结构"></a>逻辑存储结构</h3><p><img src="/../mysql_pic/5.png" srcset="/img/loading.gif" lazyload></p>
 <ul>
 <li>表空间</li>
