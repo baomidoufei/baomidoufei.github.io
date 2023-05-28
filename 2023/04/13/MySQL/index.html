@@ -16,13 +16,17 @@
   <meta name="author" content="彭">
   <meta name="keywords" content="">
   
-    <meta name="description" content="索引索引是帮助MySQL高效获取数据的数据结构(有序)。  聚簇索引聚簇索引（Clustered Index）即索引结构和数据一起存放的索引，并不是一种单独的索引类型。InnoDB 中的主键索引就属于聚簇索引 聚簇索引（Clustered Index）一般指的是主键索引（如果存在主键索引的话），聚簇索引也被称之为聚集索引。 聚簇索引在 InnoDB 中是使用 B+ 树实现的，比如我们创建一张 st">
+    <meta name="description" content="事务事务四大特性 原子性（Atomicity）：事务是不可分割的最小操作单元，要么全部成功，要么全部失败。 一致性（Consistency）：事务完成时，必须使所有的数据都保持一致状态。 隔离性（Isolation）：数据库系统提供的隔离机制，保证事务在不受外部并发操作影响的独立 环境下运行。 持久性（Durability）：事务一旦提交或回滚，它对数据库中的数据的改变就是永久的。  上述就是事务">
 <meta property="og:type" content="article">
 <meta property="og:title" content="MySQL">
 <meta property="og:url" content="http://example.com/2023/04/13/MySQL/index.html">
 <meta property="og:site_name" content="PJF">
-<meta property="og:description" content="索引索引是帮助MySQL高效获取数据的数据结构(有序)。  聚簇索引聚簇索引（Clustered Index）即索引结构和数据一起存放的索引，并不是一种单独的索引类型。InnoDB 中的主键索引就属于聚簇索引 聚簇索引（Clustered Index）一般指的是主键索引（如果存在主键索引的话），聚簇索引也被称之为聚集索引。 聚簇索引在 InnoDB 中是使用 B+ 树实现的，比如我们创建一张 st">
+<meta property="og:description" content="事务事务四大特性 原子性（Atomicity）：事务是不可分割的最小操作单元，要么全部成功，要么全部失败。 一致性（Consistency）：事务完成时，必须使所有的数据都保持一致状态。 隔离性（Isolation）：数据库系统提供的隔离机制，保证事务在不受外部并发操作影响的独立 环境下运行。 持久性（Durability）：事务一旦提交或回滚，它对数据库中的数据的改变就是永久的。  上述就是事务">
 <meta property="og:locale" content="en_US">
+<meta property="og:image" content="http://example.com/mysql_pic/37.png">
+<meta property="og:image" content="http://example.com/mysql_pic/38.png">
+<meta property="og:image" content="http://example.com/mysql_pic/39.png">
+<meta property="og:image" content="http://example.com/mysql_pic/40.png">
 <meta property="og:image" content="http://example.com/mysql_pic/1.png">
 <meta property="og:image" content="http://example.com/mysql_pic/2.png">
 <meta property="og:image" content="http://example.com/mysql_pic/3.png">
@@ -59,11 +63,30 @@
 <meta property="og:image" content="http://example.com/mysql_pic/14.png">
 <meta property="og:image" content="http://example.com/mysql_pic/15.png">
 <meta property="og:image" content="http://example.com/mysql_pic/16.png">
+<meta property="og:image" content="http://example.com/mysql_pic/41.png">
+<meta property="og:image" content="http://example.com/mysql_pic/42.png">
+<meta property="og:image" content="http://example.com/mysql_pic/43.png">
+<meta property="og:image" content="http://example.com/mysql_pic/44.png">
+<meta property="og:image" content="http://example.com/mysql_pic/45.png">
+<meta property="og:image" content="http://example.com/mysql_pic/46.png">
+<meta property="og:image" content="http://example.com/mysql_pic/47.png">
+<meta property="og:image" content="http://example.com/mysql_pic/48.png">
+<meta property="og:image" content="http://example.com/mysql_pic/49.png">
+<meta property="og:image" content="http://example.com/mysql_pic/50.png">
+<meta property="og:image" content="http://example.com/mysql_pic/51.png">
+<meta property="og:image" content="http://example.com/mysql_pic/45.png">
+<meta property="og:image" content="http://example.com/mysql_pic/52.png">
+<meta property="og:image" content="http://example.com/mysql_pic/53.png">
+<meta property="og:image" content="http://example.com/mysql_pic/54.png">
+<meta property="og:image" content="http://example.com/mysql_pic/55.png">
+<meta property="og:image" content="http://example.com/mysql_pic/56.png">
+<meta property="og:image" content="http://example.com/mysql_pic/57.png">
+<meta property="og:image" content="http://example.com/mysql_pic/58.png">
 <meta property="article:published_time" content="2023-04-13T02:56:39.937Z">
-<meta property="article:modified_time" content="2023-05-28T08:29:37.754Z">
+<meta property="article:modified_time" content="2023-05-28T15:34:50.251Z">
 <meta property="article:author" content="彭">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image" content="http://example.com/mysql_pic/1.png">
+<meta name="twitter:image" content="http://example.com/mysql_pic/37.png">
   
   
   
@@ -256,7 +279,7 @@
       <span class="post-meta mr-2">
         <i class="iconfont icon-chart"></i>
         
-          10k words
+          14k words
         
       </span>
     
@@ -267,7 +290,7 @@
         
         
         
-          87 mins
+          114 mins
         
       </span>
     
@@ -310,7 +333,41 @@
             
               <div class="markdown-body">
                 
-                <h2 id="索引"><a href="#索引" class="headerlink" title="索引"></a>索引</h2><p>索引是帮助MySQL高效获取数据的数据结构(有序)。</p>
+                <h2 id="事务"><a href="#事务" class="headerlink" title="事务"></a>事务</h2><h3 id="事务四大特性"><a href="#事务四大特性" class="headerlink" title="事务四大特性"></a>事务四大特性</h3><ul>
+<li>原子性（Atomicity）：事务是不可分割的最小操作单元，要么全部成功，要么全部失败。</li>
+<li>一致性（Consistency）：事务完成时，必须使所有的数据都保持一致状态。</li>
+<li>隔离性（Isolation）：数据库系统提供的隔离机制，保证事务在不受外部并发操作影响的独立 环境下运行。</li>
+<li>持久性（Durability）：事务一旦提交或回滚，它对数据库中的数据的改变就是永久的。</li>
+</ul>
+<p>上述就是事务的四大特性，简称ACID。</p>
+<h3 id="并发事务"><a href="#并发事务" class="headerlink" title="并发事务"></a>并发事务</h3><ul>
+<li>赃读：一个事务读到另外一个事务还没有提交的数据。</li>
+</ul>
+<p><img src="/../mysql_pic/37.png" srcset="/img/loading.gif" lazyload></p>
+<ul>
+<li>不可重复读：一个事务先后读取同一条记录，但两次读取的数据不同，称之为不可重复读。</li>
+</ul>
+<p><img src="/../mysql_pic/38.png" srcset="/img/loading.gif" lazyload></p>
+<p>事务A两次读取同一条记录，但是读取到的数据却是不一样的.</p>
+<ul>
+<li>幻读：一个事务按照条件查询数据时，没有对应的数据行，但是在插入数据时，又发现这行数据 已经存在，好像出现了 “幻影”</li>
+</ul>
+<p><img src="/../mysql_pic/39.png" srcset="/img/loading.gif" lazyload></p>
+<p>为什么会出现幻读？因为已经解决了上面的不可重复度，所以两次查询的结果是一样的，误以为没有数据，其实事务B已经插入了。</p>
+<h3 id="事务隔离级别"><a href="#事务隔离级别" class="headerlink" title="事务隔离级别"></a>事务隔离级别</h3><p>为了解决并发事务所引发的问题，在数据库中引入了事务隔离级别。主要有以下几种：</p>
+<p><img src="/../mysql_pic/40.png" srcset="/img/loading.gif" lazyload></p>
+<ul>
+<li>查看事务隔离级别</li>
+</ul>
+<figure class="highlight autoit"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs autoit"><span class="hljs-keyword">SELECT</span> @<span class="hljs-symbol">@TRANSACTION_ISOLATION</span><span class="hljs-comment">;</span><br></code></pre></td></tr></table></figure>
+
+<ul>
+<li>设置事务隔离级别</li>
+</ul>
+<figure class="highlight pgsql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs pgsql"><span class="hljs-keyword">SET</span> [ <span class="hljs-keyword">SESSION</span> | <span class="hljs-keyword">GLOBAL</span> ] <span class="hljs-keyword">TRANSACTION</span> <span class="hljs-keyword">ISOLATION</span> <span class="hljs-keyword">LEVEL</span> &#123; <span class="hljs-keyword">READ</span> <span class="hljs-keyword">UNCOMMITTED</span> |<br><span class="hljs-keyword">READ</span> <span class="hljs-keyword">COMMITTED</span> | <span class="hljs-keyword">REPEATABLE</span> <span class="hljs-keyword">READ</span> | <span class="hljs-keyword">SERIALIZABLE</span> &#125;<br></code></pre></td></tr></table></figure>
+
+<p>事务隔离级别越高，数据越安全，但是性能越低</p>
+<h2 id="索引"><a href="#索引" class="headerlink" title="索引"></a>索引</h2><p>索引是帮助MySQL高效获取数据的数据结构(有序)。</p>
 <p><img src="/../mysql_pic/1.png" srcset="/img/loading.gif" lazyload></p>
 <h3 id="聚簇索引"><a href="#聚簇索引" class="headerlink" title="聚簇索引"></a>聚簇索引</h3><p><strong>聚簇索引（Clustered Index）即索引结构和数据一起存放的索引，并不是一种单独的索引类型。InnoDB 中的主键索引就属于聚簇索引</strong></p>
 <p>聚簇索引（Clustered Index）一般指的是主键索引（如果存在主键索引的话），聚簇索引也被称之为聚集索引。</p>
@@ -616,12 +673,12 @@
 <p>重做日志，记录的是事务提交时数据页的物理修改，是用来实现事务的持久性。</p>
 <p>该日志文件由两部分组成：重做日志缓冲（redo log buffer）以及重做日志文件（redo log file）,前者是在内存中，后者在磁盘中。当事务提交之后会把所有修改信息都存到该日志文件中, 用 于在刷新脏页到磁盘,发生错误时, 进行数据恢复使用。</p>
 <p>脏页：当客户端对buffer pool进行DML时，没有找到相关数据页，buffer pool从磁盘读取相关数据页到buffer pool，再对数据进行修改，此时buffer pool里的数据页和磁盘的数据不一致，这就是脏页。</p>
-<p>如果没有redolog，可能会存在什么问题的？ 我们一起来分析一下。</p>
+<p>如果没有redo log，可能会存在什么问题的？ 我们一起来分析一下。</p>
 <p>我们知道，在InnoDB引擎中的内存结构中，主要的内存区域就是缓冲池，在缓冲池中缓存了很多的数 据页。 当我们在一个事务中，执行多个增删改的操作时，InnoDB引擎会先操作缓冲池中的数据，如果 缓冲区没有对应的数据，会通过后台线程将磁盘中的数据加载出来，存放在缓冲区中，然后将缓冲池中 的数据修改，修改后的数据页我们称为脏页。 而脏页则会在一定的时机，通过后台线程刷新到磁盘 中，从而保证缓冲区与磁盘的数据一致。 而缓冲区的脏页数据并不是实时刷新的，而是一段时间之后 将缓冲区的数据刷新到磁盘中，假如刷新到磁盘的过程出错了，而提示给用户事务提交成功，而数据却 没有持久化下来，这就出现问题了，没有保证事务的持久性。</p>
 <p><img src="/../mysql_pic/15.png" srcset="/img/loading.gif" lazyload></p>
-<p>那么，如何解决上述的问题呢？ 在InnoDB中提供了一份日志 redo log，接下来我们再来分析一 下，通过redolog如何解决这个问题。</p>
+<p>那么，如何解决上述的问题呢？ 在InnoDB中提供了一份日志 redo log，接下来我们再来分析一 下，通过redo log如何解决这个问题。</p>
 <p><img src="/../mysql_pic/16.png" srcset="/img/loading.gif" lazyload></p>
-<p>有了redolog之后，当对缓冲区的数据进行增删改之后，会首先将操作的数据页的变化，记录在redo log buffer中。在事务提交时，会将redo log buffer中的数据刷新到redo log磁盘文件中。 过一段时间之后，如果刷新缓冲区的脏页到磁盘时，发生错误，此时就可以借助于redo log进行数据 恢复，这样就保证了事务的持久性。 而如果脏页成功刷新到磁盘 或 或者涉及到的数据已经落盘，此 时redolog就没有作用了，就可以删除了，所以存在的两个redolog文件是循环写的.</p>
+<p>有了redolog之后，当对缓冲区的数据进行增删改之后，会首先将操作的数据页的变化，记录在redo log buffer中。在事务提交时，会将redolog buffer中的数据刷新到redo log磁盘文件中。 过一段时间之后，如果刷新缓冲区的脏页到磁盘时，发生错误，此时就可以借助于redo log进行数据 恢复，这样就保证了事务的持久性。 而如果脏页成功刷新到磁盘 或 或者涉及到的数据已经落盘，此 时redolog就没有作用了，就可以删除了，所以存在的两个redolog文件是循环写的.</p>
 <p>那为什么每一次提交事务，要刷新redo log 到磁盘中呢，而不是直接将buffer pool中的脏页刷新 到磁盘呢 ?</p>
 <p> 因为在业务操作中，我们操作数据一般都是随机读写磁盘的，而不是顺序读写磁盘。 而redo log在 往磁盘文件中写入数据，由于是日志文件，所以都是顺序写的。顺序写的效率，要远大于随机写。 这 种先写日志的方式，称之为 WAL（Write-Ahead Logging）。</p>
 <h4 id="undo-log"><a href="#undo-log" class="headerlink" title="undo log"></a>undo log</h4><p>回滚日志，用于记录数据被修改前的信息 , 作用包含两个 : 提供回滚(保证事务的原子性) 和 MVCC(多版本并发控制) 。</p>
@@ -632,6 +689,10 @@
 <li>当前读</li>
 </ul>
 <p>读取的是记录的最新版本，读取时还要保证其他并发事务不能修改当前记录，会对读取的记录进行加 锁。对于我们日常的操作，如：**select … lock in share mode(共享锁)，select … for update、update、insert、delete(排他锁)都是一种当前读 **。</p>
+<p><img src="/../mysql_pic/41.png" srcset="/img/loading.gif" lazyload></p>
+<p>事务1首先查询了一次数据，事务2对表进行了一次修改，事务1再查询，但是数据还是和第一次一样，因为当前的隔离级别是默认的可重复读，第一次和第二次的结果是一样的。</p>
+<p><img src="/../mysql_pic/42.png" srcset="/img/loading.gif" lazyload></p>
+<p>但是在查询语句后面加上lock in share mode的话就是当前读，数据是最新版本。</p>
 <ul>
 <li>快照读</li>
 </ul>
@@ -644,6 +705,84 @@
 </ul>
 </li>
 </ul>
+<h4 id="MVCC基本概念"><a href="#MVCC基本概念" class="headerlink" title="MVCC基本概念"></a>MVCC基本概念</h4><p>全称 Multi-Version Concurrency Control，多版本并发控制。指维护一个数据的多个版本， 使得读写操作没有冲突，快照读为MySQL实现MVCC提供了一个非阻塞读功能。MVCC的具体实现，还需 要依赖于数据库记录中的<strong>三个隐式字段(也有可能是两个)<strong>、</strong>undo log日志</strong>、<strong>readView</strong>。</p>
+<h5 id="隐式字段"><a href="#隐式字段" class="headerlink" title="隐式字段"></a>隐式字段</h5><p><img src="/../mysql_pic/43.png" srcset="/img/loading.gif" lazyload></p>
+<p>当我们创建了上面的这张表，我们在查看表结构的时候，就可以显式的看到这三个字段。 实际上除了 这三个字段以外，InnoDB还会自动的给我们添加三个隐藏字段及其含义分别是：</p>
+<p><img src="/../mysql_pic/44.png" srcset="/img/loading.gif" lazyload></p>
+<p>而上述的前两个字段是肯定会添加的， 是否添加最后一个字段DB_ROW_ID，得看当前表有没有主键， 如果有主键，则不会添加该隐藏字段。</p>
+<p>进入服务器中的 &#x2F;var&#x2F;lib&#x2F;mysql&#x2F;itcast&#x2F; , 查看stu的表结构信息, 通过如下指令：</p>
+<figure class="highlight nginx"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs nginx"><span class="hljs-attribute">ibd2sdi</span> stu.ibd<br></code></pre></td></tr></table></figure>
+
+<h5 id="undolog"><a href="#undolog" class="headerlink" title="undolog"></a>undolog</h5><p>回滚日志，在insert、update、delete的时候产生的便于数据回滚的日志。</p>
+<p>当insert的时候，产生的undo log日志只在回滚时需要，在事务提交后，可被立即删除。</p>
+<p>而update、delete的时候，产生的undo log日志不仅在回滚时需要，在快照读时也需要，不会立即 被删除。</p>
+<h5 id="版本链"><a href="#版本链" class="headerlink" title="版本链"></a>版本链</h5><p>有一张原始数据为:</p>
+<p><img src="/../mysql_pic/45.png" srcset="/img/loading.gif" lazyload></p>
+<p><code>DB_TRX_ID : 代表最近修改事务的ID，记录插入这条记录或最后一次修改该记录的事务ID，是 自增的。</code> </p>
+<p><code>DB_ROLL_PTR ：回滚指针，由于这条数据是才插入的，没有被更新过，所以该字段值为null。</code></p>
+<p>然后，有四个并发事务同时在访问这张表。</p>
+<p><strong>第一步</strong></p>
+<p><img src="/../mysql_pic/46.png" srcset="/img/loading.gif" lazyload></p>
+<p>当事务2执行第一条修改语句时，会记录undo log日志，记录数据变更之前的样子; 然后更新记录，并且记录本次操作的事务ID，回滚指针，回滚指针用来指定如果发生回滚，回滚到哪一个版本。</p>
+<p><img src="/../mysql_pic/47.png" srcset="/img/loading.gif" lazyload></p>
+<p><strong>第二步</strong></p>
+<p><img src="/../mysql_pic/48.png" srcset="/img/loading.gif" lazyload></p>
+<p>当事务3执行第一条修改语句时，也会记录undo log日志，记录数据变更之前的样子; 然后更新记 录，并且记录本次操作的事务ID，回滚指针，回滚指针用来指定如果发生回滚，回滚到哪一个版本。</p>
+<p><img src="/../mysql_pic/49.png" srcset="/img/loading.gif" lazyload></p>
+<p><strong>第三步</strong></p>
+<p><img src="/../mysql_pic/50.png" srcset="/img/loading.gif" lazyload></p>
+<p>当事务4执行第一条修改语句时，也会记录undo log日志，记录数据变更之前的样子; 然后更新记 录，并且记录本次操作的事务ID，回滚指针，回滚指针用来指定如果发生回滚，回滚到哪一个版本。</p>
+<p><img src="/../mysql_pic/51.png" srcset="/img/loading.gif" lazyload></p>
+<p><code>最终我们发现，不同事务或相同事务对同一条记录进行修改，会导致该记录的undolog生成一条 记录版本链表，链表的头部是最新的旧记录，链表尾部是最早的旧记录。</code></p>
+<h5 id="readview"><a href="#readview" class="headerlink" title="readview"></a>readview</h5><p>ReadView（读视图）是 快照读 SQL执行时MVCC提取数据的依据，记录并维护系统当前活跃的事务 （未提交的）id。</p>
+<p>ReadView中包含了四个核心字段：</p>
+<ul>
+<li>m_ids  : 当前活跃的事务ID集合</li>
+<li>min_trx_id : 最小活跃事务ID</li>
+<li>max_trx_id : 预分配事务ID，当前最大事务ID+1（因为事务ID是自增的）</li>
+<li>creator_trx_id : ReadView创建者的事务ID</li>
+</ul>
+<p>而在readview中就规定了版本链数据的访问规则：</p>
+<p><strong>trx_id 代表当前undolog版本链对应事务ID。</strong></p>
+<p><img src="/../mysql_pic/45.png" srcset="/img/loading.gif" lazyload></p>
+<p><img src="/../mysql_pic/52.png" srcset="/img/loading.gif" lazyload></p>
+<p><img src="/../mysql_pic/53.png" srcset="/img/loading.gif" lazyload></p>
+<p>不同的隔离级别，生成ReadView的时机不同：</p>
+<ul>
+<li>READ COMMITTED ：在事务中每一次执行快照读时生成ReadView。</li>
+<li>REPEATABLE READ：仅在事务中第一次执行快照读时生成ReadView，后续复用该ReadView。</li>
+</ul>
+<h5 id="原理分析"><a href="#原理分析" class="headerlink" title="原理分析"></a>原理分析</h5><h6 id="RC隔离级别-读已提交"><a href="#RC隔离级别-读已提交" class="headerlink" title="RC隔离级别(读已提交)"></a>RC隔离级别(读已提交)</h6><p><strong>RC隔离级别下，在事务中每一次执行快照读时生成ReadView。</strong></p>
+<p>我们就来分析事务5中，两次快照读读取数据，是如何获取数据的?</p>
+<p>在事务5中，查询了两次id为30的记录，由于隔离级别为Read Committed，所以每一次进行快照读 都会生成一个ReadView，那么两次生成的ReadView如下。</p>
+<p><img src="/../mysql_pic/54.png" srcset="/img/loading.gif" lazyload></p>
+<p>那么这两次快照读在获取数据时，就需要根据所生成的ReadView以及ReadView的版本链访问规则， 到undolog版本链中匹配数据，最终决定此次快照读返回的数据。</p>
+<ul>
+<li>先来看第一次快照读具体的读取过程：</li>
+</ul>
+<p><img src="/../mysql_pic/55.png" srcset="/img/loading.gif" lazyload></p>
+<p>在进行匹配时，会从undo log的版本链，从上到下进行挨个匹配：</p>
+<ul>
+<li>先匹配最上面这条记录，这条记录对应的 trx_id为4，也就是将4带入右侧的匹配规则中。 ①不满足 ②不满足 ③不满足 ④也不满足 ， 都不满足，则继续匹配undo log版本链的下一条。</li>
+<li>再匹配第二条 ，这条 记录对应的trx_id为3，也就是将3带入右侧的匹配规则中。①不满足 ②不满足 ③不满足 ④也 不满足 ，都不满足，则继续匹配undo log版本链的下一条。</li>
+<li>再匹配第三条 ，这条记 录对应的trx_id为2，也就是将2带入右侧的匹配规则中。①不满足 ②满足 终止匹配，此次快照 读，返回的数据就是版本链中记录的这条数据。</li>
+</ul>
+<p><strong>本质就是当前事务操作的最早已经提交的事务的数据。</strong></p>
+<hr>
+<p> 再来看第二次快照读具体的读取过程:</p>
+<p>先不看答案，按照上面说的本质，答案应该是事务3修改后的数据。</p>
+<p><img src="/../mysql_pic/56.png" srcset="/img/loading.gif" lazyload></p>
+<p>在进行匹配时，会从undo log的版本链，从上到下进行挨个匹配：</p>
+<ul>
+<li>先匹配最上面 这条记录，这条记录对应的 trx_id为4，也就是将4带入右侧的匹配规则中。 ①不满足 ②不满足 ③不满足 ④也不满足 ， 都不满足，则继续匹配undo log版本链的下一条。</li>
+<li>再匹配第二条 ，这条 记录对应的trx_id为3，也就是将3带入右侧的匹配规则中。①不满足 ②满足 。终止匹配，此次 快照读，返回的数据就是版本链中记录的这条数据。</li>
+</ul>
+<h6 id="RR隔离级别-可重复读"><a href="#RR隔离级别-可重复读" class="headerlink" title="RR隔离级别(可重复读)"></a>RR隔离级别(可重复读)</h6><p><strong>RR隔离级别下，仅在事务中第一次执行快照读时生成ReadView，后续复用该ReadView。 而RR 是可 重复读，在一个事务中，执行两次相同的select语句，查询到的结果是一样的。</strong></p>
+<p>那MySQL是如何做到可重复读的呢? 我们简单分析一下就知道了</p>
+<p><img src="/../mysql_pic/57.png" srcset="/img/loading.gif" lazyload></p>
+<p>我们看到，在RR隔离级别下，只是在事务中第一次快照读时生成ReadView，后续都是复用该 ReadView，那么既然ReadView都一样， ReadView的版本链匹配规则也一样， 那么最终快照读返 回的结果也是一样的。</p>
+<p>所以呢，MVCC的实现原理就是通过 InnoDB表的隐藏字段、UndoLog 版本链、ReadView来实现的。 而MVCC + 锁，则实现了事务的隔离性。 而一致性则是由redolog 与 undolog保证。</p>
+<p><img src="/../mysql_pic/58.png" srcset="/img/loading.gif" lazyload></p>
 
                 
               </div>
