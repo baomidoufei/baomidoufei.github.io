@@ -16,13 +16,15 @@
   <meta name="author" content="彭">
   <meta name="keywords" content="">
   
-    <meta name="description" content="事务事务四大特性 原子性（Atomicity）：事务是不可分割的最小操作单元，要么全部成功，要么全部失败。 一致性（Consistency）：事务完成时，必须使所有的数据都保持一致状态。 隔离性（Isolation）：数据库系统提供的隔离机制，保证事务在不受外部并发操作影响的独立 环境下运行。 持久性（Durability）：事务一旦提交或回滚，它对数据库中的数据的改变就是永久的。  上述就是事务">
+    <meta name="description" content="多表查询概述如果设计到多表查询查询，那么首先应该确定设计哪几张表，然后分析他们之间的连接条件，最后确定查询字段。 多表查询就是指从多张表中查询数据。 原来查询单表数据，执行的SQL形式为：select * from emp; 那么我们要执行多表查询，就只需要使用逗号分隔多张表即可，如： select * from emp(17条记录) , dept(6条记录) ; 此时,我们看到查询结果中包含了大">
 <meta property="og:type" content="article">
 <meta property="og:title" content="MySQL">
 <meta property="og:url" content="http://example.com/2023/04/13/MySQL/index.html">
 <meta property="og:site_name" content="PJF">
-<meta property="og:description" content="事务事务四大特性 原子性（Atomicity）：事务是不可分割的最小操作单元，要么全部成功，要么全部失败。 一致性（Consistency）：事务完成时，必须使所有的数据都保持一致状态。 隔离性（Isolation）：数据库系统提供的隔离机制，保证事务在不受外部并发操作影响的独立 环境下运行。 持久性（Durability）：事务一旦提交或回滚，它对数据库中的数据的改变就是永久的。  上述就是事务">
+<meta property="og:description" content="多表查询概述如果设计到多表查询查询，那么首先应该确定设计哪几张表，然后分析他们之间的连接条件，最后确定查询字段。 多表查询就是指从多张表中查询数据。 原来查询单表数据，执行的SQL形式为：select * from emp; 那么我们要执行多表查询，就只需要使用逗号分隔多张表即可，如： select * from emp(17条记录) , dept(6条记录) ; 此时,我们看到查询结果中包含了大">
 <meta property="og:locale" content="en_US">
+<meta property="og:image" content="http://example.com/mysql_pic/98.png">
+<meta property="og:image" content="http://example.com/mysql_pic/99.png">
 <meta property="og:image" content="http://example.com/mysql_pic/37.png">
 <meta property="og:image" content="http://example.com/mysql_pic/38.png">
 <meta property="og:image" content="http://example.com/mysql_pic/39.png">
@@ -68,6 +70,7 @@
 <meta property="og:image" content="http://example.com/mysql_pic/82.png">
 <meta property="og:image" content="http://example.com/mysql_pic/83.png">
 <meta property="og:image" content="http://example.com/mysql_pic/84.png">
+<meta property="og:image" content="http://example.com/mysql_pic/97.png">
 <meta property="og:image" content="http://example.com/mysql_pic/17.png">
 <meta property="og:image" content="http://example.com/mysql_pic/18.png">
 <meta property="og:image" content="http://example.com/mysql_pic/19.png">
@@ -122,10 +125,10 @@
 <meta property="og:image" content="http://example.com/mysql_pic/59.png">
 <meta property="og:image" content="http://example.com/mysql_pic/60.png">
 <meta property="article:published_time" content="2023-04-13T02:56:39.937Z">
-<meta property="article:modified_time" content="2023-05-29T15:20:07.631Z">
+<meta property="article:modified_time" content="2023-06-03T14:16:29.831Z">
 <meta property="article:author" content="彭">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image" content="http://example.com/mysql_pic/37.png">
+<meta name="twitter:image" content="http://example.com/mysql_pic/98.png">
   
   
   
@@ -318,7 +321,7 @@
       <span class="post-meta mr-2">
         <i class="iconfont icon-chart"></i>
         
-          24k words
+          30k words
         
       </span>
     
@@ -329,7 +332,7 @@
         
         
         
-          201 mins
+          247 mins
         
       </span>
     
@@ -372,7 +375,76 @@
             
               <div class="markdown-body">
                 
-                <h2 id="事务"><a href="#事务" class="headerlink" title="事务"></a>事务</h2><h3 id="事务四大特性"><a href="#事务四大特性" class="headerlink" title="事务四大特性"></a>事务四大特性</h3><ul>
+                <h2 id="多表查询"><a href="#多表查询" class="headerlink" title="多表查询"></a>多表查询</h2><h3 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h3><p><strong>如果设计到多表查询查询，那么首先应该确定设计哪几张表，然后分析他们之间的连接条件，最后确定查询字段。</strong></p>
+<p>多表查询就是指从多张表中查询数据。</p>
+<p>原来查询单表数据，执行的SQL形式为：select * from emp;</p>
+<p>那么我们要执行多表查询，就只需要使用逗号分隔多张表即可，如： select * from emp(17条记录) , dept(6条记录) ;</p>
+<p>此时,我们看到查询结果中包含了大量的结果集，总共102条记录，而这其实就是员工表emp所有的记录 (17) 与 部门表dept所有记录(6) 的所有组合情况，这种现象称之为笛卡尔积。接下来，就来简单 介绍下笛卡尔积。</p>
+<p>笛卡尔积: 笛卡尔乘积是指在数学中，两个集合A集合 和 B集合的所有组合情况。</p>
+<p><img src="/../mysql_pic/98.png" srcset="/img/loading.gif" lazyload></p>
+<p>而在多表查询中，我们是需要消除无效的笛卡尔积的，只保留两张表关联部分的数据。</p>
+<p><img src="/../mysql_pic/99.png" srcset="/img/loading.gif" lazyload></p>
+<p>在SQL语句中，如何来去除无效的笛卡尔积呢？ 我们可以给多表查询加上连接查询的条件即可</p>
+<p>select * from emp , dept where emp.dept_id &#x3D; dept.id;</p>
+<h3 id="分类"><a href="#分类" class="headerlink" title="分类"></a>分类</h3><ul>
+<li><p>连接查询</p>
+<ul>
+<li><p>内连接：相当于查询A、B交集部分数据</p>
+<ul>
+<li><p>隐式内连接</p>
+<figure class="highlight lasso"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs lasso"><span class="hljs-keyword">SELECT</span> 字段列表 FROM 表<span class="hljs-number">1</span> , 表<span class="hljs-number">2</span> <span class="hljs-keyword">WHERE</span> 条件 <span class="hljs-params">...</span> ;<br><br></code></pre></td></tr></table></figure>
+</li>
+<li><p>显式内连接</p>
+<figure class="highlight n1ql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs n1ql"><span class="hljs-keyword">SELECT</span> 字段列表 <span class="hljs-keyword">FROM</span> 表<span class="hljs-number">1</span> [ <span class="hljs-keyword">INNER</span> ] <span class="hljs-keyword">JOIN</span> 表<span class="hljs-number">2</span> <span class="hljs-keyword">ON</span> 连接条件 ... ;<br></code></pre></td></tr></table></figure></li>
+</ul>
+</li>
+<li><p>外连接：</p>
+</li>
+<li><p>左外连接：查询左表所有数据，以及两张表交集部分数据</p>
+<figure class="highlight n1ql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs n1ql"><span class="hljs-keyword">SELECT</span> 字段列表 <span class="hljs-keyword">FROM</span> 表<span class="hljs-number">1</span> <span class="hljs-keyword">LEFT</span> [ <span class="hljs-keyword">OUTER</span> ] <span class="hljs-keyword">JOIN</span> 表<span class="hljs-number">2</span> <span class="hljs-keyword">ON</span> 条件 ... ;<br></code></pre></td></tr></table></figure>
+
+<p>eg: 查询emp表的所有数据, 和对应的部门信息</p>
+<figure class="highlight n1ql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs n1ql"><span class="hljs-keyword">select</span> <span class="hljs-built_in">e</span>.*, d.name <span class="hljs-keyword">from</span> emp <span class="hljs-built_in">e</span> <span class="hljs-keyword">left</span> <span class="hljs-keyword">join</span> dept d <span class="hljs-keyword">on</span> <span class="hljs-built_in">e</span>.dept_id = d.id;<br></code></pre></td></tr></table></figure>
+</li>
+<li><p>右外连接：查询右表所有数据，以及两张表交集部分数据</p>
+</li>
+<li><p>自连接：当前表与自身的连接查询，自连接必须使用表别名</p>
+</li>
+</ul>
+<figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs css">SELECT 字段列表 <span class="hljs-selector-tag">FROM</span> 表<span class="hljs-selector-tag">A</span> 别名<span class="hljs-selector-tag">A</span> JOIN 表<span class="hljs-selector-tag">A</span> 别名<span class="hljs-selector-tag">B</span> ON 条件 ... ;<br></code></pre></td></tr></table></figure>
+
+<p>eg:查询员工 及其 所属领导的名字</p>
+<figure class="highlight pgsql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs pgsql"><span class="hljs-keyword">select</span> a.name , b.name <span class="hljs-keyword">from</span> emp a , emp b <span class="hljs-keyword">where</span> a.managerid = b.id;(内连接)<br></code></pre></td></tr></table></figure>
+
+<p>eg:查询所有员工 emp 及其领导的名字 emp , <strong>如果员工没有领导, 也需要查询出来</strong> -&gt; 外连接 表结构: emp a , emp b</p>
+<figure class="highlight pgsql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs pgsql"><span class="hljs-keyword">select</span> a.name <span class="hljs-string">&#x27;员工&#x27;</span>, b.name <span class="hljs-string">&#x27;领导&#x27;</span> <span class="hljs-keyword">from</span> emp a <span class="hljs-keyword">left join</span> emp b <span class="hljs-keyword">on</span> a.managerid = b.id;<br></code></pre></td></tr></table></figure>
+
+
+</li>
+<li><p>子查询：SQL语句中嵌套SELECT语句，称为嵌套查询，又称子查询。</p>
+<figure class="highlight n1ql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs n1ql"><span class="hljs-keyword">SELECT</span> * <span class="hljs-keyword">FROM</span> t1 <span class="hljs-keyword">WHERE</span> column1 = ( <span class="hljs-keyword">SELECT</span> column1 <span class="hljs-keyword">FROM</span> t2 ) <br></code></pre></td></tr></table></figure>
+
+<ul>
+<li>标量子查询（子查询结果为单个值）eg:查询 “销售部” 的所有员工信息</li>
+</ul>
+<figure class="highlight pgsql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs pgsql"><span class="hljs-keyword">select</span> * <span class="hljs-keyword">from</span> emp <span class="hljs-keyword">where</span> dept_id = (<span class="hljs-keyword">select</span> id <span class="hljs-keyword">from</span> dept <span class="hljs-keyword">where</span> <span class="hljs-type">name</span> = <span class="hljs-string">&#x27;销售部&#x27;</span>);<br></code></pre></td></tr></table></figure>
+
+<ul>
+<li>列子查询(子查询结果为一列) eg: 查询 “销售部” 和 “市场部” 的所有员工信息</li>
+</ul>
+<figure class="highlight pgsql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs pgsql"><span class="hljs-keyword">select</span> * <span class="hljs-keyword">from</span> emp <span class="hljs-keyword">where</span> dept_id <span class="hljs-keyword">in</span> (<span class="hljs-keyword">select</span> id <span class="hljs-keyword">from</span> dept <span class="hljs-keyword">where</span> <span class="hljs-type">name</span> = <span class="hljs-string">&#x27;销售部&#x27;</span> <span class="hljs-keyword">or</span><br><span class="hljs-type">name</span> = <span class="hljs-string">&#x27;市场部&#x27;</span>);<br></code></pre></td></tr></table></figure>
+
+<ul>
+<li>行子查询(子查询结果为一行) eg:查询与 “张无忌” 的薪资及直属领导相同的员工信息 ;</li>
+</ul>
+<figure class="highlight pgsql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs pgsql"><span class="hljs-keyword">select</span> * <span class="hljs-keyword">from</span> emp <span class="hljs-keyword">where</span> (salary,managerid) = (<span class="hljs-keyword">select</span> salary, managerid <span class="hljs-keyword">from</span> emp<br><span class="hljs-keyword">where</span> <span class="hljs-type">name</span> = <span class="hljs-string">&#x27;张无忌&#x27;</span>);<br></code></pre></td></tr></table></figure>
+
+<ul>
+<li>表子查询(子查询结果为多行多列) eg: 查询与 “鹿杖客” , “宋远桥” 的职位和薪资相同的员工信息</li>
+</ul>
+<figure class="highlight n1ql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs n1ql"><span class="hljs-keyword">select</span> <span class="hljs-built_in">e</span>.*, d.* <span class="hljs-keyword">from</span> (<span class="hljs-keyword">select</span> * <span class="hljs-keyword">from</span> emp <span class="hljs-keyword">where</span> entrydate &gt; <span class="hljs-string">&#x27;2006-01-01&#x27;</span>) <span class="hljs-built_in">e</span> <span class="hljs-keyword">left</span><br><span class="hljs-keyword">join</span> dept d <span class="hljs-keyword">on</span> <span class="hljs-built_in">e</span>.dept_id = d.id ;<br></code></pre></td></tr></table></figure></li>
+</ul>
+<h2 id="事务"><a href="#事务" class="headerlink" title="事务"></a>事务</h2><h3 id="事务四大特性"><a href="#事务四大特性" class="headerlink" title="事务四大特性"></a>事务四大特性</h3><ul>
 <li>原子性（Atomicity）：事务是不可分割的最小操作单元，要么全部成功，要么全部失败。</li>
 <li>一致性（Consistency）：事务完成时，必须使所有的数据都保持一致状态。</li>
 <li>隔离性（Isolation）：数据库系统提供的隔离机制，保证事务在不受外部并发操作影响的独立 环境下运行。</li>
@@ -754,7 +826,99 @@
 <p>当我们开启多个事务，在执行上述的SQL时，我们发现行锁升级为了表锁。 导致该update语句的性能 大大降低</p>
 <p><code>InnoDB的行锁是针对索引加的锁，不是针对记录加的锁 ,并且该索引不能失效，否则会从行锁 升级为表锁 。</code></p>
 <p><strong>所以我们应该给条件创建索引，不然行锁会升级为表锁，并发性能降低</strong></p>
-<h2 id="锁"><a href="#锁" class="headerlink" title="锁"></a>锁</h2><h3 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h3><p>锁是计算机协调多个进程或线程并发访问某一资源的机制。在数据库中，除传统的计算资源（CPU、 RAM、I&#x2F;O）的争用以外，数据也是一种供许多用户共享的资源。如何保证数据并发访问的一致性、有 效性是所有数据库必须解决的一个问题，锁冲突也是影响数据库并发访问性能的一个重要因素。从这个 角度来说，锁对数据库而言显得尤其重要，也更加复杂。</p>
+<h3 id="平时写SQL时该注意什么？有什么经验可谈？"><a href="#平时写SQL时该注意什么？有什么经验可谈？" class="headerlink" title="平时写SQL时该注意什么？有什么经验可谈？"></a>平时写SQL时该注意什么？有什么经验可谈？</h3><ul>
+<li><p>统计时尽量使用count(*)</p>
+</li>
+<li><p>如果明确查找一条语句，请使用<code>limit 1</code>,因为找到一条符合条件的记录就不会继续查找了</p>
+</li>
+<li><p>避免使用select * ，用到什么字段就具体写什么字段，原因除了select * 查询所有字段会多出网络开销之外，还有更重要的一点就是select * 无法使用覆盖索引。</p>
+</li>
+<li><p>对于使用索引方面</p>
+<ul>
+<li><p>对索引字段做函数操作或者做运算操作，都不能使用上索引。<br>所以针对这一点，除了我们索引的字段不要加函数之外。</p>
+</li>
+<li><p>还要注意一些隐式转换，比如，交易日志表（tradelog），tradeid 的字段类型是 varchar(32)，字段有索引，但是当你执行 <code>select * from tradelog where tradeid=110717;</code>语句，你发现走的还是全索引扫描。这是因为它其实做了类型转换，相当于这么执行<code>mysql&gt; select * from tradelog where  CAST(tradid AS signed int) = 110717;</code>。</p>
+</li>
+<li><p>隐式字符编码转换</p>
+<p>如果两张表使用的编码集不一致，比如一个是utf8mb4，一个是utf8，那么这两个字段连接后，相当于做了一次<code>CONVERT(traideid USING utf8mb4)</code>,这样也用不了索引。其实字符集不同只是条件之一，连接过程中要求在被驱动表的索引字段上加函数操作，是直接导致对被驱动表做全表扫描的原因。</p>
+</li>
+</ul>
+</li>
+<li><p>如果设计到多表查询查询，那么首先应该确定设计哪几张表，然后分析他们之间的连接条件，最后确定查询字段。</p>
+</li>
+</ul>
+<h3 id="MySQL执行计划分析-EXPLAIN"><a href="#MySQL执行计划分析-EXPLAIN" class="headerlink" title="MySQL执行计划分析(EXPLAIN)"></a>MySQL执行计划分析(EXPLAIN)</h3><p>优化 SQL 的第一步应该是读懂 SQL 的执行计划。本篇文章，我们一起来学习下 MySQL <code>EXPLAIN</code> 执行计划相关知识。</p>
+<h4 id="什么是执行计划？"><a href="#什么是执行计划？" class="headerlink" title="什么是执行计划？"></a>什么是执行计划？</h4><p><strong>执行计划</strong> 是指一条 SQL 语句在经过 <strong>MySQL 查询优化器</strong> 的优化会后，具体的执行方式。</p>
+<p>执行计划通常用于 SQL 性能分析、优化等场景。通过 <code>EXPLAIN</code> 的结果，可以了解到如数据表的查询顺序、数据查询操作的操作类型、哪些索引可以被命中、哪些索引实际会命中、每个数据表有多少行记录被查询等信息。</p>
+<h4 id="如何获取执行计划？"><a href="#如何获取执行计划？" class="headerlink" title="如何获取执行计划？"></a>如何获取执行计划？</h4><p>MySQL 为我们提供了 <code>EXPLAIN</code> 命令，来获取执行计划的相关信息。</p>
+<p>需要注意的是，<code>EXPLAIN</code> 语句并不会真的去执行相关的语句，而是通过查询优化器对语句进行分析，找出最优的查询方案，并显示对应的信息。</p>
+<p><code>EXPLAIN</code> 执行计划支持 <code>SELECT</code>、<code>DELETE</code>、<code>INSERT</code>、<code>REPLACE</code> 以及 <code>UPDATE</code> 语句。我们一般多用于分析 <code>SELECT</code> 查询语句，使用起来非常简单，语法如下：</p>
+<figure class="highlight n1ql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs n1ql"><span class="hljs-keyword">EXPLAIN</span> + <span class="hljs-keyword">SELECT</span> 查询语句；<br></code></pre></td></tr></table></figure>
+
+<p>我们简单来看下一条查询语句的执行计划：</p>
+<figure class="highlight gherkin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs gherkin">mysql&gt; explain SELECT <span class="hljs-symbol">*</span> FROM dept_emp WHERE emp_no IN (SELECT emp_no FROM dept_emp GROUP BY emp_no HAVING COUNT(emp_no)&gt;1);<br>+----+-------------+----------+------------+-------+-----------------+---------+---------+------+--------+----------+-------------+<br>|<span class="hljs-string"> id </span>|<span class="hljs-string"> select_type </span>|<span class="hljs-string"> table    </span>|<span class="hljs-string"> partitions </span>|<span class="hljs-string"> type  </span>|<span class="hljs-string"> possible_keys   </span>|<span class="hljs-string"> key     </span>|<span class="hljs-string"> key_len </span>|<span class="hljs-string"> ref  </span>|<span class="hljs-string"> rows   </span>|<span class="hljs-string"> filtered </span>|<span class="hljs-string"> Extra       </span>|<br>+----+-------------+----------+------------+-------+-----------------+---------+---------+------+--------+----------+-------------+<br>|<span class="hljs-string">  1 </span>|<span class="hljs-string"> PRIMARY     </span>|<span class="hljs-string"> dept_emp </span>|<span class="hljs-string"> NULL       </span>|<span class="hljs-string"> ALL   </span>|<span class="hljs-string"> NULL            </span>|<span class="hljs-string"> NULL    </span>|<span class="hljs-string"> NULL    </span>|<span class="hljs-string"> NULL </span>|<span class="hljs-string"> 331143 </span>|<span class="hljs-string">   100.00 </span>|<span class="hljs-string"> Using where </span>|<br>|<span class="hljs-string">  2 </span>|<span class="hljs-string"> SUBQUERY    </span>|<span class="hljs-string"> dept_emp </span>|<span class="hljs-string"> NULL       </span>|<span class="hljs-string"> index </span>|<span class="hljs-string"> PRIMARY,dept_no </span>|<span class="hljs-string"> PRIMARY </span>|<span class="hljs-string"> 16      </span>|<span class="hljs-string"> NULL </span>|<span class="hljs-string"> 331143 </span>|<span class="hljs-string">   100.00 </span>|<span class="hljs-string"> Using index </span>|<br>+----+-------------+----------+------------+-------+-----------------+---------+---------+------+--------+----------+-------------+<br><br></code></pre></td></tr></table></figure>
+
+<p>可以看到，执行计划结果中共有 12 列，各列代表的含义总结如下表：</p>
+<p><img src="/../mysql_pic/97.png" srcset="/img/loading.gif" lazyload></p>
+<h4 id="如何分析-EXPLAIN-结果？"><a href="#如何分析-EXPLAIN-结果？" class="headerlink" title="如何分析 EXPLAIN 结果？"></a>如何分析 EXPLAIN 结果？</h4><p>为了分析 <code>EXPLAIN</code> 语句的执行结果，我们需要搞懂执行计划中的重要字段。</p>
+<h5 id="id"><a href="#id" class="headerlink" title="id"></a>id</h5><p>SELECT 标识符，是查询中 SELECT 的序号，用来标识整个查询中 SELELCT 语句的顺序。</p>
+<p>id 如果相同，从上往下依次执行。id 不同，id 值越大，执行优先级越高，如果行引用其他行的并集结果，则该值可以为 NULL.</p>
+<h5 id="select-type"><a href="#select-type" class="headerlink" title="select_type"></a>select_type</h5><p>查询的类型，主要用于区分<strong>普通查询</strong>、<strong>联合查询</strong>、<strong>子查询</strong>等复杂的查询，常见的值有：</p>
+<ul>
+<li><strong>SIMPLE</strong>：简单查询，不包含 UNION 或者子查询。</li>
+<li><strong>PRIMARY</strong>：查询中如果包含子查询或其他部分，外层的 SELECT 将被标记为 PRIMARY。</li>
+<li><strong>SUBQUERY</strong>：子查询中的第一个 SELECT。</li>
+<li><strong>UNION</strong>：在 UNION 语句中，UNION 之后出现的 SELECT。</li>
+<li><strong>DERIVED</strong>：在 FROM 中出现的子查询将被标记为 DERIVED。</li>
+<li><strong>UNION RESULT</strong>：UNION 查询的结果。</li>
+</ul>
+<h5 id="table"><a href="#table" class="headerlink" title="table"></a>table</h5><p>查询用到的表名，每行都有对应的表名，表名除了正常的表之外，也可能是以下列出的值：</p>
+<ul>
+<li><strong><code>&lt;unionM,N&gt;</code></strong> : 本行引用了 id 为 M 和 N 的行的 UNION 结果</li>
+<li><strong><code>&lt;derivedN&gt;</code></strong> : 本行引用了 id 为 N 的表所产生的的派生表结果。派生表有可能产生自 FROM 语句中的子查询。 </li>
+<li><strong><code>&lt;subqueryN&gt;</code></strong> : 本行引用了 id 为 N 的表所产生的的物化子查询结果。</li>
+</ul>
+<h5 id="type（重要）"><a href="#type（重要）" class="headerlink" title="type（重要）"></a>type（重要）</h5><p><strong>查询执行的类型</strong>，描述了查询是如何执行的。所有值的顺序从最优到最差排序为：system &gt; const &gt; eq_ref &gt; ref &gt; fulltext &gt; ref_or_null &gt; index_merge &gt; unique_subquery &gt; index_subquery &gt; range &gt; index &gt; ALL</p>
+<p>常见的几种类型具体含义如下：</p>
+<ul>
+<li><p><strong>system</strong>：如果表使用的引擎对于表行数统计是精确的（如：MyISAM），且表中只有一行记录的情况下，访问方法是 system ，是 const 的一种特例。</p>
+</li>
+<li><p><strong>const</strong>：表中最多只有一行匹配的记录，一次查询就可以找到，常用于使用主键或唯一索引的所有字段作为查询条件。</p>
+</li>
+<li><p><strong>eq_ref</strong>：当连表查询时，前一张表的行在当前这张表中只有一行与之对应。是除了 system 与 const 之外最好的 join 方式，常用于使用主键或唯一索引的所有字段作为连表条件。</p>
+</li>
+<li><p><strong>ref</strong>：使用普通索引作为查询条件，查询结果可能找到多个符合条件的行。</p>
+</li>
+<li><p><strong>index_merge</strong>：当查询条件使用了多个索引时，表示开启了 Index Merge 优化，此时执行计划中的 key 列列出了使用到的索引。</p>
+</li>
+<li><p><strong>range</strong>：对索引列进行范围查询，执行计划中的 key 列表示哪个索引被使用了。</p>
+</li>
+<li><p><strong>index</strong>：查询遍历了整棵索引树，与 ALL 类似，只不过扫描的是索引，而索引一般在内存中，速度更快。</p>
+</li>
+<li><p><strong>ALL</strong>：全表扫描。</p>
+</li>
+</ul>
+<h4 id="possible-keys"><a href="#possible-keys" class="headerlink" title="possible_keys"></a>possible_keys</h4><p>possible_keys 列表示 MySQL 执行查询时可能用到的索引。如果这一列为 NULL ，则表示没有可能用到的索引；这种情况下，需要检查 WHERE 语句中所使用的的列，看是否可以通过给这些列中某个或多个添加索引的方法来提高查询性能.</p>
+<h4 id="key（重要）"><a href="#key（重要）" class="headerlink" title="key（重要）"></a>key（重要）</h4><p>key 列表示 MySQL 实际使用到的索引。如果为 NULL，则表示未用到索引。</p>
+<h4 id="key-len"><a href="#key-len" class="headerlink" title="key_len"></a>key_len</h4><p>key_len 列表示 MySQL 实际使用的索引的最大长度；当使用到联合索引时，有可能是多个列的长度和。在满足需求的前提下越短越好。如果 key 列显示 NULL ，则 key_len 列也显示 NULL 。</p>
+<h4 id="rows"><a href="#rows" class="headerlink" title="rows"></a>rows</h4><p>rows 列表示根据表统计信息及选用情况，大致估算出找到所需的记录或所需读取的行数，数值越小越好。</p>
+<h4 id="Extra（重要）"><a href="#Extra（重要）" class="headerlink" title="Extra（重要）"></a>Extra（重要）</h4><p>这列包含了 MySQL 解析查询的额外信息，通过这些信息，可以更准确的理解 MySQL 到底是如何执行查询的。常见的值如下：</p>
+<ul>
+<li><p><strong>Using filesort</strong>：在排序时使用了外部的索引排序，没有用到表内索引进行排序。</p>
+</li>
+<li><p><strong>Using temporary</strong>：MySQL 需要创建临时表来存储查询的结果，常见于 ORDER BY 和 GROUP BY</p>
+</li>
+<li><p><strong>Using index</strong>：表明查询使用了覆盖索引，不用回表，查询效率非常高。</p>
+</li>
+<li><p><strong>Using index condition</strong>：表示查询优化器选择使用了索引条件下推这个特性。</p>
+</li>
+<li><p><strong>Using where</strong>：表明查询使用了 WHERE 子句进行条件过滤。一般在没有使用到索引的时候会出现。</p>
+</li>
+<li><p>**Using join buffer (Block Nested Loop)**：连表查询的方式，表示当被驱动表的没有使用索引的时候，MySQL 会先将驱动表读出来放到 join buffer 中，再遍历被驱动表与驱动表进行查询。</p>
+</li>
+</ul>
+<p>这里提醒下，当 Extra 列包含 Using filesort 或 Using temporary 时，MySQL 的性能可能会存在问题，需要尽可能避免。</p>
+<h2 id="锁"><a href="#锁" class="headerlink" title="锁"></a>锁</h2><h3 id="概述-1"><a href="#概述-1" class="headerlink" title="概述"></a>概述</h3><p>锁是计算机协调多个进程或线程并发访问某一资源的机制。在数据库中，除传统的计算资源（CPU、 RAM、I&#x2F;O）的争用以外，数据也是一种供许多用户共享的资源。如何保证数据并发访问的一致性、有 效性是所有数据库必须解决的一个问题，锁冲突也是影响数据库并发访问性能的一个重要因素。从这个 角度来说，锁对数据库而言显得尤其重要，也更加复杂。</p>
 <p>MySQL中的锁，按照锁的粒度分，分为以下三类：</p>
 <ul>
 <li>全局锁：锁定数据库中的所有表。</li>
@@ -904,7 +1068,7 @@
 <p><img src="/../mysql_pic/34.png" srcset="/img/loading.gif" lazyload></p>
 <p>当给id为5的数据进行修改操作时，表中没有id为5的数据，那么会给id为3与8之间的间隙加间隙锁，当右侧客户端插入一条id为7的数据时，操作被阻塞。</p>
 <ul>
-<li>索引上的等值查询(<strong>非唯一普通索引</strong>)，向右遍历时最后一个值不满足查询需求时，next-key lock 退化为间隙锁(间隙锁唯一的目的是防止其他事务插入间隙，间隙锁可以共存，一个事务采用的间隙锁不会阻止另一个事务在同一间隙上采用间隙锁)。</li>
+<li>索引上的等值查询(<strong>非唯一普通索引</strong>)，向右遍历时最后一个值不满足查询需求时，next-key lock 退化为间隙锁(间隙锁唯一的目的是防止其他事务插入间隙，<strong>间隙锁可以共存</strong>，一个事务采用的间隙锁不会阻止另一个事务在同一间隙上采用间隙锁)。</li>
 </ul>
 <p><img src="/../mysql_pic/35.png" srcset="/img/loading.gif" lazyload></p>
 <p>我们知道InnoDB的B+树索引，叶子节点是有序的双向链表。 假如，我们要根据这个二级索引查询值 为18的数据，并加上共享锁，我们是只锁定18这一行就可以了吗？ 并不是，因为是非唯一索引，这个 结构中可能有多个18的存在(<strong>非唯一普通索引</strong>)，所以，在加锁时会继续往后找，找到一个不满足条件的值（当前案例中也 就是29）。此时会对18加临键锁，并对29之前的间隙加锁。</p>
@@ -1055,7 +1219,7 @@
 <h3 id="MVCC"><a href="#MVCC" class="headerlink" title="MVCC"></a>MVCC</h3><h4 id="基本概念"><a href="#基本概念" class="headerlink" title="基本概念"></a>基本概念</h4><ul>
 <li>当前读</li>
 </ul>
-<p>读取的是记录的最新版本，读取时还要保证其他并发事务不能修改当前记录，会对读取的记录进行加 锁。对于我们日常的操作，如：**select … lock in share mode(共享锁)，select … for update、update、insert、delete(排他锁)都是一种当前读 **。</p>
+<p>读取的是记录的最新版本，读取时还要保证其他并发事务不能修改当前记录，会对读取的记录进行加 锁。对于我们日常的操作，如：<strong>select … lock in share mode(共享锁)，select … for update、update、insert、delete(排他锁)都是一种当前读</strong>。</p>
 <p><img src="/../mysql_pic/41.png" srcset="/img/loading.gif" lazyload></p>
 <p>事务1首先查询了一次数据，事务2对表进行了一次修改，事务1再查询，但是数据还是和第一次一样，因为当前的隔离级别是默认的可重复读，第一次和第二次的结果是一样的。</p>
 <p><img src="/../mysql_pic/42.png" srcset="/img/loading.gif" lazyload></p>
