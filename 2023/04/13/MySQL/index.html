@@ -125,7 +125,7 @@
 <meta property="og:image" content="http://example.com/mysql_pic/59.png">
 <meta property="og:image" content="http://example.com/mysql_pic/60.png">
 <meta property="article:published_time" content="2023-04-13T02:56:39.937Z">
-<meta property="article:modified_time" content="2023-06-03T14:16:29.831Z">
+<meta property="article:modified_time" content="2023-06-06T10:51:34.209Z">
 <meta property="article:author" content="彭">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:image" content="http://example.com/mysql_pic/98.png">
@@ -332,7 +332,7 @@
         
         
         
-          247 mins
+          250 mins
         
       </span>
     
@@ -826,6 +826,12 @@
 <p>当我们开启多个事务，在执行上述的SQL时，我们发现行锁升级为了表锁。 导致该update语句的性能 大大降低</p>
 <p><code>InnoDB的行锁是针对索引加的锁，不是针对记录加的锁 ,并且该索引不能失效，否则会从行锁 升级为表锁 。</code></p>
 <p><strong>所以我们应该给条件创建索引，不然行锁会升级为表锁，并发性能降低</strong></p>
+<h3 id="limit优化"><a href="#limit优化" class="headerlink" title="limit优化"></a>limit优化</h3><p>在数据量比较大时，如果进行limit分页查询，在查询时，越往后，分页查询效率越低。</p>
+<p>越往后，分页查询效率越低，这就是分页查询的问题所在。</p>
+<p>因为，当在进行分页查询时，如果执行 limit 2000000,10 ，此时需要MySQL排序前2000010 记 录，仅仅返回 2000000 - 2000010 的记录，其他记录丢弃，查询排序的代价非常大 。</p>
+<p>优化思路: <strong>一般分页查询时，通过创建 覆盖索引 能够比较好地提高性能，可以通过覆盖索引加子查 询形式进行优化</strong>。</p>
+<figure class="highlight n1ql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs n1ql"><span class="hljs-keyword">explain</span> <span class="hljs-keyword">select</span> * <span class="hljs-keyword">from</span> tb_sku t , (<span class="hljs-keyword">select</span> id <span class="hljs-keyword">from</span> tb_sku <span class="hljs-keyword">order</span> <span class="hljs-keyword">by</span> id<br><span class="hljs-keyword">limit</span> <span class="hljs-number">2000000</span>,<span class="hljs-number">10</span>) a <span class="hljs-keyword">where</span> t.id = a.id;<br></code></pre></td></tr></table></figure>
+
 <h3 id="平时写SQL时该注意什么？有什么经验可谈？"><a href="#平时写SQL时该注意什么？有什么经验可谈？" class="headerlink" title="平时写SQL时该注意什么？有什么经验可谈？"></a>平时写SQL时该注意什么？有什么经验可谈？</h3><ul>
 <li><p>统计时尽量使用count(*)</p>
 </li>
@@ -1202,6 +1208,7 @@
 <p><img src="/../mysql_pic/14.png" srcset="/img/loading.gif" lazyload></p>
 <h4 id="redo-log"><a href="#redo-log" class="headerlink" title="redo log"></a>redo log</h4><p>redo log是如何保证事务的持久性的呢？</p>
 <p>重做日志，记录的是事务提交时数据页的物理修改，是用来实现事务的持久性。</p>
+<p>redo log 是物理日志，记录了某个数据页做了什么修改，比如<strong>对 XXX 表空间中的 YYY 数据页 ZZZ 偏移量的地方做了AAA 更新</strong>，每当执行一个事务就会产生这样的一条或者多条物理日志。</p>
 <p>该日志文件由两部分组成：重做日志缓冲（redo log buffer）以及重做日志文件（redo log file）,前者是在内存中，后者在磁盘中。当事务提交之后会把所有修改信息都存到该日志文件中, 用 于在刷新脏页到磁盘,发生错误时, 进行数据恢复使用。</p>
 <p>脏页：当客户端对buffer pool进行DML时，没有找到相关数据页，buffer pool从磁盘读取相关数据页到buffer pool，再对数据进行修改，此时buffer pool里的数据页和磁盘的数据不一致，这就是脏页。</p>
 <p>如果没有redo log，可能会存在什么问题的？ 我们一起来分析一下。</p>
