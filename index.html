@@ -224,15 +224,15 @@
     <article class="col-12 col-md-12 mx-auto index-info">
       <h1 class="index-header">
         
-        <a href="/2023/06/05/%E5%A6%82%E4%BD%95%E5%88%A9%E7%94%A8MySQL%E5%AE%9E%E7%8E%B0%E4%B8%80%E4%B8%AA%E5%88%86%E5%B8%83%E5%BC%8F%E9%94%81/" target="_self">
-          如何利用MySQL实现一个分布式锁
+        <a href="/2023/06/12/CAS/" target="_self">
+          CAS
         </a>
       </h1>
 
       
-      <a class="index-excerpt index-excerpt__noimg" href="/2023/06/05/%E5%A6%82%E4%BD%95%E5%88%A9%E7%94%A8MySQL%E5%AE%9E%E7%8E%B0%E4%B8%80%E4%B8%AA%E5%88%86%E5%B8%83%E5%BC%8F%E9%94%81/" target="_self">
+      <a class="index-excerpt index-excerpt__noimg" href="/2023/06/12/CAS/" target="_self">
         <div>
-          目标：利用MySQL实现一个分布式锁分布式锁的功能 分布式锁使用者位于不同的机器中，锁获取成功之后，才可以对共享资源进行操作。 锁具有重入的功能：即一个使用者可以多次获取某个锁。 获取锁有超时的功能：即在指定的时间内去尝试获取锁，超过了超时时间，如果还未获取成功，则返回获取失败。 能够自动容错，比如：A机器获取锁lock1之后，在释放锁lock1之前，A机器挂了，导致锁lock1未释放，结果会lo
+          CAS乐观锁CAS 全称为 Compare And Swap 翻译过来就是比较并且交换  Synchornized 是悲观锁，线程一旦得到锁，其他的线程就只能挂起了 CAS 的操作则是乐观锁，他认为自己一定会拿到锁，所以他会一直尝试，直到成功拿到为止；  CAS 机制在看到 Compare 和 Swap 后，我们就应该知道，CAS 里面至少包含了两个动作，分别是比较和交换，在现在的 CPU 中，为
         </div>
       </a>
 
@@ -240,8 +240,8 @@
         
           <div class="post-meta mr-3">
             <i class="iconfont icon-date"></i>
-            <time datetime="2023-06-05 13:22" pubdate>
-              2023-06-05
+            <time datetime="2023-06-12 22:10" pubdate>
+              2023-06-12
             </time>
           </div>
         
