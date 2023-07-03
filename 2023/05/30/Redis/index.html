@@ -36,8 +36,17 @@
 <meta property="og:image" content="http://example.com/redis_pic/10.png">
 <meta property="og:image" content="http://example.com/redis_pic/12.png">
 <meta property="og:image" content="http://example.com/redis_pic/13.png">
+<meta property="og:image" content="http://example.com/redis_pic/14.png">
+<meta property="og:image" content="http://example.com/redis_pic/15.png">
+<meta property="og:image" content="http://example.com/redis_pic/16.png">
+<meta property="og:image" content="http://example.com/redis_pic/17.png">
+<meta property="og:image" content="http://example.com/redis_pic/18.png">
+<meta property="og:image" content="http://example.com/redis_pic/19.png">
+<meta property="og:image" content="http://example.com/redis_pic/20.png">
+<meta property="og:image" content="http://example.com/redis_pic/21.png">
+<meta property="og:image" content="c:\Users\86185\AppData\Roaming\Typora\typora-user-images\image-20230703223637525.png">
 <meta property="article:published_time" content="2023-05-30T01:11:56.144Z">
-<meta property="article:modified_time" content="2023-06-05T14:55:33.464Z">
+<meta property="article:modified_time" content="2023-07-03T14:37:01.011Z">
 <meta property="article:author" content="彭">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:image" content="http://example.com/redis_pic/1.png">
@@ -233,7 +242,7 @@
       <span class="post-meta mr-2">
         <i class="iconfont icon-chart"></i>
         
-          8.2k words
+          9.1k words
         
       </span>
     
@@ -244,7 +253,7 @@
         
         
         
-          69 mins
+          76 mins
         
       </span>
     
@@ -378,6 +387,10 @@
 <p><img src="/../redis_pic/11.png" srcset="/img/loading.gif" lazyload></p>
 <p>这样的好处在于，重启 Redis 加载数据的时候，由于前半部分是 RDB 内容，这样<strong>加载的时候速度会很快</strong>。</p>
 <p>加载完 RDB 的内容后，才会加载后半部分的 AOF 内容，这里的内容是 Redis 后台子进程重写 AOF 期间，主线程处理的操作命令，可以使得<strong>数据更少的丢失</strong>。</p>
+<h3 id="纯缓存模式"><a href="#纯缓存模式" class="headerlink" title="纯缓存模式"></a>纯缓存模式</h3><p>由于开启了持久化，会对redis性能造成一定影响</p>
+<p>同时关闭RDB+AOF</p>
+<p><strong>关闭RDB</strong>：修改触发条件 save “” (禁用RDB持久化模式下，我们仍然可以使用命令save、bgsave生成RDB文件)</p>
+<p><strong>关闭AOF</strong>: 修改配置文件 appendonly no(禁用AOF持久化模式下，我们仍然可以使用bgrewriteaof生成AOF文件)</p>
 <h2 id="分布式锁-redission"><a href="#分布式锁-redission" class="headerlink" title="分布式锁-redission"></a>分布式锁-redission</h2><h3 id="分布式锁-redission功能介绍"><a href="#分布式锁-redission功能介绍" class="headerlink" title="分布式锁-redission功能介绍"></a>分布式锁-redission功能介绍</h3><p>基于setnx实现的分布式锁存在下面的问题：</p>
 <p><strong>重入问题</strong>：重入问题是指 获得锁的线程可以再次进入到相同的锁的代码块中，可重入锁的意义在于防止死锁，比如HashTable这样的代码中，他的方法都是使用synchronized修饰的，假如他在一个方法内，调用另一个方法，那么此时如果是不可重入的，不就死锁了吗？所以可重入锁他的主要意义是防止死锁，我们的synchronized和Lock锁都是可重入的。</p>
 <p><strong>不可重试</strong>：是指目前的分布式只能尝试一次，我们认为合理的情况是：当线程在获得锁失败后，他应该能再次尝试获得锁。</p>
@@ -425,7 +438,8 @@
 <p>那么大家可以想一想，假设我们的线程出现了宕机他还会续约吗？当然不会，因为没有人再去调用renewExpiration这个方法，所以等到时间之后自然就释放了。</p>
 <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">private</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">renewExpiration</span><span class="hljs-params">()</span> &#123;<br>    <span class="hljs-type">ExpirationEntry</span> <span class="hljs-variable">ee</span> <span class="hljs-operator">=</span> EXPIRATION_RENEWAL_MAP.get(getEntryName());<br>    <span class="hljs-keyword">if</span> (ee == <span class="hljs-literal">null</span>) &#123;<br>        <span class="hljs-keyword">return</span>;<br>    &#125;<br>    <br>    <span class="hljs-type">Timeout</span> <span class="hljs-variable">task</span> <span class="hljs-operator">=</span> commandExecutor.getConnectionManager().newTimeout(<span class="hljs-keyword">new</span> <span class="hljs-title class_">TimerTask</span>() &#123;<br>        <span class="hljs-meta">@Override</span><br>        <span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">run</span><span class="hljs-params">(Timeout timeout)</span> <span class="hljs-keyword">throws</span> Exception &#123;<br>            <span class="hljs-type">ExpirationEntry</span> <span class="hljs-variable">ent</span> <span class="hljs-operator">=</span> EXPIRATION_RENEWAL_MAP.get(getEntryName());<br>            <span class="hljs-keyword">if</span> (ent == <span class="hljs-literal">null</span>) &#123;<br>                <span class="hljs-keyword">return</span>;<br>            &#125;<br>            <span class="hljs-type">Long</span> <span class="hljs-variable">threadId</span> <span class="hljs-operator">=</span> ent.getFirstThreadId();<br>            <span class="hljs-keyword">if</span> (threadId == <span class="hljs-literal">null</span>) &#123;<br>                <span class="hljs-keyword">return</span>;<br>            &#125;<br>            <br>            RFuture&lt;Boolean&gt; future = renewExpirationAsync(threadId);<br>            future.onComplete((res, e) -&gt; &#123;<br>                <span class="hljs-keyword">if</span> (e != <span class="hljs-literal">null</span>) &#123;<br>                    log.error(<span class="hljs-string">&quot;Can&#x27;t update lock &quot;</span> + getName() + <span class="hljs-string">&quot; expiration&quot;</span>, e);<br>                    <span class="hljs-keyword">return</span>;<br>                &#125;<br>                <br>                <span class="hljs-keyword">if</span> (res) &#123;<br>                    <span class="hljs-comment">// reschedule itself</span><br>                    renewExpiration();<br>                &#125;<br>            &#125;);<br>        &#125;<br>    &#125;, internalLockLeaseTime / <span class="hljs-number">3</span>, TimeUnit.MILLISECONDS);<br>    <br>    ee.setTimeout(task);<br>&#125;<br></code></pre></td></tr></table></figure>
 
-<h2 id="Redis事务"><a href="#Redis事务" class="headerlink" title="Redis事务"></a>Redis事务</h2><p>可以一次执行多个命令，本质是一组命令的集合，一个事务中的所有命令都会序列化，按顺序地串行化执行而不会被其他命令插入，不许加塞</p>
+<h2 id="Redis事务"><a href="#Redis事务" class="headerlink" title="Redis事务"></a>Redis事务</h2><p>可以一次执行多个命令，本质是一组命令的集合，一个事务中的所有命令都会序列化，按顺序地串行化执行而<strong>不会被其他命令插入</strong>，<strong>不许加塞</strong></p>
+<p>能干吗？<strong>在一个队列中</strong>、一次性、顺序性、排他性的执行一系列命令</p>
 <p>redis事务 VS MySQL事务</p>
 <table>
 <thead>
@@ -447,6 +461,31 @@
 <td>Redis会保证一个事务内的命令依次执行，而不会被其它命令插入</td>
 </tr>
 </tbody></table>
+<h3 id="事务有关的常用命令"><a href="#事务有关的常用命令" class="headerlink" title="事务有关的常用命令"></a>事务有关的常用命令</h3><p><img src="/../redis_pic/14.png" srcset="/img/loading.gif" lazyload></p>
+<p>翻译：discard —- 丢弃</p>
+<h3 id="case1-正常执行"><a href="#case1-正常执行" class="headerlink" title="case1-正常执行"></a>case1-正常执行</h3><p><img src="/../redis_pic/15.png" srcset="/img/loading.gif" lazyload></p>
+<p>multi、exec</p>
+<p>multi开启事务，然后输入了4条指令，注意，这时候并没有执行，看命令下方，<strong>出现了QUEUED</strong>，这就是上面说的<strong>队列</strong>（<strong>在一个队列中</strong>、一次性、顺序性、排他性的执行一系列命令），它先将命令放在一个队列中，然后当调用exec的时候<strong>一次性的、顺序的</strong>执行完队列中的命令，并且不许被插入(排他)</p>
+<h3 id="case2-放弃事务"><a href="#case2-放弃事务" class="headerlink" title="case2-放弃事务"></a>case2-放弃事务</h3><p>multi、discard</p>
+<p><img src="/../redis_pic/16.png" srcset="/img/loading.gif" lazyload></p>
+<h3 id="case3-全体连坐"><a href="#case3-全体连坐" class="headerlink" title="case3-全体连坐"></a>case3-全体连坐</h3><p><img src="/../redis_pic/17.png" srcset="/img/loading.gif" lazyload></p>
+<h3 id="case4-冤头债主"><a href="#case4-冤头债主" class="headerlink" title="case4-冤头债主"></a>case4-冤头债主</h3><p><img src="/../redis_pic/18.png" srcset="/img/loading.gif" lazyload></p>
+<h3 id="case5-watch监控"><a href="#case5-watch监控" class="headerlink" title="case5-watch监控"></a>case5-watch监控</h3><p>Redis使用Watch来提供<strong>乐观锁定</strong>，类似于CAS(Check-and-Set)</p>
+<p>复习：</p>
+<p><strong>悲观锁(Pessimistic Lock)</strong>, 顾名思义，就是很悲观，每次去拿数据的时候都认为别人会修改，所以每次在拿数据的时候都会上锁，这样别人想拿这个数据就会block直到它拿到锁。</p>
+<p><strong>乐观锁(Optimistic Lock)</strong>, 顾名思义，就是很乐观，每次去拿数据的时候都认为别人不会修改，所以不会上锁，但是在更新的时候会判断一下在此期间别人有没有去更新这个数据。</p>
+<p><strong>乐观锁策略</strong>:提交版本必须  大于  记录当前版本才能执行更新</p>
+<p>watch：初始化k1和balance两个key，先监控再开启multi，保证两key变动在同一个失误内</p>
+<p><strong>正常情况：</strong></p>
+<p><img src="/../redis_pic/19.png" srcset="/img/loading.gif" lazyload></p>
+<p><strong>有加塞篡改：</strong></p>
+<p><strong>watch命令是一种乐观锁的实现，Redis在修改的时候会检测数据是否被更改，如果更改了，则整个执行失败</strong></p>
+<p><strong>第一个窗口蓝色框第5步执行结果返回为空，也就是相当于是失败，笔记见最下面官网说明</strong></p>
+<p><img src="/../redis_pic/20.png" srcset="/img/loading.gif" lazyload></p>
+<p><img src="/../redis_pic/21.png" srcset="/img/loading.gif" lazyload></p>
+<hr>
+<p>总结：</p>
+<p><img src="C:\Users\86185\AppData\Roaming\Typora\typora-user-images\image-20230703223637525.png" srcset="/img/loading.gif" lazyload alt="image-20230703223637525"></p>
 
                 
               </div>
