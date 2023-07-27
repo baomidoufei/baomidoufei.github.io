@@ -16,24 +16,21 @@
   <meta name="author" content="彭">
   <meta name="keywords" content="">
   
-    <meta name="description" content="CAS概述CAS是JDK提供的非阻塞原子性操作，它通过硬件保证了比较-更新的原子性。 它是非阻塞的且自身具有原子性，也就是说这玩意效率更高且通过硬件保证，说明这玩意更可靠。 CAS是一条CPU的原子指令(cmpxchg指令），不会造成所谓的数据不一致问题，Unsafe提供的CAS方法（如compareAndSwapXXX）底层实现即为CPU指令cmpxchg。 执行cmpxchg指令的时候，会判断">
+    <meta name="description" content="UnsafeUnsafe 对象提供了非常底层的，操作内存、线程的方法，Unsafe 对象不能直接调用，只能通过反射获得 1234567891011121314151617public class UnsafeAccessor &amp;#123; 	static Unsafe unsafe; 	 	static &amp;#123; 		try &amp;#123;  			Field theUnsafe &#x3D; Unsaf">
 <meta property="og:type" content="article">
-<meta property="og:title" content="CAS">
-<meta property="og:url" content="http://example.com/2023/06/12/CAS/index.html">
+<meta property="og:title" content="PJF">
+<meta property="og:url" content="http://example.com/2023/07/25/UnSafe/index.html">
 <meta property="og:site_name" content="PJF">
-<meta property="og:description" content="CAS概述CAS是JDK提供的非阻塞原子性操作，它通过硬件保证了比较-更新的原子性。 它是非阻塞的且自身具有原子性，也就是说这玩意效率更高且通过硬件保证，说明这玩意更可靠。 CAS是一条CPU的原子指令(cmpxchg指令），不会造成所谓的数据不一致问题，Unsafe提供的CAS方法（如compareAndSwapXXX）底层实现即为CPU指令cmpxchg。 执行cmpxchg指令的时候，会判断">
+<meta property="og:description" content="UnsafeUnsafe 对象提供了非常底层的，操作内存、线程的方法，Unsafe 对象不能直接调用，只能通过反射获得 1234567891011121314151617public class UnsafeAccessor &amp;#123; 	static Unsafe unsafe; 	 	static &amp;#123; 		try &amp;#123;  			Field theUnsafe &#x3D; Unsaf">
 <meta property="og:locale" content="en_US">
-<meta property="og:image" content="http://example.com/cas_pic/1.png">
-<meta property="og:image" content="http://example.com/cas_pic/2.png">
-<meta property="article:published_time" content="2023-06-12T14:10:28.559Z">
-<meta property="article:modified_time" content="2023-07-27T15:36:14.443Z">
+<meta property="article:published_time" content="2023-07-25T15:06:08.248Z">
+<meta property="article:modified_time" content="2023-07-25T15:20:19.308Z">
 <meta property="article:author" content="彭">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image" content="http://example.com/cas_pic/1.png">
   
   
   
-  <title>CAS - PJF</title>
+  <title>PJF</title>
 
   <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
 
@@ -199,7 +196,7 @@
       <div class="banner-text text-center fade-in-up">
         <div class="h2">
           
-            <span id="subtitle" data-typed-text="CAS"></span>
+            <span id="subtitle" data-typed-text=""></span>
           
         </div>
 
@@ -210,8 +207,8 @@
     
       <span class="post-meta">
         <i class="iconfont icon-date-fill" aria-hidden="true"></i>
-        <time datetime="2023-06-12 22:10" pubdate>
-          June 12, 2023 pm
+        <time datetime="2023-07-25 23:06" pubdate>
+          July 25, 2023 pm
         </time>
       </span>
     
@@ -222,7 +219,7 @@
       <span class="post-meta mr-2">
         <i class="iconfont icon-chart"></i>
         
-          1.6k words
+          1.1k words
         
       </span>
     
@@ -233,7 +230,7 @@
         
         
         
-          14 mins
+          9 mins
         
       </span>
     
@@ -271,41 +268,20 @@
         <div id="board">
           <article class="post-content mx-auto">
             <!-- SEO header -->
-            <h1 style="display: none">CAS</h1>
+            <h1 style="display: none"></h1>
             
             
               <div class="markdown-body">
                 
-                <h2 id="CAS概述"><a href="#CAS概述" class="headerlink" title="CAS概述"></a>CAS概述</h2><p>CAS是JDK提供的<strong>非阻塞原子性</strong>操作，它通过<strong>硬件</strong>保证了比较-更新的原子性。</p>
-<p>它是非阻塞的且自身具有原子性，也就是说这玩意效率更高且通过硬件保证，说明这玩意更可靠。</p>
-<p>CAS是一条CPU的原子指令(cmpxchg指令），不会造成所谓的数据不一致问题，<strong>Unsafe</strong>提供的CAS方法（如compareAndSwapXXX）底层实现即为CPU指令cmpxchg。</p>
-<p>执行cmpxchg指令的时候，会判断当前系统是否为多核系统(一般都是多核系统)，如果是就<strong>给总线加锁</strong>，只有一个线程会对总线加锁成功，加锁成功之后会执行cas操作，<strong>也就是说CAS的原子性实际上是CPU实现独占的</strong>，比起用synchronized重量级锁，这里的排他时间要短很多，所以在多线程情况下性能会比较好。</p>
-<h3 id="CAS乐观锁"><a href="#CAS乐观锁" class="headerlink" title="CAS乐观锁"></a>CAS乐观锁</h3><p>CAS 全称为 <code>Compare And Swap</code> 翻译过来就是<code>比较并且交换</code></p>
-<ul>
-<li>Synchornized 是悲观锁，线程一旦得到锁，其他的线程就只能挂起了</li>
-<li>CAS 的操作则是乐观锁，他认为自己一定会拿到锁，所以他会一直尝试，直到成功拿到为止；</li>
-</ul>
-<h3 id="CAS-机制"><a href="#CAS-机制" class="headerlink" title="CAS 机制"></a>CAS 机制</h3><p>在看到 Compare 和 Swap 后，我们就应该知道，CAS 里面至少包含了两个动作，分别是比较和交换，在现在的 CPU 中，为这两个动作专门提供了一个指令，就是<code>CAH</code> 指令，<strong>由 CPU 来保证</strong>这两个操作一定是原子的，也就是说比较和交换这两个操作只能是<code>要么全部完成，要么全部没有完成</code></p>
-<h3 id="Java中CAS实现"><a href="#Java中CAS实现" class="headerlink" title="Java中CAS实现"></a>Java中CAS实现</h3><p>来看一个方法compareAndSet</p>
-<p><img src="/../cas_pic/1.png" srcset="/img/loading.gif" lazyload></p>
-<p>点开方发现是一个Unsafe类的compareAndSwapInt方法</p>
-<p>参数：(当前要操作的对象，要操作对象中属性地址的偏移量，需要修改数据的期望值，需要修改的新值)</p>
-<p>Java中一般是这三个方法</p>
-<p><img src="/../cas_pic/2.png" srcset="/img/loading.gif" lazyload></p>
-<h3 id="Unsafe"><a href="#Unsafe" class="headerlink" title="Unsafe"></a>Unsafe</h3><p>Unsafe是CAS的核心类，由于Java方法无法直接访问底层系统，需要通过本地〈native)方法来访问，Unsafe相当于一个后门，基于该类可以直接操作特定内存的数据。<strong>Unsafe类存在于sun.misc包中</strong>，其内部方法操作可以像c的<strong>指针</strong>一样直接操作内存，因为Java中CAS操作的执行依赖于Unsafe类的方法。</p>
-<p>再次强调！由于CAS是一种系统原语，原语属于操作系统用于范畴，是由若干条指令组成的，用于完成某个功能的一个过程，并且原语的执行必须是连续的，在执行的过程中不允许被中断，也就是说<strong>CAS是一条CPU的原子指令</strong>，不会造成所谓的数据不一致问题。</p>
-<p>CAS核心思想：<strong>比较要更新变量的值V和要预期值E，相等才会将V的值设为新值N，如果不相等自选再来</strong></p>
-<h3 id="AtomicReference"><a href="#AtomicReference" class="headerlink" title="AtomicReference"></a>AtomicReference</h3><p>我们看了AtomicInteger、AtomicLong、AtomicBoolean等等方法，那能不能所以类型都有原子类呢？当然可以——AtomicReference！</p>
-<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs xml">Class AtomicReference<span class="hljs-tag">&lt;<span class="hljs-name">V</span>&gt;</span><br></code></pre></td></tr></table></figure>
+                <h2 id="Unsafe"><a href="#Unsafe" class="headerlink" title="Unsafe"></a>Unsafe</h2><p>Unsafe 对象提供了非常底层的，操作内存、线程的方法，Unsafe 对象不能直接调用，只能通过反射获得</p>
+<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><code class="hljs csharp"><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title">UnsafeAccessor</span> &#123;<br> 	<span class="hljs-keyword">static</span> Unsafe <span class="hljs-keyword">unsafe</span>;<br> 	<br> 	<span class="hljs-keyword">static</span> &#123;<br> 		<span class="hljs-keyword">try</span> &#123; <br> 			Field theUnsafe = Unsafe.<span class="hljs-keyword">class</span>.getDeclaredField(<span class="hljs-string">&quot;theUnsafe&quot;</span>);<br> 			theUnsafe.setAccessible(<span class="hljs-literal">true</span>);<br> 			<span class="hljs-keyword">unsafe</span> = (Unsafe) theUnsafe.<span class="hljs-keyword">get</span>(<span class="hljs-literal">null</span>);<br> 		&#125; <span class="hljs-keyword">catch</span> (NoSuchFieldException | IllegalAccessException e) &#123;<br> 			<span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> Error(e);<br> 		&#125;<br> 	&#125;<br> 	<span class="hljs-function"><span class="hljs-keyword">static</span> Unsafe <span class="hljs-title">getUnsafe</span>()</span> &#123;<br> 		<span class="hljs-keyword">return</span> <span class="hljs-keyword">unsafe</span>;<br> 	&#125;<br>&#125;<br><br></code></pre></td></tr></table></figure>
 
-<p>看到V就知道可以装任意类型进去了</p>
-<p>定义一个User类</p>
-<figure class="highlight less"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs less"><span class="hljs-variable">@Getter</span><br><span class="hljs-variable">@Setter</span><br><span class="hljs-variable">@ToString</span><br><span class="hljs-variable">@Builder</span><br>class User&#123;<br>    <span class="hljs-selector-tag">private</span> <span class="hljs-selector-tag">String</span> <span class="hljs-selector-tag">name</span>;<br>    <span class="hljs-selector-tag">private</span> <span class="hljs-selector-tag">Integer</span> <span class="hljs-selector-tag">age</span>;<br>&#125;<br></code></pre></td></tr></table></figure>
+<h3 id="Unsafe-CAS-操作"><a href="#Unsafe-CAS-操作" class="headerlink" title="Unsafe CAS 操作"></a>Unsafe CAS 操作</h3><figure class="highlight fortran"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs fortran">@<span class="hljs-keyword">Data</span><br><span class="hljs-keyword">class</span> Student &#123;<br> 	<span class="hljs-keyword">volatile</span> <span class="hljs-built_in">int</span> id;<br> 	<span class="hljs-keyword">volatile</span> String <span class="hljs-keyword">name</span>;<br>&#125;<br></code></pre></td></tr></table></figure>
 
-<figure class="highlight pgsql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs pgsql"><span class="hljs-built_in">public</span> static <span class="hljs-type">void</span> main(String[] args) &#123;<br>        AtomicReference&lt;<span class="hljs-keyword">User</span>&gt; atomicReference = <span class="hljs-built_in">new</span> AtomicReference&lt;&gt;();<br>        <span class="hljs-keyword">User</span> pjf = <span class="hljs-built_in">new</span> <span class="hljs-keyword">User</span>(&quot;彭建飞&quot;,<span class="hljs-number">21</span>);<br>        <span class="hljs-keyword">User</span> xxx = <span class="hljs-built_in">new</span> <span class="hljs-keyword">User</span>(&quot;xxx&quot;,<span class="hljs-number">21</span>);<br>        atomicReference.<span class="hljs-keyword">set</span>(pjf);<br><br>        atomicReference.compareAndSet(pjf,xxx);<br>        <span class="hljs-keyword">System</span>.<span class="hljs-keyword">out</span>.println(atomicReference.<span class="hljs-keyword">get</span>());<br>    &#125;<br></code></pre></td></tr></table></figure>
+<figure class="highlight reasonml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><code class="hljs reasonml">Unsafe unsafe = <span class="hljs-module-access"><span class="hljs-module"><span class="hljs-identifier">UnsafeAccessor</span>.</span></span>get<span class="hljs-constructor">Unsafe()</span>;<br>Field id = <span class="hljs-module-access"><span class="hljs-module"><span class="hljs-identifier">Student</span>.</span></span><span class="hljs-keyword">class</span>.get<span class="hljs-constructor">DeclaredField(<span class="hljs-string">&quot;id&quot;</span>)</span>;<br>Field name = <span class="hljs-module-access"><span class="hljs-module"><span class="hljs-identifier">Student</span>.</span></span><span class="hljs-keyword">class</span>.get<span class="hljs-constructor">DeclaredField(<span class="hljs-string">&quot;name&quot;</span>)</span>;<br><span class="hljs-comment">// 获得成员变量的偏移量</span><br>long idOffset = <span class="hljs-module-access"><span class="hljs-module"><span class="hljs-identifier">UnsafeAccessor</span>.</span></span>unsafe.<span class="hljs-keyword">object</span><span class="hljs-constructor">FieldOffset(<span class="hljs-params">id</span>)</span>;<br>long nameOffset = <span class="hljs-module-access"><span class="hljs-module"><span class="hljs-identifier">UnsafeAccessor</span>.</span></span>unsafe.<span class="hljs-keyword">object</span><span class="hljs-constructor">FieldOffset(<span class="hljs-params">name</span>)</span>;<br>Student student = <span class="hljs-keyword">new</span> <span class="hljs-constructor">Student()</span>;<br><span class="hljs-comment">// 使用 cas 方法替换成员变量的值</span><br><span class="hljs-module-access"><span class="hljs-module"><span class="hljs-identifier">UnsafeAccessor</span>.</span></span>unsafe.compare<span class="hljs-constructor">AndSwapInt(<span class="hljs-params">student</span>, <span class="hljs-params">idOffset</span>, 0, 20)</span>; <span class="hljs-comment">// 返回 true</span><br><span class="hljs-module-access"><span class="hljs-module"><span class="hljs-identifier">UnsafeAccessor</span>.</span></span>unsafe.compare<span class="hljs-constructor">AndSwapObject(<span class="hljs-params">student</span>, <span class="hljs-params">nameOffset</span>, <span class="hljs-params">null</span>, <span class="hljs-string">&quot;张三&quot;</span>)</span>; <span class="hljs-comment">// 返回 true</span><br><span class="hljs-module-access"><span class="hljs-module"><span class="hljs-identifier">System</span>.</span></span>out.println(student);<br><br></code></pre></td></tr></table></figure>
 
 <p>输出：</p>
-<figure class="highlight reasonml"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs reasonml"><span class="hljs-constructor">User(<span class="hljs-params">name</span>=<span class="hljs-params">xxx</span>, <span class="hljs-params">age</span>=21)</span><br></code></pre></td></tr></table></figure>
+<figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs routeros">Student(<span class="hljs-attribute">id</span>=20, <span class="hljs-attribute">name</span>=张三) <br></code></pre></td></tr></table></figure>
 
 
                 
@@ -324,8 +300,8 @@
 
   <div class="license-box my-3">
     <div class="license-title">
-      <div>CAS</div>
-      <div>http://example.com/2023/06/12/CAS/</div>
+      <div></div>
+      <div>http://example.com/2023/07/25/UnSafe/</div>
     </div>
     <div class="license-meta">
       
@@ -337,7 +313,7 @@
       
         <div class="license-meta-item license-meta-date">
           <div>Posted on</div>
-          <div>June 12, 2023</div>
+          <div>July 25, 2023</div>
         </div>
       
       
@@ -369,9 +345,9 @@
                   <article class="post-prev col-6">
                     
                     
-                      <a href="/2023/07/22/CompetableFuture/" title="CompetableFutrue">
+                      <a href="/2023/07/26/%E7%BA%BF%E7%A8%8B%E5%AE%89%E5%85%A8%E9%9B%86%E5%90%88%E7%B1%BB/" title="">
                         <i class="iconfont icon-arrowleft"></i>
-                        <span class="hidden-mobile">CompetableFutrue</span>
+                        <span class="hidden-mobile"></span>
                         <span class="visible-mobile">Previous</span>
                       </a>
                     
@@ -379,8 +355,8 @@
                   <article class="post-next col-6">
                     
                     
-                      <a href="/2023/05/30/Redis/" title="Redis">
-                        <span class="hidden-mobile">Redis</span>
+                      <a href="/2023/07/22/CompetableFuture/" title="CompetableFutrue">
+                        <span class="hidden-mobile">CompetableFutrue</span>
                         <span class="visible-mobile">Next</span>
                         <i class="iconfont icon-arrowright"></i>
                       </a>

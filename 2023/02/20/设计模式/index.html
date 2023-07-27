@@ -43,8 +43,22 @@
 <meta property="og:image" content="http://example.com/2023/02/20/img/%E8%BF%AA%E7%B1%B3%E7%89%B9%E6%B3%95%E5%88%99.png">
 <meta property="og:image" content="http://example.com/2023/02/20/img/%E5%90%88%E6%88%90%E5%A4%8D%E7%94%A8%E5%8E%9F%E5%88%99.png">
 <meta property="og:image" content="http://example.com/2023/02/20/img/%E5%90%88%E6%88%90%E5%A4%8D%E7%94%A8%E5%8E%9F%E5%88%991.png">
+<meta property="og:image" content="http://example.com/img/3.png">
+<meta property="og:image" content="http://example.com/img/4.png">
+<meta property="og:image" content="http://example.com/img/5.png">
+<meta property="og:image" content="http://example.com/img/6.png">
+<meta property="og:image" content="http://example.com/img/7.png">
+<meta property="og:image" content="http://example.com/img/8.png">
+<meta property="og:image" content="http://example.com/img/9.png">
+<meta property="og:image" content="http://example.com/img/10.png">
+<meta property="og:image" content="http://example.com/img/11.png">
+<meta property="og:image" content="http://example.com/img/12.png">
+<meta property="og:image" content="http://example.com/img/13.png">
+<meta property="og:image" content="http://example.com/img/14.png">
+<meta property="og:image" content="http://example.com/img/15.png">
+<meta property="og:image" content="http://example.com/img/16.png">
 <meta property="article:published_time" content="2023-02-20T13:01:34.866Z">
-<meta property="article:modified_time" content="2023-06-04T13:58:21.152Z">
+<meta property="article:modified_time" content="2023-07-16T05:16:42.527Z">
 <meta property="article:author" content="彭">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:image" content="http://example.com/img/Employee.jpg">
@@ -240,7 +254,7 @@
       <span class="post-meta mr-2">
         <i class="iconfont icon-chart"></i>
         
-          21k words
+          22k words
         
       </span>
     
@@ -251,7 +265,7 @@
         
         
         
-          178 mins
+          187 mins
         
       </span>
     
@@ -647,6 +661,45 @@
 
 <h3 id="工厂模式"><a href="#工厂模式" class="headerlink" title="工厂模式"></a>工厂模式</h3></li>
 </ol>
+<h4 id="简单工厂模式"><a href="#简单工厂模式" class="headerlink" title="简单工厂模式"></a>简单工厂模式</h4><p>简单工厂模式又称为<strong>静态工厂方法模式</strong>，它属于创建型模式，在简单工厂模式中，可以根据参数的不同返回不同类的实例。简单工厂模式专门定义一个类负责创建其他类的实例，被创建的实例通常都具有共同的父类。</p>
+<p><img src="/../img/3.png" srcset="/img/loading.gif" lazyload></p>
+<p><img src="/../img/4.png" srcset="/img/loading.gif" lazyload></p>
+<p>优点：对象的创建和使用分离，对象的创建交给专门的工厂类实现，程序员不需要关心怎么创建，只关心使用</p>
+<p>缺点：简单工厂模式不够灵活，如果我门需要新增一个产品的话需要求改工厂类，比如ProductC。它需要知道产品的具体创建细节(System,out.println(“产品A”)、System,out.println(“产品B”)…..)</p>
+<p>所以每当新增产品的时候，那么就需要工厂类去实现产品的细节，违反了<strong>开闭原则</strong>，没有扩展性</p>
+<p><strong>开闭原则规定：对扩展是开放的，对修改是关闭的</strong></p>
+<h4 id="工厂方法模式"><a href="#工厂方法模式" class="headerlink" title="工厂方法模式"></a>工厂方法模式</h4><p><strong>定义一个用于创建对象的接口，让子类决定实例化哪个类。工厂方法使一个类的实例话延迟到其子类</strong></p>
+<p><img src="/../img/5.png" srcset="/img/loading.gif" lazyload></p>
+<p>在JDK中</p>
+<p><img src="/../img/6.png" srcset="/img/loading.gif" lazyload></p>
+<p>那么Collection就是我们的抽象工厂，LinkedList和ArrayList就是我们的具体子工厂抽象产品就是Iterator,ListItr和Itr就是我们的具体产品</p>
+<p>，它们分别由我们的LinkedList和ArrayList生产。</p>
+<p><img src="/../img/7.png" srcset="/img/loading.gif" lazyload></p>
+<h4 id="抽象工厂模式"><a href="#抽象工厂模式" class="headerlink" title="抽象工厂模式"></a>抽象工厂模式</h4><p><img src="/../img/8.png" srcset="/img/loading.gif" lazyload></p>
+<p>和工厂模式没有太大的区别，新增了一条产品线，不仅可以身材Phone，还可以生成Mask，但是我们发现，<strong>新增一条产品线也要到抽象工厂中修改代码</strong>，也违反了开闭原则</p>
+<p><img src="/../img/9.png" srcset="/img/loading.gif" lazyload></p>
+<h3 id="装饰器模式"><a href="#装饰器模式" class="headerlink" title="装饰器模式"></a>装饰器模式</h3><p>作用：动态地给一个对象添加一些额外的功能。就增加功能来说，装饰器模式比生成子类更灵活。</p>
+<p><img src="/../img/10.png" srcset="/img/loading.gif" lazyload></p>
+<p> 四个部分：</p>
+<p>component：代表产品需要哪些功能(机器人接口)</p>
+<p>concreteComnent : 我们的一代机器人</p>
+<p>Decorator : 装饰器，它也是一个抽象的类(或是接口)，首先他要和机器人有同样的功能。</p>
+<p>concreteDecorator ： 具体的装饰器，实现了Decorator</p>
+<p>举个例子</p>
+<p>一代机器人</p>
+<p><img src="/../img/11.png" srcset="/img/loading.gif" lazyload></p>
+<p>在第一代的基础上推出二代机器人(继承)，新增了功能：拖地跳舞</p>
+<p><img src="/../img/12.png" srcset="/img/loading.gif" lazyload></p>
+<p><img src="/../img/13.png" srcset="/img/loading.gif" lazyload></p>
+<p>我太厉害了，直接在一代基础上套了个<strong>壳子</strong>拓展了原有的功能，新增了功能</p>
+<p>那么这两种都新增了功能，第一种称之为<strong>继承</strong>，继承父类，在子类中进行扩展功能，第二章称之为<strong>关联机制</strong>，那我把一个类的对象嵌入到另一个类的对象中，相当于给机器人套一个壳子给它新增功能，那么这个壳子就是我们说的装饰器</p>
+<p>那么继承和装饰器模式有什么区别呢？</p>
+<p>继承这种方式是静态的，一定要写一个新的子类，对类层级进行扩展</p>
+<p>装饰器模式是动态地，我们拿到一个对象就可以对其进行扩展，不需要修改原有类逻辑</p>
+<p><img src="/../img/14.png" srcset="/img/loading.gif" lazyload></p>
+<p><img src="/../img/15.png" srcset="/img/loading.gif" lazyload></p>
+<p>这种方式非常熟悉，我们在Java-IO流中经常看到，每次，Java-IO流大量使用到了装饰器模式。</p>
+<p><img src="/../img/16.png" srcset="/img/loading.gif" lazyload></p>
 
                 
               </div>

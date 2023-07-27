@@ -16,24 +16,34 @@
   <meta name="author" content="彭">
   <meta name="keywords" content="">
   
-    <meta name="description" content="CAS概述CAS是JDK提供的非阻塞原子性操作，它通过硬件保证了比较-更新的原子性。 它是非阻塞的且自身具有原子性，也就是说这玩意效率更高且通过硬件保证，说明这玩意更可靠。 CAS是一条CPU的原子指令(cmpxchg指令），不会造成所谓的数据不一致问题，Unsafe提供的CAS方法（如compareAndSwapXXX）底层实现即为CPU指令cmpxchg。 执行cmpxchg指令的时候，会判断">
+    <meta name="description" content="FutrueFutrue接口定义了(FutrueTask)定义了操作异步任务执行一些方法，如获取异步任务的执行结果、取消任务的执行、判断任务是否取消、判断任务执行是否完毕等。 Future 类是异步思想的典型运用，主要用在一些需要执行耗时任务的场景，避免程序一直原地等待耗时任务执行完成，执行效率太低。具体来说是这样的：当我们执行某一耗时的任务时，可以将这个耗时任务交给一个子线程去异步执行，同时我们">
 <meta property="og:type" content="article">
-<meta property="og:title" content="CAS">
-<meta property="og:url" content="http://example.com/2023/06/12/CAS/index.html">
+<meta property="og:title" content="CompetableFutrue">
+<meta property="og:url" content="http://example.com/2023/07/22/CompetableFuture/index.html">
 <meta property="og:site_name" content="PJF">
-<meta property="og:description" content="CAS概述CAS是JDK提供的非阻塞原子性操作，它通过硬件保证了比较-更新的原子性。 它是非阻塞的且自身具有原子性，也就是说这玩意效率更高且通过硬件保证，说明这玩意更可靠。 CAS是一条CPU的原子指令(cmpxchg指令），不会造成所谓的数据不一致问题，Unsafe提供的CAS方法（如compareAndSwapXXX）底层实现即为CPU指令cmpxchg。 执行cmpxchg指令的时候，会判断">
+<meta property="og:description" content="FutrueFutrue接口定义了(FutrueTask)定义了操作异步任务执行一些方法，如获取异步任务的执行结果、取消任务的执行、判断任务是否取消、判断任务执行是否完毕等。 Future 类是异步思想的典型运用，主要用在一些需要执行耗时任务的场景，避免程序一直原地等待耗时任务执行完成，执行效率太低。具体来说是这样的：当我们执行某一耗时的任务时，可以将这个耗时任务交给一个子线程去异步执行，同时我们">
 <meta property="og:locale" content="en_US">
-<meta property="og:image" content="http://example.com/cas_pic/1.png">
-<meta property="og:image" content="http://example.com/cas_pic/2.png">
-<meta property="article:published_time" content="2023-06-12T14:10:28.559Z">
-<meta property="article:modified_time" content="2023-07-27T15:36:14.443Z">
+<meta property="og:image" content="http://example.com/futrue_pic/1.png">
+<meta property="og:image" content="http://example.com/futrue_pic/2.png">
+<meta property="og:image" content="http://example.com/futrue_pic/3.png">
+<meta property="og:image" content="http://example.com/futrue_pic/4.png">
+<meta property="og:image" content="http://example.com/futrue_pic/5.png">
+<meta property="og:image" content="http://example.com/futrue_pic/6.png">
+<meta property="og:image" content="http://example.com/futrue_pic/12.png">
+<meta property="og:image" content="http://example.com/futrue_pic/7.png">
+<meta property="og:image" content="http://example.com/futrue_pic/8.png">
+<meta property="og:image" content="http://example.com/futrue_pic/10.png">
+<meta property="og:image" content="http://example.com/futrue_pic/9.png">
+<meta property="og:image" content="http://example.com/futrue_pic/11.png">
+<meta property="article:published_time" content="2023-07-22T03:52:49.485Z">
+<meta property="article:modified_time" content="2023-07-26T13:48:59.872Z">
 <meta property="article:author" content="彭">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image" content="http://example.com/cas_pic/1.png">
+<meta name="twitter:image" content="http://example.com/futrue_pic/1.png">
   
   
   
-  <title>CAS - PJF</title>
+  <title>CompetableFutrue - PJF</title>
 
   <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
 
@@ -199,7 +209,7 @@
       <div class="banner-text text-center fade-in-up">
         <div class="h2">
           
-            <span id="subtitle" data-typed-text="CAS"></span>
+            <span id="subtitle" data-typed-text="CompetableFutrue"></span>
           
         </div>
 
@@ -210,8 +220,8 @@
     
       <span class="post-meta">
         <i class="iconfont icon-date-fill" aria-hidden="true"></i>
-        <time datetime="2023-06-12 22:10" pubdate>
-          June 12, 2023 pm
+        <time datetime="2023-07-22 11:52" pubdate>
+          July 22, 2023 am
         </time>
       </span>
     
@@ -271,42 +281,50 @@
         <div id="board">
           <article class="post-content mx-auto">
             <!-- SEO header -->
-            <h1 style="display: none">CAS</h1>
+            <h1 style="display: none">CompetableFutrue</h1>
             
             
               <div class="markdown-body">
                 
-                <h2 id="CAS概述"><a href="#CAS概述" class="headerlink" title="CAS概述"></a>CAS概述</h2><p>CAS是JDK提供的<strong>非阻塞原子性</strong>操作，它通过<strong>硬件</strong>保证了比较-更新的原子性。</p>
-<p>它是非阻塞的且自身具有原子性，也就是说这玩意效率更高且通过硬件保证，说明这玩意更可靠。</p>
-<p>CAS是一条CPU的原子指令(cmpxchg指令），不会造成所谓的数据不一致问题，<strong>Unsafe</strong>提供的CAS方法（如compareAndSwapXXX）底层实现即为CPU指令cmpxchg。</p>
-<p>执行cmpxchg指令的时候，会判断当前系统是否为多核系统(一般都是多核系统)，如果是就<strong>给总线加锁</strong>，只有一个线程会对总线加锁成功，加锁成功之后会执行cas操作，<strong>也就是说CAS的原子性实际上是CPU实现独占的</strong>，比起用synchronized重量级锁，这里的排他时间要短很多，所以在多线程情况下性能会比较好。</p>
-<h3 id="CAS乐观锁"><a href="#CAS乐观锁" class="headerlink" title="CAS乐观锁"></a>CAS乐观锁</h3><p>CAS 全称为 <code>Compare And Swap</code> 翻译过来就是<code>比较并且交换</code></p>
+                <h2 id="Futrue"><a href="#Futrue" class="headerlink" title="Futrue"></a>Futrue</h2><p>Futrue接口定义了(FutrueTask)定义了操作<strong>异步任务执行一些方法</strong>，如获取异步任务的执行结果、取消任务的执行、判断任务是否取消、判断任务执行是否完毕等。</p>
+<p><code>Future</code> 类是异步思想的典型运用，主要用在一些需要执行耗时任务的场景，避免程序一直原地等待耗时任务执行完成，执行效率太低。具体来说是这样的：当我们执行某一耗时的任务时，可以将这个耗时任务交给一个子线程去异步执行，同时我们可以干点其他事情，不用傻傻等待耗时任务执行完成。等我们的事情干完后，我们再通过 <code>Future</code> 类获取到耗时任务的执行结果。这样一来，程序的执行效率就明显提高了。</p>
+<p>这其实就是多线程中经典的 <strong>Future 模式</strong>，你可以将其看作是一种设计模式，核心思想是异步调用，主要用在多线程领域，并非 Java 语言独有。</p>
+<p>在 Java 中，<code>Future</code> 类只是一个泛型接口，位于 <code>java.util.concurrent</code> 包下，其中定义了 5 个方法，主要包括下面这 4 个功能：</p>
 <ul>
-<li>Synchornized 是悲观锁，线程一旦得到锁，其他的线程就只能挂起了</li>
-<li>CAS 的操作则是乐观锁，他认为自己一定会拿到锁，所以他会一直尝试，直到成功拿到为止；</li>
+<li>取消任务；</li>
+<li>判断任务是否被取消;</li>
+<li>判断任务是否已经执行完成;</li>
+<li>获取任务执行结果。</li>
 </ul>
-<h3 id="CAS-机制"><a href="#CAS-机制" class="headerlink" title="CAS 机制"></a>CAS 机制</h3><p>在看到 Compare 和 Swap 后，我们就应该知道，CAS 里面至少包含了两个动作，分别是比较和交换，在现在的 CPU 中，为这两个动作专门提供了一个指令，就是<code>CAH</code> 指令，<strong>由 CPU 来保证</strong>这两个操作一定是原子的，也就是说比较和交换这两个操作只能是<code>要么全部完成，要么全部没有完成</code></p>
-<h3 id="Java中CAS实现"><a href="#Java中CAS实现" class="headerlink" title="Java中CAS实现"></a>Java中CAS实现</h3><p>来看一个方法compareAndSet</p>
-<p><img src="/../cas_pic/1.png" srcset="/img/loading.gif" lazyload></p>
-<p>点开方发现是一个Unsafe类的compareAndSwapInt方法</p>
-<p>参数：(当前要操作的对象，要操作对象中属性地址的偏移量，需要修改数据的期望值，需要修改的新值)</p>
-<p>Java中一般是这三个方法</p>
-<p><img src="/../cas_pic/2.png" srcset="/img/loading.gif" lazyload></p>
-<h3 id="Unsafe"><a href="#Unsafe" class="headerlink" title="Unsafe"></a>Unsafe</h3><p>Unsafe是CAS的核心类，由于Java方法无法直接访问底层系统，需要通过本地〈native)方法来访问，Unsafe相当于一个后门，基于该类可以直接操作特定内存的数据。<strong>Unsafe类存在于sun.misc包中</strong>，其内部方法操作可以像c的<strong>指针</strong>一样直接操作内存，因为Java中CAS操作的执行依赖于Unsafe类的方法。</p>
-<p>再次强调！由于CAS是一种系统原语，原语属于操作系统用于范畴，是由若干条指令组成的，用于完成某个功能的一个过程，并且原语的执行必须是连续的，在执行的过程中不允许被中断，也就是说<strong>CAS是一条CPU的原子指令</strong>，不会造成所谓的数据不一致问题。</p>
-<p>CAS核心思想：<strong>比较要更新变量的值V和要预期值E，相等才会将V的值设为新值N，如果不相等自选再来</strong></p>
-<h3 id="AtomicReference"><a href="#AtomicReference" class="headerlink" title="AtomicReference"></a>AtomicReference</h3><p>我们看了AtomicInteger、AtomicLong、AtomicBoolean等等方法，那能不能所以类型都有原子类呢？当然可以——AtomicReference！</p>
-<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs xml">Class AtomicReference<span class="hljs-tag">&lt;<span class="hljs-name">V</span>&gt;</span><br></code></pre></td></tr></table></figure>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-comment">// V 代表了Future执行的任务返回值的类型</span><br><span class="hljs-keyword">public</span> <span class="hljs-keyword">interface</span> <span class="hljs-title class_">Future</span>&lt;V&gt; &#123;<br>    <span class="hljs-comment">// 取消任务执行</span><br>    <span class="hljs-comment">// 成功取消返回 true，否则返回 false</span><br>    <span class="hljs-type">boolean</span> <span class="hljs-title function_">cancel</span><span class="hljs-params">(<span class="hljs-type">boolean</span> mayInterruptIfRunning)</span>;<br>    <span class="hljs-comment">// 判断任务是否被取消</span><br>    <span class="hljs-type">boolean</span> <span class="hljs-title function_">isCancelled</span><span class="hljs-params">()</span>;<br>    <span class="hljs-comment">// 判断任务是否已经执行完成</span><br>    <span class="hljs-type">boolean</span> <span class="hljs-title function_">isDone</span><span class="hljs-params">()</span>;<br>    <span class="hljs-comment">// 获取任务执行结果</span><br>    V <span class="hljs-title function_">get</span><span class="hljs-params">()</span> <span class="hljs-keyword">throws</span> InterruptedException, ExecutionException;<br>    <span class="hljs-comment">// 指定时间内没有返回计算结果就抛出 TimeOutException 异常</span><br>    V <span class="hljs-title function_">get</span><span class="hljs-params">(<span class="hljs-type">long</span> timeout, TimeUnit unit)</span><br><br>        <span class="hljs-keyword">throws</span> InterruptedException, ExecutionException, TimeoutExceptio<br><br>&#125;<br><br></code></pre></td></tr></table></figure>
 
-<p>看到V就知道可以装任意类型进去了</p>
-<p>定义一个User类</p>
-<figure class="highlight less"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs less"><span class="hljs-variable">@Getter</span><br><span class="hljs-variable">@Setter</span><br><span class="hljs-variable">@ToString</span><br><span class="hljs-variable">@Builder</span><br>class User&#123;<br>    <span class="hljs-selector-tag">private</span> <span class="hljs-selector-tag">String</span> <span class="hljs-selector-tag">name</span>;<br>    <span class="hljs-selector-tag">private</span> <span class="hljs-selector-tag">Integer</span> <span class="hljs-selector-tag">age</span>;<br>&#125;<br></code></pre></td></tr></table></figure>
-
-<figure class="highlight pgsql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs pgsql"><span class="hljs-built_in">public</span> static <span class="hljs-type">void</span> main(String[] args) &#123;<br>        AtomicReference&lt;<span class="hljs-keyword">User</span>&gt; atomicReference = <span class="hljs-built_in">new</span> AtomicReference&lt;&gt;();<br>        <span class="hljs-keyword">User</span> pjf = <span class="hljs-built_in">new</span> <span class="hljs-keyword">User</span>(&quot;彭建飞&quot;,<span class="hljs-number">21</span>);<br>        <span class="hljs-keyword">User</span> xxx = <span class="hljs-built_in">new</span> <span class="hljs-keyword">User</span>(&quot;xxx&quot;,<span class="hljs-number">21</span>);<br>        atomicReference.<span class="hljs-keyword">set</span>(pjf);<br><br>        atomicReference.compareAndSet(pjf,xxx);<br>        <span class="hljs-keyword">System</span>.<span class="hljs-keyword">out</span>.println(atomicReference.<span class="hljs-keyword">get</span>());<br>    &#125;<br></code></pre></td></tr></table></figure>
-
-<p>输出：</p>
-<figure class="highlight reasonml"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs reasonml"><span class="hljs-constructor">User(<span class="hljs-params">name</span>=<span class="hljs-params">xxx</span>, <span class="hljs-params">age</span>=21)</span><br></code></pre></td></tr></table></figure>
-
+<p>简单理解就是：我有一个任务，提交给了 <code>Future</code> 来处理。任务执行期间我自己可以去做任何想做的事情。并且，在这期间我还可以取消任务以及获取任务的执行状态。一段时间之后，我就可以 <code>Future</code> 那里直接取出任务执行结果</p>
+<p><img src="/../futrue_pic/1.png" srcset="/img/loading.gif" lazyload></p>
+<p>实例：</p>
+<p><img src="/../futrue_pic/2.png" srcset="/img/loading.gif" lazyload></p>
+<h3 id="优点："><a href="#优点：" class="headerlink" title="优点："></a><strong>优点：</strong></h3><p>Futrue+线程池异步多线程任务配合，能够显著提高程序的执行效率。</p>
+<p><img src="/../futrue_pic/3.png" srcset="/img/loading.gif" lazyload></p>
+<h3 id="缺点1"><a href="#缺点1" class="headerlink" title="缺点1"></a>缺点1</h3><p>一旦调用get()方法求结果，如果计算没有完成容易导致程序阻塞</p>
+<p><img src="/../futrue_pic/4.png" srcset="/img/loading.gif" lazyload></p>
+<h3 id="缺点2"><a href="#缺点2" class="headerlink" title="缺点2"></a>缺点2</h3><p>轮询的方式会耗费无谓的CPU资源，而且也不见得能及时地得到计算结果.如果想要异步获取结果,通常都会以轮询的方式去获取结果</p>
+<p><img src="/../futrue_pic/5.png" srcset="/img/loading.gif" lazyload></p>
+<h3 id="结论"><a href="#结论" class="headerlink" title="结论"></a>结论</h3><p>Future对于结果的获取不是很友好，只能通过阻塞或轮询的方式得到任务的结果</p>
+<h2 id="CompetableFuture"><a href="#CompetableFuture" class="headerlink" title="CompetableFuture"></a>CompetableFuture</h2><p>get()方法在Future计算完成之前会一直处在阻塞状态下，isDone()方法容易耗费CPU资源，对于真正的异步处理我们希望是可以通过传入回调函数，在Future结束时自动调用该回调函数，这样，我们就不用等待结果。</p>
+<p><strong>阻塞的方式和异步编程的设计理念相违背，而轮询的方式会耗费无谓的CPU资源</strong>。因此，JDK8设计出CompletableFuture。</p>
+<p>CompletableFuture提供了一种<strong>观察者模式</strong>类似的机制，可以让任务执行完成后通知监听的一方。</p>
+<p><img src="/../futrue_pic/6.png" srcset="/img/loading.gif" lazyload></p>
+<p><code>CompletionStage</code> 接口描述了一个异步计算的阶段。很多计算可以分成多个阶段或步骤，此时可以通过它将所有步骤组合起来，形成异步计算的流水线。</p>
+<p><code>CompletionStage</code> 接口中的方法比较多，<code>CompletableFuture</code> 的函数式能力就是这个接口赋予的。从这个接口的方法参数你就可以发现其大量使用了 Java8 引入的函数式编程。</p>
+<h3 id="使用"><a href="#使用" class="headerlink" title="使用"></a>使用</h3><p><img src="/../futrue_pic/12.png" srcset="/img/loading.gif" lazyload></p>
+<p><strong>无返回值的</strong></p>
+<p><img src="/../futrue_pic/7.png" srcset="/img/loading.gif" lazyload></p>
+<p>默认有线程池(ForkJoinPool)，上面这个是自己new的</p>
+<p><strong>有返回值的</strong></p>
+<p><img src="/../futrue_pic/8.png" srcset="/img/loading.gif" lazyload></p>
+<p>跟Futrue区别</p>
+<p><img src="/../futrue_pic/10.png" srcset="/img/loading.gif" lazyload></p>
+<p><img src="/../futrue_pic/9.png" srcset="/img/loading.gif" lazyload></p>
+<h3 id="函数式接口"><a href="#函数式接口" class="headerlink" title="函数式接口"></a>函数式接口</h3><p><img src="/../futrue_pic/11.png" srcset="/img/loading.gif" lazyload></p>
 
                 
               </div>
@@ -324,8 +342,8 @@
 
   <div class="license-box my-3">
     <div class="license-title">
-      <div>CAS</div>
-      <div>http://example.com/2023/06/12/CAS/</div>
+      <div>CompetableFutrue</div>
+      <div>http://example.com/2023/07/22/CompetableFuture/</div>
     </div>
     <div class="license-meta">
       
@@ -337,7 +355,7 @@
       
         <div class="license-meta-item license-meta-date">
           <div>Posted on</div>
-          <div>June 12, 2023</div>
+          <div>July 22, 2023</div>
         </div>
       
       
@@ -369,9 +387,9 @@
                   <article class="post-prev col-6">
                     
                     
-                      <a href="/2023/07/22/CompetableFuture/" title="CompetableFutrue">
+                      <a href="/2023/07/25/UnSafe/" title="">
                         <i class="iconfont icon-arrowleft"></i>
-                        <span class="hidden-mobile">CompetableFutrue</span>
+                        <span class="hidden-mobile"></span>
                         <span class="visible-mobile">Previous</span>
                       </a>
                     
@@ -379,8 +397,8 @@
                   <article class="post-next col-6">
                     
                     
-                      <a href="/2023/05/30/Redis/" title="Redis">
-                        <span class="hidden-mobile">Redis</span>
+                      <a href="/2023/06/12/CAS/" title="CAS">
+                        <span class="hidden-mobile">CAS</span>
                         <span class="visible-mobile">Next</span>
                         <i class="iconfont icon-arrowright"></i>
                       </a>
