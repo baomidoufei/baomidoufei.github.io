@@ -16,34 +16,21 @@
   <meta name="author" content="彭">
   <meta name="keywords" content="">
   
-    <meta name="description" content="FutrueFutrue接口定义了(FutrueTask)定义了操作异步任务执行一些方法，如获取异步任务的执行结果、取消任务的执行、判断任务是否取消、判断任务执行是否完毕等。 Future 类是异步思想的典型运用，主要用在一些需要执行耗时任务的场景，避免程序一直原地等待耗时任务执行完成，执行效率太低。具体来说是这样的：当我们执行某一耗时的任务时，可以将这个耗时任务交给一个子线程去异步执行，同时我们">
+    <meta name="description" content="CountDownLatch概述用来进行线程同步协作，等待所有线程完成倒计时。 其中构造参数用来初始化等待计数值，await() 用来等待计数归零，countDown() 用来让计数减一 123456789101112131415161718192021222324public static void main(String[] args) throws InterruptedException">
 <meta property="og:type" content="article">
-<meta property="og:title" content="CompetableFutrue">
-<meta property="og:url" content="http://example.com/2023/07/22/CompetableFuture/index.html">
+<meta property="og:title" content="CountDownLatch">
+<meta property="og:url" content="http://example.com/2023/07/31/CountDownLatch/index.html">
 <meta property="og:site_name" content="PJF">
-<meta property="og:description" content="FutrueFutrue接口定义了(FutrueTask)定义了操作异步任务执行一些方法，如获取异步任务的执行结果、取消任务的执行、判断任务是否取消、判断任务执行是否完毕等。 Future 类是异步思想的典型运用，主要用在一些需要执行耗时任务的场景，避免程序一直原地等待耗时任务执行完成，执行效率太低。具体来说是这样的：当我们执行某一耗时的任务时，可以将这个耗时任务交给一个子线程去异步执行，同时我们">
+<meta property="og:description" content="CountDownLatch概述用来进行线程同步协作，等待所有线程完成倒计时。 其中构造参数用来初始化等待计数值，await() 用来等待计数归零，countDown() 用来让计数减一 123456789101112131415161718192021222324public static void main(String[] args) throws InterruptedException">
 <meta property="og:locale" content="en_US">
-<meta property="og:image" content="http://example.com/futrue_pic/1.png">
-<meta property="og:image" content="http://example.com/futrue_pic/2.png">
-<meta property="og:image" content="http://example.com/futrue_pic/3.png">
-<meta property="og:image" content="http://example.com/futrue_pic/4.png">
-<meta property="og:image" content="http://example.com/futrue_pic/5.png">
-<meta property="og:image" content="http://example.com/futrue_pic/6.png">
-<meta property="og:image" content="http://example.com/futrue_pic/12.png">
-<meta property="og:image" content="http://example.com/futrue_pic/7.png">
-<meta property="og:image" content="http://example.com/futrue_pic/8.png">
-<meta property="og:image" content="http://example.com/futrue_pic/10.png">
-<meta property="og:image" content="http://example.com/futrue_pic/9.png">
-<meta property="og:image" content="http://example.com/futrue_pic/11.png">
-<meta property="article:published_time" content="2023-07-22T03:52:49.485Z">
-<meta property="article:modified_time" content="2023-07-26T13:48:59.872Z">
+<meta property="article:published_time" content="2023-07-31T15:06:35.250Z">
+<meta property="article:modified_time" content="2023-07-31T15:46:50.922Z">
 <meta property="article:author" content="彭">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image" content="http://example.com/futrue_pic/1.png">
   
   
   
-  <title>CompetableFutrue - PJF</title>
+  <title>CountDownLatch - PJF</title>
 
   <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
 
@@ -209,7 +196,7 @@
       <div class="banner-text text-center fade-in-up">
         <div class="h2">
           
-            <span id="subtitle" data-typed-text="CompetableFutrue"></span>
+            <span id="subtitle" data-typed-text="CountDownLatch"></span>
           
         </div>
 
@@ -220,8 +207,8 @@
     
       <span class="post-meta">
         <i class="iconfont icon-date-fill" aria-hidden="true"></i>
-        <time datetime="2023-07-22 11:52" pubdate>
-          July 22, 2023 am
+        <time datetime="2023-07-31 23:06" pubdate>
+          July 31, 2023 pm
         </time>
       </span>
     
@@ -232,7 +219,7 @@
       <span class="post-meta mr-2">
         <i class="iconfont icon-chart"></i>
         
-          1.6k words
+          1.2k words
         
       </span>
     
@@ -243,7 +230,7 @@
         
         
         
-          14 mins
+          11 mins
         
       </span>
     
@@ -281,50 +268,18 @@
         <div id="board">
           <article class="post-content mx-auto">
             <!-- SEO header -->
-            <h1 style="display: none">CompetableFutrue</h1>
+            <h1 style="display: none">CountDownLatch</h1>
             
             
               <div class="markdown-body">
                 
-                <h2 id="Futrue"><a href="#Futrue" class="headerlink" title="Futrue"></a>Futrue</h2><p>Futrue接口定义了(FutrueTask)定义了操作<strong>异步任务执行一些方法</strong>，如获取异步任务的执行结果、取消任务的执行、判断任务是否取消、判断任务执行是否完毕等。</p>
-<p><code>Future</code> 类是异步思想的典型运用，主要用在一些需要执行耗时任务的场景，避免程序一直原地等待耗时任务执行完成，执行效率太低。具体来说是这样的：当我们执行某一耗时的任务时，可以将这个耗时任务交给一个子线程去异步执行，同时我们可以干点其他事情，不用傻傻等待耗时任务执行完成。等我们的事情干完后，我们再通过 <code>Future</code> 类获取到耗时任务的执行结果。这样一来，程序的执行效率就明显提高了。</p>
-<p>这其实就是多线程中经典的 <strong>Future 模式</strong>，你可以将其看作是一种设计模式，核心思想是异步调用，主要用在多线程领域，并非 Java 语言独有。</p>
-<p>在 Java 中，<code>Future</code> 类只是一个泛型接口，位于 <code>java.util.concurrent</code> 包下，其中定义了 5 个方法，主要包括下面这 4 个功能：</p>
-<ul>
-<li>取消任务；</li>
-<li>判断任务是否被取消;</li>
-<li>判断任务是否已经执行完成;</li>
-<li>获取任务执行结果。</li>
-</ul>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-comment">// V 代表了Future执行的任务返回值的类型</span><br><span class="hljs-keyword">public</span> <span class="hljs-keyword">interface</span> <span class="hljs-title class_">Future</span>&lt;V&gt; &#123;<br>    <span class="hljs-comment">// 取消任务执行</span><br>    <span class="hljs-comment">// 成功取消返回 true，否则返回 false</span><br>    <span class="hljs-type">boolean</span> <span class="hljs-title function_">cancel</span><span class="hljs-params">(<span class="hljs-type">boolean</span> mayInterruptIfRunning)</span>;<br>    <span class="hljs-comment">// 判断任务是否被取消</span><br>    <span class="hljs-type">boolean</span> <span class="hljs-title function_">isCancelled</span><span class="hljs-params">()</span>;<br>    <span class="hljs-comment">// 判断任务是否已经执行完成</span><br>    <span class="hljs-type">boolean</span> <span class="hljs-title function_">isDone</span><span class="hljs-params">()</span>;<br>    <span class="hljs-comment">// 获取任务执行结果</span><br>    V <span class="hljs-title function_">get</span><span class="hljs-params">()</span> <span class="hljs-keyword">throws</span> InterruptedException, ExecutionException;<br>    <span class="hljs-comment">// 指定时间内没有返回计算结果就抛出 TimeOutException 异常</span><br>    V <span class="hljs-title function_">get</span><span class="hljs-params">(<span class="hljs-type">long</span> timeout, TimeUnit unit)</span><br><br>        <span class="hljs-keyword">throws</span> InterruptedException, ExecutionException, TimeoutExceptio<br><br>&#125;<br><br></code></pre></td></tr></table></figure>
+                <h2 id="CountDownLatch概述"><a href="#CountDownLatch概述" class="headerlink" title="CountDownLatch概述"></a>CountDownLatch概述</h2><p>用来进行线程同步协作，等待所有线程完成倒计时。</p>
+<p>其中构造参数用来初始化等待计数值，await() 用来等待计数归零，countDown() 用来让计数减一</p>
+<figure class="highlight livescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><code class="hljs livescript">public <span class="hljs-keyword">static</span> <span class="hljs-literal">void</span> main(<span class="hljs-built_in">String</span>[] args) throws InterruptedException &#123;<br> 	CountDownLatch latch = <span class="hljs-keyword">new</span> CountDownLatch(<span class="hljs-number">3</span>);<br> 	<span class="hljs-keyword">new</span> Thread<span class="hljs-function"><span class="hljs-params">(() -&gt; &#123;</span></span><br><span class="hljs-params"><span class="hljs-function"> 		log.debug(<span class="hljs-string">&quot;begin...&quot;</span>);</span></span><br><span class="hljs-params"><span class="hljs-function"> 		sleep(<span class="hljs-number">1</span>);</span></span><br><span class="hljs-params"><span class="hljs-function"> 		latch.countDown();</span></span><br><span class="hljs-params"><span class="hljs-function"> 		log.debug(<span class="hljs-string">&quot;end...&#123;&#125;&quot;</span>, latch.getCount());</span></span><br><span class="hljs-params"><span class="hljs-function"> 	&#125;)</span>.<span class="hljs-title">start</span><span class="hljs-params">()</span>;</span><br><span class="hljs-function"> <span class="hljs-title">new</span> <span class="hljs-title">Thread</span><span class="hljs-params">(() -&gt; &#123;</span></span><br><span class="hljs-params"><span class="hljs-function"> 		log.debug(<span class="hljs-string">&quot;begin...&quot;</span>);</span></span><br><span class="hljs-params"><span class="hljs-function"> 		sleep(<span class="hljs-number">1</span>);</span></span><br><span class="hljs-params"><span class="hljs-function"> 		latch.countDown();</span></span><br><span class="hljs-params"><span class="hljs-function"> 		log.debug(<span class="hljs-string">&quot;end...&#123;&#125;&quot;</span>, latch.getCount());</span></span><br><span class="hljs-params"><span class="hljs-function"> 	&#125;)</span>.<span class="hljs-title">start</span><span class="hljs-params">()</span>;</span><br><span class="hljs-function"><span class="hljs-title">new</span> <span class="hljs-title">Thread</span><span class="hljs-params">(() -&gt; &#123;</span></span><br><span class="hljs-params"><span class="hljs-function"> 		log.debug(<span class="hljs-string">&quot;begin...&quot;</span>);</span></span><br><span class="hljs-params"><span class="hljs-function"> 		sleep(<span class="hljs-number">1</span>);</span></span><br><span class="hljs-params"><span class="hljs-function"> 		latch.countDown();</span></span><br><span class="hljs-params"><span class="hljs-function"> 		log.debug(<span class="hljs-string">&quot;end...&#123;&#125;&quot;</span>, latch.getCount());</span></span><br><span class="hljs-params"><span class="hljs-function"> 	&#125;)</span>.<span class="hljs-title">start</span><span class="hljs-params">()</span>;</span><br><span class="hljs-function">   <span class="hljs-title">log</span>.<span class="hljs-title">debug</span><span class="hljs-params">(<span class="hljs-string">&quot;waiting...&quot;</span>)</span>;</span><br><span class="hljs-function">   <span class="hljs-title">latch</span>.<span class="hljs-title">await</span><span class="hljs-params">()</span>;</span><br><span class="hljs-function">   <span class="hljs-title">log</span>.<span class="hljs-title">debug</span><span class="hljs-params">(<span class="hljs-string">&quot;wait end...&quot;</span>)</span>;</span><br><span class="hljs-function">&#125;</span><br></code></pre></td></tr></table></figure>
 
-<p>简单理解就是：我有一个任务，提交给了 <code>Future</code> 来处理。任务执行期间我自己可以去做任何想做的事情。并且，在这期间我还可以取消任务以及获取任务的执行状态。一段时间之后，我就可以 <code>Future</code> 那里直接取出任务执行结果</p>
-<p><img src="/../futrue_pic/1.png" srcset="/img/loading.gif" lazyload></p>
-<p>实例：</p>
-<p><img src="/../futrue_pic/2.png" srcset="/img/loading.gif" lazyload></p>
-<h3 id="优点："><a href="#优点：" class="headerlink" title="优点："></a><strong>优点：</strong></h3><p>Futrue+线程池异步多线程任务配合，能够显著提高程序的执行效率。</p>
-<p><img src="/../futrue_pic/3.png" srcset="/img/loading.gif" lazyload></p>
-<h3 id="缺点1"><a href="#缺点1" class="headerlink" title="缺点1"></a>缺点1</h3><p>一旦调用get()方法求结果，如果计算没有完成容易导致程序阻塞</p>
-<p><img src="/../futrue_pic/4.png" srcset="/img/loading.gif" lazyload></p>
-<h3 id="缺点2"><a href="#缺点2" class="headerlink" title="缺点2"></a>缺点2</h3><p>轮询的方式会耗费无谓的CPU资源，而且也不见得能及时地得到计算结果.如果想要异步获取结果,通常都会以轮询的方式去获取结果</p>
-<p><img src="/../futrue_pic/5.png" srcset="/img/loading.gif" lazyload></p>
-<h3 id="结论"><a href="#结论" class="headerlink" title="结论"></a>结论</h3><p>Future对于结果的获取不是很友好，只能通过阻塞或轮询的方式得到任务的结果</p>
-<h2 id="CompetableFuture"><a href="#CompetableFuture" class="headerlink" title="CompetableFuture"></a>CompetableFuture</h2><p>get()方法在Future计算完成之前会一直处在阻塞状态下，isDone()方法容易耗费CPU资源，对于真正的异步处理我们希望是可以通过传入回调函数，在Future结束时自动调用该回调函数，这样，我们就不用等待结果。</p>
-<p><strong>阻塞的方式和异步编程的设计理念相违背，而轮询的方式会耗费无谓的CPU资源</strong>。因此，JDK8设计出CompletableFuture。</p>
-<p>CompletableFuture提供了一种<strong>观察者模式</strong>类似的机制，可以让任务执行完成后通知监听的一方。</p>
-<p><img src="/../futrue_pic/6.png" srcset="/img/loading.gif" lazyload></p>
-<p><code>CompletionStage</code> 接口描述了一个异步计算的阶段。很多计算可以分成多个阶段或步骤，此时可以通过它将所有步骤组合起来，形成异步计算的流水线。</p>
-<p><code>CompletionStage</code> 接口中的方法比较多，<code>CompletableFuture</code> 的函数式能力就是这个接口赋予的。从这个接口的方法参数你就可以发现其大量使用了 Java8 引入的函数式编程。</p>
-<h3 id="使用"><a href="#使用" class="headerlink" title="使用"></a>使用</h3><p><img src="/../futrue_pic/12.png" srcset="/img/loading.gif" lazyload></p>
-<p><strong>无返回值的</strong></p>
-<p><img src="/../futrue_pic/7.png" srcset="/img/loading.gif" lazyload></p>
-<p>默认有线程池(ForkJoinPool)，上面这个是自己new的</p>
-<p><strong>有返回值的</strong></p>
-<p><img src="/../futrue_pic/8.png" srcset="/img/loading.gif" lazyload></p>
-<p>跟Futrue区别</p>
-<p><img src="/../futrue_pic/10.png" srcset="/img/loading.gif" lazyload></p>
-<p><img src="/../futrue_pic/9.png" srcset="/img/loading.gif" lazyload></p>
-<h3 id="函数式接口"><a href="#函数式接口" class="headerlink" title="函数式接口"></a>函数式接口</h3><p><img src="/../futrue_pic/11.png" srcset="/img/loading.gif" lazyload></p>
+<p>输出：</p>
+<figure class="highlight llvm"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs llvm"><span class="hljs-number">18</span>:<span class="hljs-number">44</span>:<span class="hljs-number">00.778</span> <span class="hljs-keyword">c</span>.TestCountDownLatch [main] - waiting... <br><span class="hljs-number">18</span>:<span class="hljs-number">44</span>:<span class="hljs-number">00.778</span> <span class="hljs-keyword">c</span>.TestCountDownLatch [Thread<span class="hljs-number">-2</span>] - <span class="hljs-keyword">begin</span>... <br><span class="hljs-number">18</span>:<span class="hljs-number">44</span>:<span class="hljs-number">00.778</span> <span class="hljs-keyword">c</span>.TestCountDownLatch [Thread<span class="hljs-number">-0</span>] - <span class="hljs-keyword">begin</span>... <br><span class="hljs-number">18</span>:<span class="hljs-number">44</span>:<span class="hljs-number">00.778</span> <span class="hljs-keyword">c</span>.TestCountDownLatch [Thread<span class="hljs-number">-1</span>] - <span class="hljs-keyword">begin</span>... <br><span class="hljs-number">18</span>:<span class="hljs-number">44</span>:<span class="hljs-number">01.782</span> <span class="hljs-keyword">c</span>.TestCountDownLatch [Thread<span class="hljs-number">-0</span>] - <span class="hljs-keyword">end</span>...<span class="hljs-number">2</span> <br><span class="hljs-number">18</span>:<span class="hljs-number">44</span>:<span class="hljs-number">02.283</span> <span class="hljs-keyword">c</span>.TestCountDownLatch [Thread<span class="hljs-number">-2</span>] - <span class="hljs-keyword">end</span>...<span class="hljs-number">1</span> <br><span class="hljs-number">18</span>:<span class="hljs-number">44</span>:<span class="hljs-number">02.782</span> <span class="hljs-keyword">c</span>.TestCountDownLatch [Thread<span class="hljs-number">-1</span>] - <span class="hljs-keyword">end</span>...<span class="hljs-number">0</span> <br><span class="hljs-number">18</span>:<span class="hljs-number">44</span>:<span class="hljs-number">02.782</span> <span class="hljs-keyword">c</span>.TestCountDownLatch [main] - wait <span class="hljs-keyword">end</span>...<br></code></pre></td></tr></table></figure>
+
 
                 
               </div>
@@ -342,8 +297,8 @@
 
   <div class="license-box my-3">
     <div class="license-title">
-      <div>CompetableFutrue</div>
-      <div>http://example.com/2023/07/22/CompetableFuture/</div>
+      <div>CountDownLatch</div>
+      <div>http://example.com/2023/07/31/CountDownLatch/</div>
     </div>
     <div class="license-meta">
       
@@ -355,7 +310,7 @@
       
         <div class="license-meta-item license-meta-date">
           <div>Posted on</div>
-          <div>July 22, 2023</div>
+          <div>July 31, 2023</div>
         </div>
       
       
@@ -387,9 +342,9 @@
                   <article class="post-prev col-6">
                     
                     
-                      <a href="/2023/07/25/UnSafe/" title="走入UnSafe">
+                      <a href="/2023/08/05/STW%E6%9C%BA%E5%88%B6%E8%AF%A6%E8%A7%A3/" title="">
                         <i class="iconfont icon-arrowleft"></i>
-                        <span class="hidden-mobile">走入UnSafe</span>
+                        <span class="hidden-mobile"></span>
                         <span class="visible-mobile">Previous</span>
                       </a>
                     
@@ -397,8 +352,8 @@
                   <article class="post-next col-6">
                     
                     
-                      <a href="/2023/06/12/CAS/" title="CAS">
-                        <span class="hidden-mobile">CAS</span>
+                      <a href="/2023/07/29/Threadlocal/" title="ThreadLocal">
+                        <span class="hidden-mobile">ThreadLocal</span>
                         <span class="visible-mobile">Next</span>
                         <i class="iconfont icon-arrowright"></i>
                       </a>
