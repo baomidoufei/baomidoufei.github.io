@@ -16,28 +16,29 @@
   <meta name="author" content="彭">
   <meta name="keywords" content="">
   
-    <meta name="description" content="AQS是什么？AQS全称为抽象队列同步器，是用来实现锁或者其它同步器组件的公共基础部分的抽象实现，是重量级基础框架及整个JuC体系的基石，主要用于解决锁分配给”谁”的问题  整体就是一个抽象的FIFO队列来完成资源获取线程的排队工作，并通过一个int类变量表示持有锁的状态  AQS的”产品” ReentrantLock CountDownLatch ReentrantReadWriteLock S">
+    <meta name="description" content="title:Java内存布局和对象头对象的内存布局在HotSpot虚拟机里，对象在堆内存中的存储布局可以分为三个部分：对象头(Header)、实例数据(Instance Data)和对齐填充(Padding)  内存布局详解 对象头 对象标记Mark Work 类元信息(类型指针)   实例数据 对齐填充   对象内部结构分为：对象头、实例数据、对齐填充(保证8个字节的倍数) 对象头分为对象标记">
 <meta property="og:type" content="article">
-<meta property="og:title" content="AQS">
-<meta property="og:url" content="http://example.com/2023/08/11/AQS/index.html">
+<meta property="og:title" content="PJF">
+<meta property="og:url" content="http://example.com/2023/09/04/Java%E5%86%85%E5%AD%98%E5%B8%83%E5%B1%80%E5%92%8C%E5%AF%B9%E8%B1%A1%E5%A4%B4/index.html">
 <meta property="og:site_name" content="PJF">
-<meta property="og:description" content="AQS是什么？AQS全称为抽象队列同步器，是用来实现锁或者其它同步器组件的公共基础部分的抽象实现，是重量级基础框架及整个JuC体系的基石，主要用于解决锁分配给”谁”的问题  整体就是一个抽象的FIFO队列来完成资源获取线程的排队工作，并通过一个int类变量表示持有锁的状态  AQS的”产品” ReentrantLock CountDownLatch ReentrantReadWriteLock S">
+<meta property="og:description" content="title:Java内存布局和对象头对象的内存布局在HotSpot虚拟机里，对象在堆内存中的存储布局可以分为三个部分：对象头(Header)、实例数据(Instance Data)和对齐填充(Padding)  内存布局详解 对象头 对象标记Mark Work 类元信息(类型指针)   实例数据 对齐填充   对象内部结构分为：对象头、实例数据、对齐填充(保证8个字节的倍数) 对象头分为对象标记">
 <meta property="og:locale" content="en_US">
-<meta property="og:image" content="http://example.com/aqs_pic/1.png">
-<meta property="og:image" content="http://example.com/aqs_pic/2.png">
-<meta property="og:image" content="http://example.com/aqs_pic/3.png">
-<meta property="og:image" content="http://example.com/aqs_pic/4.png">
-<meta property="og:image" content="http://example.com/aqs_pic/5.png">
-<meta property="og:image" content="http://example.com/aqs_pic/6.png">
-<meta property="article:published_time" content="2023-08-11T12:11:27.764Z">
-<meta property="article:modified_time" content="2023-08-11T13:23:56.176Z">
+<meta property="og:image" content="http://example.com/Java%E5%86%85%E5%AD%98%E5%B8%83%E5%B1%80%E4%B8%8E%E5%AF%B9%E8%B1%A1%E5%A4%B4_pic/1.png">
+<meta property="og:image" content="http://example.com/Java%E5%86%85%E5%AD%98%E5%B8%83%E5%B1%80%E4%B8%8E%E5%AF%B9%E8%B1%A1%E5%A4%B4_pic/2.png">
+<meta property="og:image" content="http://example.com/Java%E5%86%85%E5%AD%98%E5%B8%83%E5%B1%80%E4%B8%8E%E5%AF%B9%E8%B1%A1%E5%A4%B4_pic/3.png">
+<meta property="og:image" content="http://example.com/Java%E5%86%85%E5%AD%98%E5%B8%83%E5%B1%80%E4%B8%8E%E5%AF%B9%E8%B1%A1%E5%A4%B4_pic/4.png">
+<meta property="og:image" content="http://example.com/Java%E5%86%85%E5%AD%98%E5%B8%83%E5%B1%80%E4%B8%8E%E5%AF%B9%E8%B1%A1%E5%A4%B4_pic/5.png">
+<meta property="og:image" content="http://example.com/Java%E5%86%85%E5%AD%98%E5%B8%83%E5%B1%80%E4%B8%8E%E5%AF%B9%E8%B1%A1%E5%A4%B4_pic/6.png">
+<meta property="og:image" content="http://example.com/Java%E5%86%85%E5%AD%98%E5%B8%83%E5%B1%80%E4%B8%8E%E5%AF%B9%E8%B1%A1%E5%A4%B4_pic/7.png">
+<meta property="article:published_time" content="2023-09-04T04:25:16.762Z">
+<meta property="article:modified_time" content="2023-09-04T07:24:01.335Z">
 <meta property="article:author" content="彭">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image" content="http://example.com/aqs_pic/1.png">
+<meta name="twitter:image" content="http://example.com/Java%E5%86%85%E5%AD%98%E5%B8%83%E5%B1%80%E4%B8%8E%E5%AF%B9%E8%B1%A1%E5%A4%B4_pic/1.png">
   
   
   
-  <title>AQS - PJF</title>
+  <title>PJF</title>
 
   <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
 
@@ -203,7 +204,7 @@
       <div class="banner-text text-center fade-in-up">
         <div class="h2">
           
-            <span id="subtitle" data-typed-text="AQS"></span>
+            <span id="subtitle" data-typed-text=""></span>
           
         </div>
 
@@ -214,8 +215,8 @@
     
       <span class="post-meta">
         <i class="iconfont icon-date-fill" aria-hidden="true"></i>
-        <time datetime="2023-08-11 20:11" pubdate>
-          August 11, 2023 pm
+        <time datetime="2023-09-04 12:25" pubdate>
+          September 4, 2023 pm
         </time>
       </span>
     
@@ -226,7 +227,7 @@
       <span class="post-meta mr-2">
         <i class="iconfont icon-chart"></i>
         
-          441 words
+          361 words
         
       </span>
     
@@ -275,29 +276,35 @@
         <div id="board">
           <article class="post-content mx-auto">
             <!-- SEO header -->
-            <h1 style="display: none">AQS</h1>
+            <h1 style="display: none"></h1>
             
             
               <div class="markdown-body">
                 
-                <h2 id="AQS是什么？"><a href="#AQS是什么？" class="headerlink" title="AQS是什么？"></a>AQS是什么？</h2><p>AQS全称为<strong>抽象队列同步器</strong>，是用来实现锁或者其它同步器组件的公共基础部分的<strong>抽象实现</strong>，是<strong>重量级基础框架及整个JuC体系的基石，主要用于解决锁分配给”谁”的问题</strong></p>
-<p><img src="/../aqs_pic/1.png" srcset="/img/loading.gif" lazyload></p>
-<p>整体就是一个抽象的<strong>FIFO队列</strong>来完成资源获取线程的排队工作，并通过一个<strong>int类变量</strong>表示持有锁的状态</p>
-<p><img src="/../aqs_pic/2.png" srcset="/img/loading.gif" lazyload></p>
-<h2 id="AQS的”产品”"><a href="#AQS的”产品”" class="headerlink" title="AQS的”产品”"></a>AQS的”产品”</h2><ul>
-<li>ReentrantLock</li>
-<li>CountDownLatch</li>
-<li>ReentrantReadWriteLock</li>
-<li>Semaphore</li>
-<li>CyclicBarrier</li>
+                <hr>
+<h2 id="title-Java内存布局和对象头"><a href="#title-Java内存布局和对象头" class="headerlink" title="title:Java内存布局和对象头"></a>title:Java内存布局和对象头</h2><h2 id="对象的内存布局"><a href="#对象的内存布局" class="headerlink" title="对象的内存布局"></a>对象的内存布局</h2><p>在HotSpot虚拟机里，对象在堆内存中的存储布局可以分为三个部分：<strong>对象头(Header)、实例数据(Instance Data)和对齐填充(Padding)</strong></p>
+<p><img src="/../Java%E5%86%85%E5%AD%98%E5%B8%83%E5%B1%80%E4%B8%8E%E5%AF%B9%E8%B1%A1%E5%A4%B4_pic/1.png" srcset="/img/loading.gif" lazyload></p>
+<h3 id="内存布局详解"><a href="#内存布局详解" class="headerlink" title="内存布局详解"></a>内存布局详解</h3><ul>
+<li>对象头<ul>
+<li>对象标记Mark Work</li>
+<li>类元信息(类型指针)</li>
 </ul>
-<p><img src="/../aqs_pic/3.png" srcset="/img/loading.gif" lazyload></p>
-<p><img src="/../aqs_pic/4.png" srcset="/img/loading.gif" lazyload></p>
-<h2 id="进一步理解锁和同步器的关系"><a href="#进一步理解锁和同步器的关系" class="headerlink" title="进一步理解锁和同步器的关系"></a>进一步理解锁和同步器的关系</h2><p>锁，面向使用者：定义了程序员和锁交互的使用层API，屏蔽了实现细节，调用即可</p>
-<p>同步器，面向锁的实现者：Java并发大神DougLee，提出统一规范并简化了锁的实现，<strong>将其抽象出来</strong>，屏蔽了同步状态管理、同步队列的管理和维护、阻塞线程排队和通知、唤醒机制等，是一切锁和同步组件实现的——–<strong>公共基础部分</strong></p>
-<h2 id="AQS同步队列基本结构"><a href="#AQS同步队列基本结构" class="headerlink" title="AQS同步队列基本结构"></a>AQS同步队列基本结构</h2><p><img src="/../aqs_pic/5.png" srcset="/img/loading.gif" lazyload></p>
-<p>这个state非常重要！！！0就是空闲，&gt;&#x3D;1就是已经有人占用</p>
-<h2 id="从ReentrantLock打开AQS"><a href="#从ReentrantLock打开AQS" class="headerlink" title="从ReentrantLock打开AQS"></a>从ReentrantLock打开AQS</h2><p><img src="/../aqs_pic/6.png" srcset="/img/loading.gif" lazyload></p>
+</li>
+<li>实例数据</li>
+<li>对齐填充</li>
+</ul>
+<p><img src="/../Java%E5%86%85%E5%AD%98%E5%B8%83%E5%B1%80%E4%B8%8E%E5%AF%B9%E8%B1%A1%E5%A4%B4_pic/2.png" srcset="/img/loading.gif" lazyload></p>
+<p>对象内部结构分为：对象头、实例数据、对齐填充(保证8个字节的倍数)</p>
+<p>对象头分为<strong>对象标记(markOop)和类元信息(klassOop)</strong>,类元信息存储的是指向对象类元数据(klass)的首地址</p>
+<h3 id="带着问题探索"><a href="#带着问题探索" class="headerlink" title="带着问题探索"></a>带着问题探索</h3><p><img src="/../Java%E5%86%85%E5%AD%98%E5%B8%83%E5%B1%80%E4%B8%8E%E5%AF%B9%E8%B1%A1%E5%A4%B4_pic/3.png" srcset="/img/loading.gif" lazyload></p>
+<h3 id="Mark-Word"><a href="#Mark-Word" class="headerlink" title="Mark Word"></a>Mark Word</h3><p><img src="/../Java%E5%86%85%E5%AD%98%E5%B8%83%E5%B1%80%E4%B8%8E%E5%AF%B9%E8%B1%A1%E5%A4%B4_pic/4.png" srcset="/img/loading.gif" lazyload></p>
+<p><img src="/../Java%E5%86%85%E5%AD%98%E5%B8%83%E5%B1%80%E4%B8%8E%E5%AF%B9%E8%B1%A1%E5%A4%B4_pic/5.png" srcset="/img/loading.gif" lazyload></p>
+<p><strong>在64位系统下，Mark Word占了8个字节，类型指针占了8个字节，一共64个字节</strong></p>
+<p><img src="/../Java%E5%86%85%E5%AD%98%E5%B8%83%E5%B1%80%E4%B8%8E%E5%AF%B9%E8%B1%A1%E5%A4%B4_pic/6.png" srcset="/img/loading.gif" lazyload></p>
+<h3 id="类元信息"><a href="#类元信息" class="headerlink" title="类元信息"></a>类元信息</h3><p>类元信息也叫<strong>类型指针</strong></p>
+<p><img src="/../Java%E5%86%85%E5%AD%98%E5%B8%83%E5%B1%80%E4%B8%8E%E5%AF%B9%E8%B1%A1%E5%A4%B4_pic/7.png" srcset="/img/loading.gif" lazyload></p>
+<h3 id="实例数据"><a href="#实例数据" class="headerlink" title="实例数据"></a>实例数据</h3><p>存放类的属性(Field)数据信息，包括父类的属性信息</p>
+<h3 id="对齐填充"><a href="#对齐填充" class="headerlink" title="对齐填充"></a>对齐填充</h3><p>虚拟机要求对象起始地址必须是8字节的整数倍</p>
 
                 
               </div>
@@ -315,8 +322,8 @@
 
   <div class="license-box my-3">
     <div class="license-title">
-      <div>AQS</div>
-      <div>http://example.com/2023/08/11/AQS/</div>
+      <div></div>
+      <div>http://example.com/2023/09/04/Java内存布局和对象头/</div>
     </div>
     <div class="license-meta">
       
@@ -328,7 +335,7 @@
       
         <div class="license-meta-item license-meta-date">
           <div>Posted on</div>
-          <div>August 11, 2023</div>
+          <div>September 4, 2023</div>
         </div>
       
       
@@ -360,18 +367,12 @@
                   <article class="post-prev col-6">
                     
                     
-                      <a href="/2023/08/21/%E5%B8%B8%E8%A7%81%E6%8A%80%E6%9C%AF%E5%9C%BA%E6%99%AF/" title="常见技术场景">
-                        <i class="iconfont icon-arrowleft"></i>
-                        <span class="hidden-mobile">常见技术场景</span>
-                        <span class="visible-mobile">Previous</span>
-                      </a>
-                    
                   </article>
                   <article class="post-next col-6">
                     
                     
-                      <a href="/2023/08/05/STW%E6%9C%BA%E5%88%B6%E8%AF%A6%E8%A7%A3/" title="">
-                        <span class="hidden-mobile"></span>
+                      <a href="/2023/08/21/%E5%B8%B8%E8%A7%81%E6%8A%80%E6%9C%AF%E5%9C%BA%E6%99%AF/" title="常见技术场景">
+                        <span class="hidden-mobile">常见技术场景</span>
                         <span class="visible-mobile">Next</span>
                         <i class="iconfont icon-arrowright"></i>
                       </a>
