@@ -16,29 +16,25 @@
   <meta name="author" content="彭">
   <meta name="keywords" content="">
   
-    <meta name="description" content="title:Java内存布局和对象头对象的内存布局在HotSpot虚拟机里，对象在堆内存中的存储布局可以分为三个部分：对象头(Header)、实例数据(Instance Data)和对齐填充(Padding)  内存布局详解 对象头 对象标记Mark Work 类元信息(类型指针)   实例数据 对齐填充   对象内部结构分为：对象头、实例数据、对齐填充(保证8个字节的倍数) 对象头分为对象标记">
+    <meta name="description" content="概念StampedLock(邮戳锁，stamp–戳记，long类型)是JDK1.8中新增的一个读写锁，也是对JDK1.5的读写锁ReentrantReadWriteLock的优化。 stamp代表了锁的状态，当stamp返回0时，表示线程获取失败。并且，当释放锁或者转换锁的时候，都要传入最初获取的stamp值。 锁饥饿问题ReentrantReadWriteLock实现了读写分离，但是一旦读操作比">
 <meta property="og:type" content="article">
-<meta property="og:title" content="PJF">
-<meta property="og:url" content="http://example.com/2023/09/04/Java%E5%86%85%E5%AD%98%E5%B8%83%E5%B1%80%E5%92%8C%E5%AF%B9%E8%B1%A1%E5%A4%B4/index.html">
+<meta property="og:title" content="StampedLock">
+<meta property="og:url" content="http://example.com/2023/09/05/StampedLock/index.html">
 <meta property="og:site_name" content="PJF">
-<meta property="og:description" content="title:Java内存布局和对象头对象的内存布局在HotSpot虚拟机里，对象在堆内存中的存储布局可以分为三个部分：对象头(Header)、实例数据(Instance Data)和对齐填充(Padding)  内存布局详解 对象头 对象标记Mark Work 类元信息(类型指针)   实例数据 对齐填充   对象内部结构分为：对象头、实例数据、对齐填充(保证8个字节的倍数) 对象头分为对象标记">
+<meta property="og:description" content="概念StampedLock(邮戳锁，stamp–戳记，long类型)是JDK1.8中新增的一个读写锁，也是对JDK1.5的读写锁ReentrantReadWriteLock的优化。 stamp代表了锁的状态，当stamp返回0时，表示线程获取失败。并且，当释放锁或者转换锁的时候，都要传入最初获取的stamp值。 锁饥饿问题ReentrantReadWriteLock实现了读写分离，但是一旦读操作比">
 <meta property="og:locale" content="en_US">
-<meta property="og:image" content="http://example.com/Java%E5%86%85%E5%AD%98%E5%B8%83%E5%B1%80%E4%B8%8E%E5%AF%B9%E8%B1%A1%E5%A4%B4_pic/1.png">
-<meta property="og:image" content="http://example.com/Java%E5%86%85%E5%AD%98%E5%B8%83%E5%B1%80%E4%B8%8E%E5%AF%B9%E8%B1%A1%E5%A4%B4_pic/2.png">
-<meta property="og:image" content="http://example.com/Java%E5%86%85%E5%AD%98%E5%B8%83%E5%B1%80%E4%B8%8E%E5%AF%B9%E8%B1%A1%E5%A4%B4_pic/3.png">
-<meta property="og:image" content="http://example.com/Java%E5%86%85%E5%AD%98%E5%B8%83%E5%B1%80%E4%B8%8E%E5%AF%B9%E8%B1%A1%E5%A4%B4_pic/4.png">
-<meta property="og:image" content="http://example.com/Java%E5%86%85%E5%AD%98%E5%B8%83%E5%B1%80%E4%B8%8E%E5%AF%B9%E8%B1%A1%E5%A4%B4_pic/5.png">
-<meta property="og:image" content="http://example.com/Java%E5%86%85%E5%AD%98%E5%B8%83%E5%B1%80%E4%B8%8E%E5%AF%B9%E8%B1%A1%E5%A4%B4_pic/6.png">
-<meta property="og:image" content="http://example.com/Java%E5%86%85%E5%AD%98%E5%B8%83%E5%B1%80%E4%B8%8E%E5%AF%B9%E8%B1%A1%E5%A4%B4_pic/7.png">
-<meta property="article:published_time" content="2023-09-04T04:25:16.762Z">
-<meta property="article:modified_time" content="2023-09-04T07:24:01.335Z">
+<meta property="og:image" content="d:\hexo\blog\source\%E8%AF%BB%E5%86%99%E9%94%81_pic\8.png">
+<meta property="og:image" content="d:\hexo\blog\source\%E8%AF%BB%E5%86%99%E9%94%81_pic\7.png">
+<meta property="og:image" content="d:\hexo\blog\source\%E8%AF%BB%E5%86%99%E9%94%81_pic\9.png">
+<meta property="article:published_time" content="2023-09-05T07:52:09.762Z">
+<meta property="article:modified_time" content="2023-09-05T09:29:59.896Z">
 <meta property="article:author" content="彭">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image" content="http://example.com/Java%E5%86%85%E5%AD%98%E5%B8%83%E5%B1%80%E4%B8%8E%E5%AF%B9%E8%B1%A1%E5%A4%B4_pic/1.png">
+<meta name="twitter:image" content="d:\hexo\blog\source\%E8%AF%BB%E5%86%99%E9%94%81_pic\8.png">
   
   
   
-  <title>PJF</title>
+  <title>StampedLock - PJF</title>
 
   <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
 
@@ -204,7 +200,7 @@
       <div class="banner-text text-center fade-in-up">
         <div class="h2">
           
-            <span id="subtitle" data-typed-text=""></span>
+            <span id="subtitle" data-typed-text="StampedLock"></span>
           
         </div>
 
@@ -215,8 +211,8 @@
     
       <span class="post-meta">
         <i class="iconfont icon-date-fill" aria-hidden="true"></i>
-        <time datetime="2023-09-04 12:25" pubdate>
-          September 4, 2023 pm
+        <time datetime="2023-09-05 15:52" pubdate>
+          September 5, 2023 pm
         </time>
       </span>
     
@@ -227,7 +223,7 @@
       <span class="post-meta mr-2">
         <i class="iconfont icon-chart"></i>
         
-          361 words
+          1.1k words
         
       </span>
     
@@ -238,7 +234,7 @@
         
         
         
-          4 mins
+          10 mins
         
       </span>
     
@@ -276,35 +272,38 @@
         <div id="board">
           <article class="post-content mx-auto">
             <!-- SEO header -->
-            <h1 style="display: none"></h1>
+            <h1 style="display: none">StampedLock</h1>
             
             
               <div class="markdown-body">
                 
-                <hr>
-<h2 id="title-Java内存布局和对象头"><a href="#title-Java内存布局和对象头" class="headerlink" title="title:Java内存布局和对象头"></a>title:Java内存布局和对象头</h2><h2 id="对象的内存布局"><a href="#对象的内存布局" class="headerlink" title="对象的内存布局"></a>对象的内存布局</h2><p>在HotSpot虚拟机里，对象在堆内存中的存储布局可以分为三个部分：<strong>对象头(Header)、实例数据(Instance Data)和对齐填充(Padding)</strong></p>
-<p><img src="/../Java%E5%86%85%E5%AD%98%E5%B8%83%E5%B1%80%E4%B8%8E%E5%AF%B9%E8%B1%A1%E5%A4%B4_pic/1.png" srcset="/img/loading.gif" lazyload></p>
-<h3 id="内存布局详解"><a href="#内存布局详解" class="headerlink" title="内存布局详解"></a>内存布局详解</h3><ul>
-<li>对象头<ul>
-<li>对象标记Mark Work</li>
-<li>类元信息(类型指针)</li>
+                <h3 id="概念"><a href="#概念" class="headerlink" title="概念"></a>概念</h3><p>StampedLock(邮戳锁，stamp–戳记，long类型)是JDK1.8中新增的一个读写锁，也是对JDK1.5的读写锁ReentrantReadWriteLock的优化。</p>
+<p>stamp代表了锁的状态，当stamp返回0时，表示线程获取失败。并且，当释放锁或者转换锁的时候，都要传入最初获取的stamp值。</p>
+<h3 id="锁饥饿问题"><a href="#锁饥饿问题" class="headerlink" title="锁饥饿问题"></a>锁饥饿问题</h3><p>ReentrantReadWriteLock实现了读写分离，但是一旦读操作比较多的时候，想要获取写锁就变得比较困难了，假如当前1000个线程，999个读，1个写，有可能999个读取线程长时间抢到了锁，那1个写线程就悲剧了</p>
+<p><strong>因为当前有可能会一直存在读锁，而无法获得写锁</strong>，根本没机会写，o(.-…)o</p>
+<p>如何解决锁饥饿问题？</p>
+<p>使用“公平”策略可以一定程度上缓解这个问题，但是“公平”是以牺牲系统吞吐量为代价的</p>
+<p>所以，<strong>StampedLock类的乐观读锁闪亮登场</strong></p>
+<h3 id="读写锁问题与邮戳锁由来"><a href="#读写锁问题与邮戳锁由来" class="headerlink" title="读写锁问题与邮戳锁由来"></a>读写锁问题与邮戳锁由来</h3><p>ReentrantReadWriteLock</p>
+<p>允许多个线程同时读，但是只允许一个线程写，在线程获取到写锁的时候，其他写操作和读操作都会处于阻塞状态，读锁和写锁也是互斥的，所以在读的时候是不允许写的，读写锁比传统的synchronized速度要快很多，原因就是在于<strong>ReentrantReadWriteLock支持读并发，读读可以共享</strong></p>
+<p>StampedLock横空出世</p>
+<p>ReentrantReadWriteLock的读锁被占用的时候，其他线程尝试获取写锁的时候会被阻塞。但是，StampedLock采取乐观获取锁后，其他线程尝试获取写锁时不会被阻塞，这其实是对读锁的优化，所以，<strong>在获取乐观读锁后，还需要对结果进行校验。</strong></p>
+<p>一句话：对短的只读代码段，使用乐观锁模式通常可以减少争用并提高代码吞吐量</p>
+<h3 id="特点"><a href="#特点" class="headerlink" title="特点"></a>特点</h3><ul>
+<li>所有获取锁的方法，都返回一个邮戳(Stamp） , Stamp为零表示获取失败，其余都表示成功;</li>
+<li>所有释放锁的方法，都需要一个邮戳(Stamp),这个Stamp必须是和成功获取锁时得到的Stamp一致;</li>
+<li>stampedLock是不可重入的，危险(如果一个线程已经持有了写锁，再去获取写锁的话就会造成死锁)</li>
 </ul>
-</li>
-<li>实例数据</li>
-<li>对齐填充</li>
+<p>三种访问模式</p>
+<ul>
+<li>Reading（读模式悲观）:功能和ReentrantReadWriteLock的读锁类似</li>
+<li>Writing (写模式）:功能和ReentrantRedWriteLock的写锁类似</li>
+<li>Optimistic reading(乐观读模式):无锁机制，类似于数据库中的乐观锁，<br>支持读写并发，<strong>很乐观认对读取时没人修改，假如被修改再实现升级为悲观读模式</strong></li>
 </ul>
-<p><img src="/../Java%E5%86%85%E5%AD%98%E5%B8%83%E5%B1%80%E4%B8%8E%E5%AF%B9%E8%B1%A1%E5%A4%B4_pic/2.png" srcset="/img/loading.gif" lazyload></p>
-<p>对象内部结构分为：对象头、实例数据、对齐填充(保证8个字节的倍数)</p>
-<p>对象头分为<strong>对象标记(markOop)和类元信息(klassOop)</strong>,类元信息存储的是指向对象类元数据(klass)的首地址</p>
-<h3 id="带着问题探索"><a href="#带着问题探索" class="headerlink" title="带着问题探索"></a>带着问题探索</h3><p><img src="/../Java%E5%86%85%E5%AD%98%E5%B8%83%E5%B1%80%E4%B8%8E%E5%AF%B9%E8%B1%A1%E5%A4%B4_pic/3.png" srcset="/img/loading.gif" lazyload></p>
-<h3 id="Mark-Word"><a href="#Mark-Word" class="headerlink" title="Mark Word"></a>Mark Word</h3><p><img src="/../Java%E5%86%85%E5%AD%98%E5%B8%83%E5%B1%80%E4%B8%8E%E5%AF%B9%E8%B1%A1%E5%A4%B4_pic/4.png" srcset="/img/loading.gif" lazyload></p>
-<p><img src="/../Java%E5%86%85%E5%AD%98%E5%B8%83%E5%B1%80%E4%B8%8E%E5%AF%B9%E8%B1%A1%E5%A4%B4_pic/5.png" srcset="/img/loading.gif" lazyload></p>
-<p><strong>在64位系统下，Mark Word占了8个字节，类型指针占了8个字节，一共64个字节</strong></p>
-<p><img src="/../Java%E5%86%85%E5%AD%98%E5%B8%83%E5%B1%80%E4%B8%8E%E5%AF%B9%E8%B1%A1%E5%A4%B4_pic/6.png" srcset="/img/loading.gif" lazyload></p>
-<h3 id="类元信息"><a href="#类元信息" class="headerlink" title="类元信息"></a>类元信息</h3><p>类元信息也叫<strong>类型指针</strong></p>
-<p><img src="/../Java%E5%86%85%E5%AD%98%E5%B8%83%E5%B1%80%E4%B8%8E%E5%AF%B9%E8%B1%A1%E5%A4%B4_pic/7.png" srcset="/img/loading.gif" lazyload></p>
-<h3 id="实例数据"><a href="#实例数据" class="headerlink" title="实例数据"></a>实例数据</h3><p>存放类的属性(Field)数据信息，包括父类的属性信息</p>
-<h3 id="对齐填充"><a href="#对齐填充" class="headerlink" title="对齐填充"></a>对齐填充</h3><p>虚拟机要求对象起始地址必须是8字节的整数倍</p>
+<p><img src="D:\hexo\blog\source\读写锁_pic\8.png" srcset="/img/loading.gif" lazyload></p>
+<p>如果乐观读过程中因为被修改了，那么乐观读应该修改为悲观读</p>
+<p><img src="D:\hexo\blog\source\读写锁_pic\7.png" srcset="/img/loading.gif" lazyload></p>
+<h3 id="缺点"><a href="#缺点" class="headerlink" title="缺点"></a>缺点</h3><p><img src="D:\hexo\blog\source\读写锁_pic\9.png" srcset="/img/loading.gif" lazyload></p>
 
                 
               </div>
@@ -322,8 +321,8 @@
 
   <div class="license-box my-3">
     <div class="license-title">
-      <div></div>
-      <div>http://example.com/2023/09/04/Java内存布局和对象头/</div>
+      <div>StampedLock</div>
+      <div>http://example.com/2023/09/05/StampedLock/</div>
     </div>
     <div class="license-meta">
       
@@ -335,7 +334,7 @@
       
         <div class="license-meta-item license-meta-date">
           <div>Posted on</div>
-          <div>September 4, 2023</div>
+          <div>September 5, 2023</div>
         </div>
       
       
@@ -367,18 +366,12 @@
                   <article class="post-prev col-6">
                     
                     
-                      <a href="/2023/09/05/%E8%AF%BB%E5%86%99%E9%94%81/" title="ReentrantReadWriteLock">
-                        <i class="iconfont icon-arrowleft"></i>
-                        <span class="hidden-mobile">ReentrantReadWriteLock</span>
-                        <span class="visible-mobile">Previous</span>
-                      </a>
-                    
                   </article>
                   <article class="post-next col-6">
                     
                     
-                      <a href="/2023/08/21/%E5%B8%B8%E8%A7%81%E6%8A%80%E6%9C%AF%E5%9C%BA%E6%99%AF/" title="常见技术场景">
-                        <span class="hidden-mobile">常见技术场景</span>
+                      <a href="/2023/09/05/%E8%AF%BB%E5%86%99%E9%94%81/" title="ReentrantReadWriteLock">
+                        <span class="hidden-mobile">ReentrantReadWriteLock</span>
                         <span class="visible-mobile">Next</span>
                         <i class="iconfont icon-arrowright"></i>
                       </a>

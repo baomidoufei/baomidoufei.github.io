@@ -224,6 +224,72 @@
     <article class="col-12 col-md-12 mx-auto index-info">
       <h1 class="index-header">
         
+        <a href="/2023/09/05/StampedLock/" target="_self">
+          StampedLock
+        </a>
+      </h1>
+
+      
+      <a class="index-excerpt index-excerpt__noimg" href="/2023/09/05/StampedLock/" target="_self">
+        <div>
+          概念StampedLock(邮戳锁，stamp–戳记，long类型)是JDK1.8中新增的一个读写锁，也是对JDK1.5的读写锁ReentrantReadWriteLock的优化。 stamp代表了锁的状态，当stamp返回0时，表示线程获取失败。并且，当释放锁或者转换锁的时候，都要传入最初获取的stamp值。 锁饥饿问题ReentrantReadWriteLock实现了读写分离，但是一旦读操作比
+        </div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2023-09-05 15:52" pubdate>
+              2023-09-05
+            </time>
+          </div>
+        
+        
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h1 class="index-header">
+        
+        <a href="/2023/09/05/%E8%AF%BB%E5%86%99%E9%94%81/" target="_self">
+          ReentrantReadWriteLock
+        </a>
+      </h1>
+
+      
+      <a class="index-excerpt index-excerpt__noimg" href="/2023/09/05/%E8%AF%BB%E5%86%99%E9%94%81/" target="_self">
+        <div>
+          读写锁定义读写锁定义为：一个资源能够被多个读线程访问，或者被一个写线程访问，但是不能同时存在读写线程(读写互斥、读读共享) 锁演化过程 它只允许读读共存，而读写和写写依然是互斥的，大多实际场景是“读&#x2F;读”线程间并不存在互斥关系，只有”读&#x2F;写”线程或”写&#x2F;写”线程间的操作需要互斥的。因此引入ReentrantReadWriteLock。 总结一个ReentrantRea
+        </div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2023-09-05 10:28" pubdate>
+              2023-09-05
+            </time>
+          </div>
+        
+        
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h1 class="index-header">
+        
         <a href="/2023/09/04/Java%E5%86%85%E5%AD%98%E5%B8%83%E5%B1%80%E5%92%8C%E5%AF%B9%E8%B1%A1%E5%A4%B4/" target="_self">
           
         </a>
@@ -473,72 +539,6 @@
             <i class="iconfont icon-date"></i>
             <time datetime="2023-07-25 23:06" pubdate>
               2023-07-25
-            </time>
-          </div>
-        
-        
-        
-      </div>
-    </article>
-  </div>
-
-  <div class="row mx-auto index-card">
-    
-    
-    <article class="col-12 col-md-12 mx-auto index-info">
-      <h1 class="index-header">
-        
-        <a href="/2023/07/22/CompetableFuture/" target="_self">
-          CompetableFutrue
-        </a>
-      </h1>
-
-      
-      <a class="index-excerpt index-excerpt__noimg" href="/2023/07/22/CompetableFuture/" target="_self">
-        <div>
-          FutrueFutrue接口定义了(FutrueTask)定义了操作异步任务执行一些方法，如获取异步任务的执行结果、取消任务的执行、判断任务是否取消、判断任务执行是否完毕等。 Future 类是异步思想的典型运用，主要用在一些需要执行耗时任务的场景，避免程序一直原地等待耗时任务执行完成，执行效率太低。具体来说是这样的：当我们执行某一耗时的任务时，可以将这个耗时任务交给一个子线程去异步执行，同时我们
-        </div>
-      </a>
-
-      <div class="index-btm post-metas">
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>
-            <time datetime="2023-07-22 11:52" pubdate>
-              2023-07-22
-            </time>
-          </div>
-        
-        
-        
-      </div>
-    </article>
-  </div>
-
-  <div class="row mx-auto index-card">
-    
-    
-    <article class="col-12 col-md-12 mx-auto index-info">
-      <h1 class="index-header">
-        
-        <a href="/2023/06/12/CAS/" target="_self">
-          CAS
-        </a>
-      </h1>
-
-      
-      <a class="index-excerpt index-excerpt__noimg" href="/2023/06/12/CAS/" target="_self">
-        <div>
-          CAS概述CAS是JDK提供的非阻塞原子性操作，它通过硬件保证了比较-更新的原子性。 它是非阻塞的且自身具有原子性，也就是说这玩意效率更高且通过硬件保证，说明这玩意更可靠。 CAS是一条CPU的原子指令(cmpxchg指令），不会造成所谓的数据不一致问题，Unsafe提供的CAS方法（如compareAndSwapXXX）底层实现即为CPU指令cmpxchg。 执行cmpxchg指令的时候，会判断
-        </div>
-      </a>
-
-      <div class="index-btm post-metas">
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>
-            <time datetime="2023-06-12 22:10" pubdate>
-              2023-06-12
             </time>
           </div>
         
