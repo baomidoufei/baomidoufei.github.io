@@ -16,19 +16,34 @@
   <meta name="author" content="彭">
   <meta name="keywords" content="">
   
-    <meta property="og:type" content="article">
-<meta property="og:title" content="PJF">
-<meta property="og:url" content="http://example.com/2023/08/05/STW%E6%9C%BA%E5%88%B6%E8%AF%A6%E8%A7%A3/index.html">
+    <meta name="description" content="核心参数 执行流程 有哪些常见队列  场景一 场景二 场景三    这个@Async注解的使用在实习的时候坤哥代码也有用到过，相对来说用起来更加优雅 总结 如何控制某个方法允许并发访问线程数量Semaphore [ ‘scme ,for]信号量，是JUC包下的一个工具类，底层是AQS，我们可以通过其限制执行的线程数量使用场景: 通常用于那些资源有明确访问数量限制的场景，常用于限流。  在多线程中提">
+<meta property="og:type" content="article">
+<meta property="og:title" content="线程池">
+<meta property="og:url" content="http://example.com/2023/09/07/%E7%BA%BF%E7%A8%8B%E6%B1%A0%E4%BD%BF%E7%94%A8%E5%9C%BA%E6%99%AF/index.html">
 <meta property="og:site_name" content="PJF">
+<meta property="og:description" content="核心参数 执行流程 有哪些常见队列  场景一 场景二 场景三    这个@Async注解的使用在实习的时候坤哥代码也有用到过，相对来说用起来更加优雅 总结 如何控制某个方法允许并发访问线程数量Semaphore [ ‘scme ,for]信号量，是JUC包下的一个工具类，底层是AQS，我们可以通过其限制执行的线程数量使用场景: 通常用于那些资源有明确访问数量限制的场景，常用于限流。  在多线程中提">
 <meta property="og:locale" content="en_US">
-<meta property="article:published_time" content="2023-08-05T15:25:26.486Z">
-<meta property="article:modified_time" content="2023-08-05T15:25:26.486Z">
+<meta property="og:image" content="http://example.com/%E7%BA%BF%E7%A8%8B%E6%B1%A0%E4%BD%BF%E7%94%A8%E5%9C%BA%E6%99%AF_pic/10.png">
+<meta property="og:image" content="http://example.com/%E7%BA%BF%E7%A8%8B%E6%B1%A0%E4%BD%BF%E7%94%A8%E5%9C%BA%E6%99%AF_pic/11.png">
+<meta property="og:image" content="http://example.com/%E7%BA%BF%E7%A8%8B%E6%B1%A0%E4%BD%BF%E7%94%A8%E5%9C%BA%E6%99%AF_pic/12.png">
+<meta property="og:image" content="http://example.com/%E7%BA%BF%E7%A8%8B%E6%B1%A0%E4%BD%BF%E7%94%A8%E5%9C%BA%E6%99%AF_pic/13.png">
+<meta property="og:image" content="http://example.com/%E7%BA%BF%E7%A8%8B%E6%B1%A0%E4%BD%BF%E7%94%A8%E5%9C%BA%E6%99%AF_pic/1.png">
+<meta property="og:image" content="http://example.com/%E7%BA%BF%E7%A8%8B%E6%B1%A0%E4%BD%BF%E7%94%A8%E5%9C%BA%E6%99%AF_pic/2.png">
+<meta property="og:image" content="http://example.com/%E7%BA%BF%E7%A8%8B%E6%B1%A0%E4%BD%BF%E7%94%A8%E5%9C%BA%E6%99%AF_pic/6.png">
+<meta property="og:image" content="http://example.com/%E7%BA%BF%E7%A8%8B%E6%B1%A0%E4%BD%BF%E7%94%A8%E5%9C%BA%E6%99%AF_pic/3.png">
+<meta property="og:image" content="http://example.com/%E7%BA%BF%E7%A8%8B%E6%B1%A0%E4%BD%BF%E7%94%A8%E5%9C%BA%E6%99%AF_pic/4.png">
+<meta property="og:image" content="http://example.com/%E7%BA%BF%E7%A8%8B%E6%B1%A0%E4%BD%BF%E7%94%A8%E5%9C%BA%E6%99%AF_pic/5.png">
+<meta property="og:image" content="http://example.com/%E7%BA%BF%E7%A8%8B%E6%B1%A0%E4%BD%BF%E7%94%A8%E5%9C%BA%E6%99%AF_pic/9.png">
+<meta property="og:image" content="http://example.com/%E7%BA%BF%E7%A8%8B%E6%B1%A0%E4%BD%BF%E7%94%A8%E5%9C%BA%E6%99%AF_pic/8.png">
+<meta property="article:published_time" content="2023-09-07T01:59:10.029Z">
+<meta property="article:modified_time" content="2023-09-10T12:24:09.046Z">
 <meta property="article:author" content="彭">
 <meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="http://example.com/%E7%BA%BF%E7%A8%8B%E6%B1%A0%E4%BD%BF%E7%94%A8%E5%9C%BA%E6%99%AF_pic/10.png">
   
   
   
-  <title>PJF</title>
+  <title>线程池 - PJF</title>
 
   <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
 
@@ -194,7 +209,7 @@
       <div class="banner-text text-center fade-in-up">
         <div class="h2">
           
-            <span id="subtitle" data-typed-text=""></span>
+            <span id="subtitle" data-typed-text="线程池"></span>
           
         </div>
 
@@ -205,8 +220,8 @@
     
       <span class="post-meta">
         <i class="iconfont icon-date-fill" aria-hidden="true"></i>
-        <time datetime="2023-08-05 23:25" pubdate>
-          August 5, 2023 pm
+        <time datetime="2023-09-07 09:59" pubdate>
+          September 7, 2023 am
         </time>
       </span>
     
@@ -217,7 +232,7 @@
       <span class="post-meta mr-2">
         <i class="iconfont icon-chart"></i>
         
-          0 words
+          298 words
         
       </span>
     
@@ -228,7 +243,7 @@
         
         
         
-          1 mins
+          3 mins
         
       </span>
     
@@ -266,12 +281,33 @@
         <div id="board">
           <article class="post-content mx-auto">
             <!-- SEO header -->
-            <h1 style="display: none"></h1>
+            <h1 style="display: none">线程池</h1>
             
             
               <div class="markdown-body">
                 
-                
+                <h3 id="核心参数"><a href="#核心参数" class="headerlink" title="核心参数"></a>核心参数</h3><p><img src="/../%E7%BA%BF%E7%A8%8B%E6%B1%A0%E4%BD%BF%E7%94%A8%E5%9C%BA%E6%99%AF_pic/10.png" srcset="/img/loading.gif" lazyload></p>
+<h3 id="执行流程"><a href="#执行流程" class="headerlink" title="执行流程"></a>执行流程</h3><p><img src="/../%E7%BA%BF%E7%A8%8B%E6%B1%A0%E4%BD%BF%E7%94%A8%E5%9C%BA%E6%99%AF_pic/11.png" srcset="/img/loading.gif" lazyload></p>
+<h3 id="有哪些常见队列"><a href="#有哪些常见队列" class="headerlink" title="有哪些常见队列"></a>有哪些常见队列</h3><p><img src="/../%E7%BA%BF%E7%A8%8B%E6%B1%A0%E4%BD%BF%E7%94%A8%E5%9C%BA%E6%99%AF_pic/12.png" srcset="/img/loading.gif" lazyload></p>
+<p><img src="/../%E7%BA%BF%E7%A8%8B%E6%B1%A0%E4%BD%BF%E7%94%A8%E5%9C%BA%E6%99%AF_pic/13.png" srcset="/img/loading.gif" lazyload></p>
+<h3 id="场景一"><a href="#场景一" class="headerlink" title="场景一"></a>场景一</h3><p><img src="/../%E7%BA%BF%E7%A8%8B%E6%B1%A0%E4%BD%BF%E7%94%A8%E5%9C%BA%E6%99%AF_pic/1.png" srcset="/img/loading.gif" lazyload></p>
+<h3 id="场景二"><a href="#场景二" class="headerlink" title="场景二"></a>场景二</h3><p><img src="/../%E7%BA%BF%E7%A8%8B%E6%B1%A0%E4%BD%BF%E7%94%A8%E5%9C%BA%E6%99%AF_pic/2.png" srcset="/img/loading.gif" lazyload></p>
+<h3 id="场景三"><a href="#场景三" class="headerlink" title="场景三"></a>场景三</h3><p><img src="/../%E7%BA%BF%E7%A8%8B%E6%B1%A0%E4%BD%BF%E7%94%A8%E5%9C%BA%E6%99%AF_pic/6.png" srcset="/img/loading.gif" lazyload></p>
+<p><img src="/../%E7%BA%BF%E7%A8%8B%E6%B1%A0%E4%BD%BF%E7%94%A8%E5%9C%BA%E6%99%AF_pic/3.png" srcset="/img/loading.gif" lazyload></p>
+<p><img src="/../%E7%BA%BF%E7%A8%8B%E6%B1%A0%E4%BD%BF%E7%94%A8%E5%9C%BA%E6%99%AF_pic/4.png" srcset="/img/loading.gif" lazyload></p>
+<p><img src="/../%E7%BA%BF%E7%A8%8B%E6%B1%A0%E4%BD%BF%E7%94%A8%E5%9C%BA%E6%99%AF_pic/5.png" srcset="/img/loading.gif" lazyload></p>
+<p>这个@Async注解的使用在实习的时候坤哥代码也有用到过，相对来说用起来更加优雅</p>
+<h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3><p><img src="/../%E7%BA%BF%E7%A8%8B%E6%B1%A0%E4%BD%BF%E7%94%A8%E5%9C%BA%E6%99%AF_pic/9.png" srcset="/img/loading.gif" lazyload></p>
+<h3 id="如何控制某个方法允许并发访问线程数量"><a href="#如何控制某个方法允许并发访问线程数量" class="headerlink" title="如何控制某个方法允许并发访问线程数量"></a>如何控制某个方法允许并发访问线程数量</h3><p>Semaphore [ ‘scme ,for]信号量，是JUC包下的一个工具类，底层是AQS，我们可以通过其限制执行的线程数量使用场景:</p>
+<p>通常用于那些资源有明确访问数量限制的场景，常用于限流。</p>
+<p><img src="/../%E7%BA%BF%E7%A8%8B%E6%B1%A0%E4%BD%BF%E7%94%A8%E5%9C%BA%E6%99%AF_pic/8.png" srcset="/img/loading.gif" lazyload></p>
+<p>在多线程中提供了一个工具类Semaphore，信号量。在并发的情况下，可以控制方法的访问量</p>
+<ul>
+<li>创建Semaphore对象，可以给一个容量</li>
+<li>acquire()可以请求一个信号量，这时候的信号量个数-1</li>
+<li>release()释放一个信号量，此时信号量个数+1</li>
+</ul>
+
                 
               </div>
             
@@ -288,8 +324,8 @@
 
   <div class="license-box my-3">
     <div class="license-title">
-      <div></div>
-      <div>http://example.com/2023/08/05/STW机制详解/</div>
+      <div>线程池</div>
+      <div>http://example.com/2023/09/07/线程池使用场景/</div>
     </div>
     <div class="license-meta">
       
@@ -301,7 +337,7 @@
       
         <div class="license-meta-item license-meta-date">
           <div>Posted on</div>
-          <div>August 5, 2023</div>
+          <div>September 7, 2023</div>
         </div>
       
       
@@ -333,9 +369,9 @@
                   <article class="post-prev col-6">
                     
                     
-                      <a href="/2023/08/11/AQS/" title="AQS">
+                      <a href="/2023/09/07/%E5%88%86%E5%BA%93%E5%88%86%E8%A1%A8/" title="分库分表">
                         <i class="iconfont icon-arrowleft"></i>
-                        <span class="hidden-mobile">AQS</span>
+                        <span class="hidden-mobile">分库分表</span>
                         <span class="visible-mobile">Previous</span>
                       </a>
                     
@@ -343,8 +379,8 @@
                   <article class="post-next col-6">
                     
                     
-                      <a href="/2023/07/31/CountDownLatch/" title="CountDownLatch">
-                        <span class="hidden-mobile">CountDownLatch</span>
+                      <a href="/2023/09/05/StampedLock/" title="StampedLock">
+                        <span class="hidden-mobile">StampedLock</span>
                         <span class="visible-mobile">Next</span>
                         <i class="iconfont icon-arrowright"></i>
                       </a>

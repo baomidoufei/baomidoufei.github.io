@@ -16,19 +16,32 @@
   <meta name="author" content="彭">
   <meta name="keywords" content="">
   
-    <meta property="og:type" content="article">
-<meta property="og:title" content="PJF">
-<meta property="og:url" content="http://example.com/2023/07/26/%E7%BA%BF%E7%A8%8B%E5%AE%89%E5%85%A8%E9%9B%86%E5%90%88%E7%B1%BB/index.html">
+    <meta name="description" content="CPU突然飙高如何排查  top    ps命令查看进程及包含的线程和CPU情况   jstack打印各线程情况   根据刚刚的线程和CPU情况讲对应的16进制的线程ID去查找对应经常，观看日志信息，分析是哪一行代码即可 JVM常见调优参数 堆空间大小    虚拟机栈大小    年轻代及老年代    设置垃圾收集器   Java内存泄漏排查   获取dump文件">
+<meta property="og:type" content="article">
+<meta property="og:title" content="JVM实践问题排查">
+<meta property="og:url" content="http://example.com/2023/09/09/JVM%E5%AE%9E%E8%B7%B5%E9%97%AE%E9%A2%98%E6%8E%92%E6%9F%A5/index.html">
 <meta property="og:site_name" content="PJF">
+<meta property="og:description" content="CPU突然飙高如何排查  top    ps命令查看进程及包含的线程和CPU情况   jstack打印各线程情况   根据刚刚的线程和CPU情况讲对应的16进制的线程ID去查找对应经常，观看日志信息，分析是哪一行代码即可 JVM常见调优参数 堆空间大小    虚拟机栈大小    年轻代及老年代    设置垃圾收集器   Java内存泄漏排查   获取dump文件">
 <meta property="og:locale" content="en_US">
-<meta property="article:published_time" content="2023-07-26T14:09:59.315Z">
-<meta property="article:modified_time" content="2023-07-26T14:09:59.315Z">
+<meta property="og:image" content="d:\hexo\blog\source\jvm%E5%AE%9E%E8%B7%B5%E9%97%AE%E9%A2%98%E6%8E%92%E6%9F%A5_pic\1.png">
+<meta property="og:image" content="d:\hexo\blog\source\jvm%E5%AE%9E%E8%B7%B5%E9%97%AE%E9%A2%98%E6%8E%92%E6%9F%A5_pic\2.png">
+<meta property="og:image" content="d:\hexo\blog\source\jvm%E5%AE%9E%E8%B7%B5%E9%97%AE%E9%A2%98%E6%8E%92%E6%9F%A5_pic\3.png">
+<meta property="og:image" content="d:\hexo\blog\source\jvm%E5%AE%9E%E8%B7%B5%E9%97%AE%E9%A2%98%E6%8E%92%E6%9F%A5_pic\4.png">
+<meta property="og:image" content="d:\hexo\blog\source\jvm%E5%AE%9E%E8%B7%B5%E9%97%AE%E9%A2%98%E6%8E%92%E6%9F%A5_pic\5.png">
+<meta property="og:image" content="d:\hexo\blog\source\jvm%E5%AE%9E%E8%B7%B5%E9%97%AE%E9%A2%98%E6%8E%92%E6%9F%A5_pic\6.png">
+<meta property="og:image" content="d:\hexo\blog\source\jvm%E5%AE%9E%E8%B7%B5%E9%97%AE%E9%A2%98%E6%8E%92%E6%9F%A5_pic\7.png">
+<meta property="og:image" content="d:\hexo\blog\source\jvm%E5%AE%9E%E8%B7%B5%E9%97%AE%E9%A2%98%E6%8E%92%E6%9F%A5_pic\8.png">
+<meta property="og:image" content="d:\hexo\blog\source\jvm%E5%AE%9E%E8%B7%B5%E9%97%AE%E9%A2%98%E6%8E%92%E6%9F%A5_pic\9.png">
+<meta property="og:image" content="d:\hexo\blog\source\jvm%E5%AE%9E%E8%B7%B5%E9%97%AE%E9%A2%98%E6%8E%92%E6%9F%A5_pic\10.png">
+<meta property="article:published_time" content="2023-09-09T14:45:51.734Z">
+<meta property="article:modified_time" content="2023-09-09T15:14:29.765Z">
 <meta property="article:author" content="彭">
 <meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="d:\hexo\blog\source\jvm%E5%AE%9E%E8%B7%B5%E9%97%AE%E9%A2%98%E6%8E%92%E6%9F%A5_pic\1.png">
   
   
   
-  <title>PJF</title>
+  <title>JVM实践问题排查 - PJF</title>
 
   <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
 
@@ -194,7 +207,7 @@
       <div class="banner-text text-center fade-in-up">
         <div class="h2">
           
-            <span id="subtitle" data-typed-text=""></span>
+            <span id="subtitle" data-typed-text="JVM实践问题排查"></span>
           
         </div>
 
@@ -205,8 +218,8 @@
     
       <span class="post-meta">
         <i class="iconfont icon-date-fill" aria-hidden="true"></i>
-        <time datetime="2023-07-26 22:09" pubdate>
-          July 26, 2023 pm
+        <time datetime="2023-09-09 22:45" pubdate>
+          September 9, 2023 pm
         </time>
       </span>
     
@@ -217,7 +230,7 @@
       <span class="post-meta mr-2">
         <i class="iconfont icon-chart"></i>
         
-          0 words
+          150 words
         
       </span>
     
@@ -228,7 +241,7 @@
         
         
         
-          1 mins
+          2 mins
         
       </span>
     
@@ -266,12 +279,47 @@
         <div id="board">
           <article class="post-content mx-auto">
             <!-- SEO header -->
-            <h1 style="display: none"></h1>
+            <h1 style="display: none">JVM实践问题排查</h1>
             
             
               <div class="markdown-body">
                 
-                
+                <h3 id="CPU突然飙高如何排查"><a href="#CPU突然飙高如何排查" class="headerlink" title="CPU突然飙高如何排查"></a>CPU突然飙高如何排查</h3><p><img src="D:\hexo\blog\source\jvm实践问题排查_pic\1.png" srcset="/img/loading.gif" lazyload></p>
+<ul>
+<li>top</li>
+</ul>
+<p><img src="D:\hexo\blog\source\jvm实践问题排查_pic\2.png" srcset="/img/loading.gif" lazyload></p>
+<ul>
+<li><p>ps命令查看进程及包含的线程和CPU情况</p>
+<p><img src="D:\hexo\blog\source\jvm实践问题排查_pic\3.png" srcset="/img/loading.gif" lazyload></p>
+</li>
+<li><p>jstack打印各线程情况</p>
+</li>
+</ul>
+<p>根据刚刚的线程和CPU情况讲对应的16进制的线程ID去查找对应经常，观看日志信息，分析是哪一行代码即可</p>
+<h3 id="JVM常见调优参数"><a href="#JVM常见调优参数" class="headerlink" title="JVM常见调优参数"></a>JVM常见调优参数</h3><ul>
+<li>堆空间大小</li>
+</ul>
+<p><img src="D:\hexo\blog\source\jvm实践问题排查_pic\4.png" srcset="/img/loading.gif" lazyload></p>
+<ul>
+<li>虚拟机栈大小</li>
+</ul>
+<p><img src="D:\hexo\blog\source\jvm实践问题排查_pic\5.png" srcset="/img/loading.gif" lazyload></p>
+<ul>
+<li>年轻代及老年代</li>
+</ul>
+<p><img src="D:\hexo\blog\source\jvm实践问题排查_pic\6.png" srcset="/img/loading.gif" lazyload></p>
+<ul>
+<li>设置垃圾收集器</li>
+</ul>
+<p><img src="D:\hexo\blog\source\jvm实践问题排查_pic\7.png" srcset="/img/loading.gif" lazyload></p>
+<h3 id="Java内存泄漏排查"><a href="#Java内存泄漏排查" class="headerlink" title="Java内存泄漏排查"></a>Java内存泄漏排查</h3><p><img src="D:\hexo\blog\source\jvm实践问题排查_pic\8.png" srcset="/img/loading.gif" lazyload></p>
+<p><img src="D:\hexo\blog\source\jvm实践问题排查_pic\9.png" srcset="/img/loading.gif" lazyload></p>
+<ul>
+<li>获取dump文件</li>
+</ul>
+<p><img src="D:\hexo\blog\source\jvm实践问题排查_pic\10.png" srcset="/img/loading.gif" lazyload></p>
+
                 
               </div>
             
@@ -288,8 +336,8 @@
 
   <div class="license-box my-3">
     <div class="license-title">
-      <div></div>
-      <div>http://example.com/2023/07/26/线程安全集合类/</div>
+      <div>JVM实践问题排查</div>
+      <div>http://example.com/2023/09/09/JVM实践问题排查/</div>
     </div>
     <div class="license-meta">
       
@@ -301,7 +349,7 @@
       
         <div class="license-meta-item license-meta-date">
           <div>Posted on</div>
-          <div>July 26, 2023</div>
+          <div>September 9, 2023</div>
         </div>
       
       
@@ -333,18 +381,12 @@
                   <article class="post-prev col-6">
                     
                     
-                      <a href="/2023/07/29/Threadlocal/" title="ThreadLocal">
-                        <i class="iconfont icon-arrowleft"></i>
-                        <span class="hidden-mobile">ThreadLocal</span>
-                        <span class="visible-mobile">Previous</span>
-                      </a>
-                    
                   </article>
                   <article class="post-next col-6">
                     
                     
-                      <a href="/2023/07/25/UnSafe/" title="走入UnSafe">
-                        <span class="hidden-mobile">走入UnSafe</span>
+                      <a href="/2023/09/08/HashMap/" title="HashMap">
+                        <span class="hidden-mobile">HashMap</span>
                         <span class="visible-mobile">Next</span>
                         <i class="iconfont icon-arrowright"></i>
                       </a>

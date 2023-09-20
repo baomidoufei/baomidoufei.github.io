@@ -35,9 +35,12 @@
 <meta property="og:image" content="http://example.com/Jvm_pic/8.png">
 <meta property="og:image" content="http://example.com/Jvm_pic/9.png">
 <meta property="og:image" content="http://example.com/Jvm_pic/10.png">
-<meta property="og:image" content="http://example.com/Jvm_pic/10.png">
+<meta property="og:image" content="http://example.com/Jvm_pic/11.png">
+<meta property="og:image" content="http://example.com/Jvm_pic/12.png">
+<meta property="og:image" content="http://example.com/Jvm_pic/13.png">
+<meta property="og:image" content="http://example.com/Jvm_pic/14.png">
 <meta property="article:published_time" content="2023-02-22T02:15:53.343Z">
-<meta property="article:modified_time" content="2023-07-23T07:44:00.680Z">
+<meta property="article:modified_time" content="2023-09-20T07:56:39.138Z">
 <meta property="article:author" content="彭">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:image" content="http://example.com/Jvm_pic/1.png">
@@ -233,7 +236,7 @@
       <span class="post-meta mr-2">
         <i class="iconfont icon-chart"></i>
         
-          7.1k words
+          8.7k words
         
       </span>
     
@@ -244,7 +247,7 @@
         
         
         
-          60 mins
+          73 mins
         
       </span>
     
@@ -291,7 +294,7 @@
 <p><img src="/../Jvm_pic/1.png" srcset="/img/loading.gif" lazyload alt="Jvm"></p>
 <p>参考：<a target="_blank" rel="noopener" href="https://cloud.tencent.com/developer/article/1698363">内存篇：JVM内存结构 - 腾讯云开发者社区-腾讯云 (tencent.com)</a></p>
 <p>1、<em><strong>方法区</strong></em></p>
-<p>方法区主要用于存储虚拟机加载的<em><strong>类信息、常量、静态变量，以及编译器编译后的代码</strong></em>等数据。在<em><strong>jdk1.7</strong></em>及<em><strong>其之前</strong></em>，方法区是堆的一个“<em><strong>逻辑部分</strong></em>”（一片连续的堆空间），但为了与堆做区分，方法区还有个名字叫“非堆”，也有人用“永久代”（<em><strong>HotSpot</strong></em>对方法区的实现方法）来表示方法区。（<em><strong>永久代&#x3D;&#x3D;方法区</strong></em>）</p>
+<p>方法区主要用于存储虚拟机加载的<em><strong>类信息、常量、静态变量，以及编译器编译后的代码</strong></em>等数据。在<em><strong>jdk1.7</strong></em>及<em><strong>其之前</strong></em>，方法区是堆的一个“<em><strong>逻辑部分</strong></em>”（一片连续的堆空间），但为了与堆做区分，方法区还有个名字叫“非堆”，也有人用“永久代”（<em><strong>HotSpot</strong></em>对方法区的实现方法）来表示方法区。</p>
 <p>从<em><strong>jdk1.7</strong></em>已经开始准备“去永久代”的规划，jdk1.7的HotSpot中，已经把原本放在方法区中的<em><strong>静态变量</strong></em>、<em><strong>字符串常量池</strong></em>等<em><strong>移到堆内存</strong></em>中，（常量池除字符串常量池还有class常量池等），这里只是把字符串常量池移到堆内存中；在<em><strong>jdk1.8</strong></em>中，方法区已经不存在，原方法区中存储的类信息、编译后的代码数据等已经移动到了<em><strong>元空间</strong></em>（MetaSpace）中，<em><strong>元空间并没有处于堆内存上</strong></em>，而是直接占用的<em><strong>本地内存</strong></em>（NativeMemory）。根据网上的资料结合自己的理解对jdk1.3~1.6、jdk1.7、jdk1.8中方法区的变迁画了张图如下（如有不合理的地方希望读者指出）：</p>
 <p><img src="/../Jvm_pic/Jvm%E7%89%88%E6%9C%AC%E5%8F%98%E8%BF%81.png" srcset="/img/loading.gif" lazyload></p>
 <p>去永久代的原因有：</p>
@@ -430,14 +433,53 @@
 <p>但是 Serial 收集器有没有优于其他垃圾收集器的地方呢？当然有，它<strong>简单而高效（与其他收集器的单线程相比）</strong>。Serial 收集器由于没有线程交互的开销，自然可以获得很高的单线程收集效率。Serial 收集器对于运行在 Client 模式下的虚拟机来说是个不错的选择。</p>
 <h4 id="ParNew-收集器"><a href="#ParNew-收集器" class="headerlink" title="ParNew 收集器"></a>ParNew 收集器</h4><p>ParNew 收集器其实就是 Serial 收集器的多线程版本，除了使用多线程进行垃圾收集外，其余行为（控制参数、收集算法、回收策略等等）和 Serial 收集器完全一样。</p>
 <p><strong>新生代采用标记-复制算法，老年代采用标记-整理算法。</strong></p>
-<p><img src="/../Jvm_pic/10.png" srcset="/img/loading.gif" lazyload></p>
+<p><img src="/../Jvm_pic/11.png" srcset="/img/loading.gif" lazyload></p>
 <p>它是许多运行在 Server 模式下的虚拟机的首要选择，除了 Serial 收集器外，只有它能与 CMS 收集器（真正意义上的并发收集器，后面会介绍到）配合工作。</p>
 <p><strong>并行和并发概念补充：</strong></p>
 <ul>
 <li><strong>并行（Parallel）</strong>：指多条垃圾收集线程并行工作，但此时用户线程仍然处于等待状态。</li>
 <li><strong>并发（Concurrent）</strong>：指用户线程与垃圾收集线程同时执行（但不一定是并行，可能会交替执行），用户程序在继续运行，而垃圾收集器运行在另一个 CPU 上</li>
 </ul>
-<h4 id="Parallel-Scavenge-收集器"><a href="#Parallel-Scavenge-收集器" class="headerlink" title="Parallel Scavenge 收集器"></a>Parallel Scavenge 收集器</h4>
+<h4 id="Parallel-Scavenge-收集器-1-8默认"><a href="#Parallel-Scavenge-收集器-1-8默认" class="headerlink" title="Parallel Scavenge 收集器(1.8默认)"></a>Parallel Scavenge 收集器(1.8默认)</h4><p>Parallel Scavenge 收集器关注点是吞吐量（高效率的利用 CPU）。CMS 等垃圾收集器的关注点更多的是用户线程的停顿时间（提高用户体验）。所谓吞吐量就是 CPU 中用于运行用户代码的时间与 CPU 总消耗时间的比值。 Parallel Scavenge 收集器提供了很多参数供用户找到最合适的停顿时间或最大吞吐量，如果对于收集器运作不太了解，手工优化存在困难的时候，使用 Parallel Scavenge 收集器配合自适应调节策略，把内存管理优化交给虚拟机去完成也是一个不错的选择。</p>
+<figure class="highlight ruby"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs ruby">-<span class="hljs-variable constant_">XX</span><span class="hljs-symbol">:+UseParallelGC</span><br><br>    使用 <span class="hljs-title class_">Parallel</span> 收集器+ 老年代串行<br><br>-<span class="hljs-variable constant_">XX</span><span class="hljs-symbol">:+UseParallelOldGC</span><br><br>    使用 <span class="hljs-title class_">Parallel</span> 收集器+ 老年代并行<br><br></code></pre></td></tr></table></figure>
+
+<p><strong>新生代采用标记-复制算法，老年代采用标记-整理算法。</strong></p>
+<p><img src="/../Jvm_pic/12.png" srcset="/img/loading.gif" lazyload></p>
+<p><strong>这是 JDK1.8 默认收集器</strong></p>
+<h4 id="CMS-重点"><a href="#CMS-重点" class="headerlink" title="CMS(重点)"></a>CMS(重点)</h4><p><strong>CMS（Concurrent Mark Sweep）收集器是一种以获取最短回收停顿时间为目标的收集器。它非常符合在注重用户体验的应用上使用。</strong>(关键：最短停顿时间-用户体验)</p>
+<p>CMS（Concurrent Mark Sweep）收集器是 HotSpot 虚拟机<strong>第一款真正意义上的并发收集器</strong>，它第一次实现了让垃圾收集线程与用户线程（基本上）<strong>同时</strong>工作。</p>
+<p>从名字中的<strong>Mark Sweep</strong>这两个词可以看出，CMS 收集器是一种 <strong>“标记-清除”算法</strong>实现的，它的运作过程相比于前面几种垃圾收集器来说更加复杂一些。整个过程分为四个步骤：</p>
+<p><strong>初始标记：</strong> 暂停所有的其他线程，并记录下直接与 root 相连的对象，速度很快；</p>
+<p><strong>并发标记：</strong> 同时开启 GC 和用户线程，用一个闭包结构去记录可达对象。但在这个阶段结束，这个闭包结构并不能保证包含当前所有的可达对象。因为用户线程可能会不断的更新引用域，所以 GC 线程无法保证可达性分析的实时性。所以这个算法里会跟踪记录这些发生引用更新的地方。</p>
+<p><strong>重新标记：</strong> 重新标记阶段就是为了修正并发标记期间因为用户程序继续运行而导致标记产生变动的那一部分对象的标记记录，这个阶段的停顿时间一般会比初始标记阶段的时间稍长，远远比并发标记阶段时间短</p>
+<p><strong>并发清除：</strong> 开启用户线程，同时 GC 线程开始对未标记的区域做清扫</p>
+<p><img src="/../Jvm_pic/13.png" srcset="/img/loading.gif" lazyload></p>
+<p>从它的名字就可以看出它是一款优秀的垃圾收集器，主要优点：<strong>并发收集、低停顿</strong>。但是它有下面三个明显的缺点：</p>
+<ul>
+<li><strong>对 CPU 资源敏感；</strong></li>
+<li><strong>无法处理浮动垃圾；</strong></li>
+<li><strong>它使用的回收算法-“标记-清除”算法会导致收集结束时会有大量空间碎片产生。</strong></li>
+</ul>
+<h4 id="G1-重点，1-9及以后默认收集器"><a href="#G1-重点，1-9及以后默认收集器" class="headerlink" title="G1(重点，1.9及以后默认收集器)"></a>G1(重点，1.9及以后默认收集器)</h4><p>G1 (Garbage-First) 是一款面向服务器的垃圾收集器,主要<strong>针对配备多颗处理器及大容量内存的机器</strong>. 以极高概率满足 GC <strong>停顿时间</strong>要求的同时,<strong>还具备高吞吐量</strong>性能特征.</p>
+<p>(关键：停顿时间、高吞吐量)</p>
+<p>特点：</p>
+<ul>
+<li><strong>并行与并发</strong>：充分利用CPU、多核环境的优势，使用多个CPU缩短STW时间，支持用户线程和GC并发</li>
+<li><strong>分代收集</strong>：虽然G1可以不需要其他收集器配合就能独立管理整个GC堆，依然保留了分代概念</li>
+<li><strong>空间整合</strong>：G1 从<strong>整体</strong>来看是基于“<strong>标记-整理</strong>”算法实现的收集器；从<strong>局部</strong>上来看是基于“<strong>标记-复制</strong>”算法实现的。</li>
+<li><strong>可预测的停顿</strong>：能建立可预测的<strong>停顿时间模型</strong>，能让使用者明确指定在一个长度为 M 毫秒的时间片段内，消耗在垃圾收集上的时间不得超过 N 毫秒</li>
+</ul>
+<p>G1 收集器的运作大致分为以下几个步骤：</p>
+<ul>
+<li><strong>初始标记</strong></li>
+<li><strong>并发标记</strong></li>
+<li><strong>最终标记</strong></li>
+<li><strong>筛选回收</strong></li>
+</ul>
+<p><img src="/../Jvm_pic/14.png" srcset="/img/loading.gif" lazyload></p>
+<p><strong>G1 收集器在后台维护了一个优先列表，每次根据允许的收集时间，优先选择回收价值最大的 Region(这也就是它的名字 Garbage-First 的由来)</strong> 。这种使用 Region 划分内存空间以及有优先级的区域回收方式，保证了 G1 收集器在有限时间内可以尽可能高的收集效率（把内存化整为零）。</p>
+<p><strong>从 JDK9 开始，G1 垃圾收集器成为了默认的垃圾收集器。</strong></p>
+
                 
               </div>
             
