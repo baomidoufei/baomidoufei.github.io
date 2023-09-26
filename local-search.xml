@@ -4,6 +4,19 @@
   
   
   <entry>
+    <title>为什么要垂直分表</title>
+    <link href="/2023/09/26/%E4%B8%BA%E4%BB%80%E4%B9%88%E8%A6%81%E5%9E%82%E7%9B%B4%E5%88%86%E8%A1%A8/"/>
+    <url>/2023/09/26/%E4%B8%BA%E4%BB%80%E4%B9%88%E8%A6%81%E5%9E%82%E7%9B%B4%E5%88%86%E8%A1%A8/</url>
+    
+    <content type="html"><![CDATA[<h3 id="问题"><a href="#问题" class="headerlink" title="问题"></a>问题</h3><p><img src="D:\hexo\blog\source\垂直分表\1.png"></p><p>在以前，一张核心表的字段可能有上百个字段，这种肯定是有问题的，至于什么问题，后面分析</p><h3 id="什么是垂直分表"><a href="#什么是垂直分表" class="headerlink" title="什么是垂直分表"></a>什么是垂直分表</h3><p>垂直分表则是将一张大表按“列”拆分为两张以上的小标，通过主外键关联来获取数据。</p><h3 id="举例"><a href="#举例" class="headerlink" title="举例"></a>举例</h3><p>这是一张商品表拆分前与拆分后</p><p><img src="D:\hexo\blog\source\垂直分表\2.png"></p><p>拆分后的SQL变换</p><p><img src="D:\hexo\blog\source\垂直分表\3.png"></p><h3 id="拆表原因"><a href="#拆表原因" class="headerlink" title="拆表原因"></a>拆表原因</h3><p>先来看我们的InnoDB的存储结构</p><p><img src="D:\hexo\blog\source\垂直分表\4.png"></p><p>我们每一页(Page)默认的大小为16K，保存我们 页的叫做区(Extent)(1M)，我们一个区能够存储64个页，我们的每一页存储<strong>行数据</strong>，我们的InnoDB 1.0版本之后，引入了一个<strong>压缩页</strong>，这比之前可以占用更小的空间，有压缩就有解压缩，在我们的跨页检索中，压缩和解压缩是效率不高的，所以我们的每一页尽可能多的存储一些行数据，这就是我们的理论支撑。</p><h3 id="对比"><a href="#对比" class="headerlink" title="对比"></a>对比</h3><p><img src="D:\hexo\blog\source\垂直分表\2.png"></p><p>假如有一亿条数据，每一条数据占用1K大小，那么此时需要625W页，做了垂直切分，小标64字节&#x2F;行，存储小标需要39W页。</p><p><img src="D:\hexo\blog\source\垂直分表\5.png"></p><p>假如上面sql中的商品标题因为某种原因没有走索引，那么需要625W页全部扫描，那么我们拆表之后39W页效率就比之前提升了16倍</p><h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3><p>通过将重要字段单独剥离出一张小表，让每一页能够容纳更多的行，进而缩小数据扫描的范围，达到提高执行效率的目的</p><h3 id="触发垂直分表的条件"><a href="#触发垂直分表的条件" class="headerlink" title="触发垂直分表的条件"></a>触发垂直分表的条件</h3><p>单表数据量未来可能千万、字段超过20个，并且包含了超长的Varchar、CLOB、BLOB等字段</p><h3 id="小标的字段"><a href="#小标的字段" class="headerlink" title="小标的字段"></a>小标的字段</h3><p><img src="D:\hexo\blog\source\垂直分表\6.png"></p><h3 id="大表的字段"><a href="#大表的字段" class="headerlink" title="大表的字段"></a>大表的字段</h3><p><img src="D:\hexo\blog\source\垂直分表\7.png"></p>]]></content>
+    
+    
+    
+  </entry>
+  
+  
+  
+  <entry>
     <title>JVM实践问题排查</title>
     <link href="/2023/09/09/JVM%E5%AE%9E%E8%B7%B5%E9%97%AE%E9%A2%98%E6%8E%92%E6%9F%A5/"/>
     <url>/2023/09/09/JVM%E5%AE%9E%E8%B7%B5%E9%97%AE%E9%A2%98%E6%8E%92%E6%9F%A5/</url>
@@ -82,11 +95,11 @@
   
   
   <entry>
-    <title></title>
+    <title>Java内存布局和对象头</title>
     <link href="/2023/09/04/Java%E5%86%85%E5%AD%98%E5%B8%83%E5%B1%80%E5%92%8C%E5%AF%B9%E8%B1%A1%E5%A4%B4/"/>
     <url>/2023/09/04/Java%E5%86%85%E5%AD%98%E5%B8%83%E5%B1%80%E5%92%8C%E5%AF%B9%E8%B1%A1%E5%A4%B4/</url>
     
-    <content type="html"><![CDATA[<hr><h2 id="title-Java内存布局和对象头"><a href="#title-Java内存布局和对象头" class="headerlink" title="title:Java内存布局和对象头"></a>title:Java内存布局和对象头</h2><h2 id="对象的内存布局"><a href="#对象的内存布局" class="headerlink" title="对象的内存布局"></a>对象的内存布局</h2><p>在HotSpot虚拟机里，对象在堆内存中的存储布局可以分为三个部分：<strong>对象头(Header)、实例数据(Instance Data)和对齐填充(Padding)</strong></p><p><img src="/../Java%E5%86%85%E5%AD%98%E5%B8%83%E5%B1%80%E4%B8%8E%E5%AF%B9%E8%B1%A1%E5%A4%B4_pic/1.png"></p><h3 id="内存布局详解"><a href="#内存布局详解" class="headerlink" title="内存布局详解"></a>内存布局详解</h3><ul><li>对象头<ul><li>对象标记Mark Work</li><li>类元信息(类型指针)</li></ul></li><li>实例数据</li><li>对齐填充</li></ul><p><img src="/../Java%E5%86%85%E5%AD%98%E5%B8%83%E5%B1%80%E4%B8%8E%E5%AF%B9%E8%B1%A1%E5%A4%B4_pic/2.png"></p><p>对象内部结构分为：对象头、实例数据、对齐填充(保证8个字节的倍数)</p><p>对象头分为<strong>对象标记(markOop)和类元信息(klassOop)</strong>,类元信息存储的是指向对象类元数据(klass)的首地址</p><h3 id="带着问题探索"><a href="#带着问题探索" class="headerlink" title="带着问题探索"></a>带着问题探索</h3><p><img src="/../Java%E5%86%85%E5%AD%98%E5%B8%83%E5%B1%80%E4%B8%8E%E5%AF%B9%E8%B1%A1%E5%A4%B4_pic/3.png"></p><h3 id="Mark-Word"><a href="#Mark-Word" class="headerlink" title="Mark Word"></a>Mark Word</h3><p><img src="/../Java%E5%86%85%E5%AD%98%E5%B8%83%E5%B1%80%E4%B8%8E%E5%AF%B9%E8%B1%A1%E5%A4%B4_pic/4.png"></p><p><img src="/../Java%E5%86%85%E5%AD%98%E5%B8%83%E5%B1%80%E4%B8%8E%E5%AF%B9%E8%B1%A1%E5%A4%B4_pic/5.png"></p><p><strong>在64位系统下，Mark Word占了8个字节，类型指针占了8个字节，一共64个字节</strong></p><p><img src="/../Java%E5%86%85%E5%AD%98%E5%B8%83%E5%B1%80%E4%B8%8E%E5%AF%B9%E8%B1%A1%E5%A4%B4_pic/6.png"></p><h3 id="类元信息"><a href="#类元信息" class="headerlink" title="类元信息"></a>类元信息</h3><p>类元信息也叫<strong>类型指针</strong></p><p><img src="/../Java%E5%86%85%E5%AD%98%E5%B8%83%E5%B1%80%E4%B8%8E%E5%AF%B9%E8%B1%A1%E5%A4%B4_pic/7.png"></p><h3 id="实例数据"><a href="#实例数据" class="headerlink" title="实例数据"></a>实例数据</h3><p>存放类的属性(Field)数据信息，包括父类的属性信息</p><h3 id="对齐填充"><a href="#对齐填充" class="headerlink" title="对齐填充"></a>对齐填充</h3><p>虚拟机要求对象起始地址必须是8字节的整数倍</p>]]></content>
+    <content type="html"><![CDATA[<h2 id="对象的内存布局"><a href="#对象的内存布局" class="headerlink" title="对象的内存布局"></a>对象的内存布局</h2><p>在HotSpot虚拟机里，对象在堆内存中的存储布局可以分为三个部分：<strong>对象头(Header)、实例数据(Instance Data)和对齐填充(Padding)</strong></p><p><img src="/../Java%E5%86%85%E5%AD%98%E5%B8%83%E5%B1%80%E4%B8%8E%E5%AF%B9%E8%B1%A1%E5%A4%B4_pic/1.png"></p><h3 id="内存布局详解"><a href="#内存布局详解" class="headerlink" title="内存布局详解"></a>内存布局详解</h3><ul><li>对象头<ul><li>对象标记Mark Work</li><li>类元信息(类型指针)</li></ul></li><li>实例数据</li><li>对齐填充</li></ul><p><img src="/../Java%E5%86%85%E5%AD%98%E5%B8%83%E5%B1%80%E4%B8%8E%E5%AF%B9%E8%B1%A1%E5%A4%B4_pic/2.png"></p><p>对象内部结构分为：对象头、实例数据、对齐填充(保证8个字节的倍数)</p><p>对象头分为<strong>对象标记(markOop)和类元信息(klassOop)</strong>,类元信息存储的是指向对象类元数据(klass)的首地址</p><h3 id="带着问题探索"><a href="#带着问题探索" class="headerlink" title="带着问题探索"></a>带着问题探索</h3><p><img src="/../Java%E5%86%85%E5%AD%98%E5%B8%83%E5%B1%80%E4%B8%8E%E5%AF%B9%E8%B1%A1%E5%A4%B4_pic/3.png"></p><h3 id="Mark-Word"><a href="#Mark-Word" class="headerlink" title="Mark Word"></a>Mark Word</h3><p><img src="/../Java%E5%86%85%E5%AD%98%E5%B8%83%E5%B1%80%E4%B8%8E%E5%AF%B9%E8%B1%A1%E5%A4%B4_pic/4.png"></p><p><img src="/../Java%E5%86%85%E5%AD%98%E5%B8%83%E5%B1%80%E4%B8%8E%E5%AF%B9%E8%B1%A1%E5%A4%B4_pic/5.png"></p><p><strong>在64位系统下，Mark Word占了8个字节，类型指针占了8个字节，一共64个字节</strong></p><p><img src="/../Java%E5%86%85%E5%AD%98%E5%B8%83%E5%B1%80%E4%B8%8E%E5%AF%B9%E8%B1%A1%E5%A4%B4_pic/6.png"></p><h3 id="类元信息"><a href="#类元信息" class="headerlink" title="类元信息"></a>类元信息</h3><p>类元信息也叫<strong>类型指针</strong></p><p><img src="/../Java%E5%86%85%E5%AD%98%E5%B8%83%E5%B1%80%E4%B8%8E%E5%AF%B9%E8%B1%A1%E5%A4%B4_pic/7.png"></p><h3 id="实例数据"><a href="#实例数据" class="headerlink" title="实例数据"></a>实例数据</h3><p>存放类的属性(Field)数据信息，包括父类的属性信息</p><h3 id="对齐填充"><a href="#对齐填充" class="headerlink" title="对齐填充"></a>对齐填充</h3><p>虚拟机要求对象起始地址必须是8字节的整数倍</p>]]></content>
     
     
     
