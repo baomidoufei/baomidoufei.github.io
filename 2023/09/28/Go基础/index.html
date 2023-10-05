@@ -16,21 +16,23 @@
   <meta name="author" content="彭">
   <meta name="keywords" content="">
   
-    <meta name="description" content="静态资源映射一般情况下，SpringBoot只能访问static或者是templates下的静态资源文件，如果想改变静态资源文件的位置需要开启静态资源文件映射(通过配置类的方式) classpath:&#x2F;  对应的就是resources这个目录。 123456@Overrideprotected void addResourceHandlers(ResourceHandlerRegistr">
+    <meta name="description" content="早就听说大厂都在转Go，恰好今天收到一个Go岗位的意向，薪资很不错，加上朋友今天也受到了滴滴的Go offer，让我对Go有了不一样的看法，那么今天开始尝试系统学习Go 导包">
 <meta property="og:type" content="article">
-<meta property="og:title" content="SpringBoot">
-<meta property="og:url" content="http://example.com/2023/04/22/SpringBoot/index.html">
+<meta property="og:title" content="Go语言基础">
+<meta property="og:url" content="http://example.com/2023/09/28/Go%E5%9F%BA%E7%A1%80/index.html">
 <meta property="og:site_name" content="PJF">
-<meta property="og:description" content="静态资源映射一般情况下，SpringBoot只能访问static或者是templates下的静态资源文件，如果想改变静态资源文件的位置需要开启静态资源文件映射(通过配置类的方式) classpath:&#x2F;  对应的就是resources这个目录。 123456@Overrideprotected void addResourceHandlers(ResourceHandlerRegistr">
+<meta property="og:description" content="早就听说大厂都在转Go，恰好今天收到一个Go岗位的意向，薪资很不错，加上朋友今天也受到了滴滴的Go offer，让我对Go有了不一样的看法，那么今天开始尝试系统学习Go 导包">
 <meta property="og:locale" content="en_US">
-<meta property="article:published_time" content="2023-04-22T12:23:52.637Z">
-<meta property="article:modified_time" content="2023-04-22T14:17:23.399Z">
+<meta property="og:image" content="d:\hexo\blog\source\Go_pic\1.png">
+<meta property="article:published_time" content="2023-09-28T13:25:50.041Z">
+<meta property="article:modified_time" content="2023-09-28T14:40:09.239Z">
 <meta property="article:author" content="彭">
 <meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="d:\hexo\blog\source\Go_pic\1.png">
   
   
   
-  <title>SpringBoot - PJF</title>
+  <title>Go语言基础 - PJF</title>
 
   <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
 
@@ -196,7 +198,7 @@
       <div class="banner-text text-center fade-in-up">
         <div class="h2">
           
-            <span id="subtitle" data-typed-text="SpringBoot"></span>
+            <span id="subtitle" data-typed-text="Go语言基础"></span>
           
         </div>
 
@@ -207,8 +209,8 @@
     
       <span class="post-meta">
         <i class="iconfont icon-date-fill" aria-hidden="true"></i>
-        <time datetime="2023-04-22 20:23" pubdate>
-          April 22, 2023 pm
+        <time datetime="2023-09-28 21:25" pubdate>
+          September 28, 2023 pm
         </time>
       </span>
     
@@ -219,7 +221,7 @@
       <span class="post-meta mr-2">
         <i class="iconfont icon-chart"></i>
         
-          1.6k words
+          85 words
         
       </span>
     
@@ -230,7 +232,7 @@
         
         
         
-          14 mins
+          1 mins
         
       </span>
     
@@ -268,49 +270,13 @@
         <div id="board">
           <article class="post-content mx-auto">
             <!-- SEO header -->
-            <h1 style="display: none">SpringBoot</h1>
+            <h1 style="display: none">Go语言基础</h1>
             
             
               <div class="markdown-body">
                 
-                <h2 id="静态资源映射"><a href="#静态资源映射" class="headerlink" title="静态资源映射"></a>静态资源映射</h2><p>一般情况下，SpringBoot只能访问static或者是templates下的静态资源文件，如果想改变静态资源文件的位置需要开启静态资源文件映射(通过配置类的方式)</p>
-<p><strong>classpath:&#x2F;</strong>  对应的就是resources这个目录。</p>
-<figure class="highlight reasonml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs reasonml">@Override<br>protected void add<span class="hljs-constructor">ResourceHandlers(ResourceHandlerRegistry <span class="hljs-params">registry</span>)</span> &#123;<br>        log.info(<span class="hljs-string">&quot;开启静态资源映射&quot;</span>);<br>   registry.add<span class="hljs-constructor">ResourceHandler(<span class="hljs-string">&quot;/backend/**&quot;</span>)</span>.add<span class="hljs-constructor">ResourceLocations(<span class="hljs-string">&quot;classpath:/backend/&quot;</span>)</span>;<br>registry.add<span class="hljs-constructor">ResourceHandler(<span class="hljs-string">&quot;/front/**&quot;</span>)</span>.add<span class="hljs-constructor">ResourceLocations(<span class="hljs-string">&quot;classpath:/front/&quot;</span>)</span>;<br>    &#125;<br></code></pre></td></tr></table></figure>
-
-<p>**是通配符，指一切资源</p>
-<p>如果访问localhost:8080&#x2F;backend&#x2F;index.html,则会映射到resources&#x2F;backend&#x2F;index.html</p>
-<h2 id="Spring事务"><a href="#Spring事务" class="headerlink" title="Spring事务"></a>Spring事务</h2><h3 id="什么是事务"><a href="#什么是事务" class="headerlink" title="什么是事务"></a>什么是事务</h3><p>事务是逻辑上的一组操作，要么都执行，要么都不执行。</p>
-<p>在日常开发中，我们系统的每个业务方法可能包括多个原子性的数据库操作，比如下面的 <code>savePerson()</code>方法中就有两个原子性的数据库操作。这些原子性的数据库操作是由依赖的，它们要么都执行，要么都不执行。</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">savePerson</span><span class="hljs-params">()</span> &#123;<br>		personDao.save(person);<br>		personDetailDao.save(personDetail);<br>	&#125;<br></code></pre></td></tr></table></figure>
-
-<p>注意：</p>
-<p>事务能否生效数据库是否支持事务是关键。比如常用的MySQL默认的是使用支持事务的innodb引擎。但是如果把数据库变为myisam，那么程序不支持事务了。</p>
-<p>事务最经典也经常被拿出来说例子就是转账了。假如小明要给小红转账 1000 元，这个转账会涉及到两个关键操作就是：</p>
-<blockquote>
-<ol>
-<li>将小明的余额减少 1000 元。</li>
-<li>将小红的余额增加 1000 元。</li>
-</ol>
-</blockquote>
-<h3 id="事务的特性-ACID-了解吗？"><a href="#事务的特性-ACID-了解吗？" class="headerlink" title="事务的特性(ACID)了解吗？"></a>事务的特性(ACID)了解吗？</h3><ul>
-<li><p><strong>原子性（Atomicity）</strong>:原子性是指事务是一个不可再分割的工作单元，事务中的操作要么都发生，要么都不发生。</p>
-<p>可采用“A向B转账”这个例子来说明解释</p>
-<p>在DBMS中，默认情况下一条SQL就是一个单独事务，事务是自动提交的。只有显式的使用start transaction开启一个事务，才能将一个代码块放在事务中执行。</p>
-</li>
-<li><p><strong>一致性（Consistency）：</strong> 在事务开始之前和事务结束以后，数据库的完整性没有被破坏。这表示写入的资料必须完全符合所有的预设约束、触发器、级联回滚等</p>
-</li>
-<li><p><strong>隔离性（Isolation）</strong>： 数据库允许多个并发事务同时对其数据进行读写和修改的能力，隔离性可以防止多个事务并发执行时由于交叉执行而导致数据的不一致。事务隔离分为不同级别，包括未提交读（Read uncommitted）、提交读（read committed）、可重复读（repeatable read）和串行化（Serializable）。</p>
-</li>
-<li><p><strong>持久性（Durability）:</strong> 事务处理结束后，对数据的修改就是永久的，即便系统故障也不会丢失。</p>
-</li>
-</ul>
-<h2 id="Starter"><a href="#Starter" class="headerlink" title="Starter"></a>Starter</h2><ul>
-<li>SpringBoot中常见项目名称，定义了当前项目使用的所有依赖坐标，以打到<strong>减少依赖配置</strong>的目的。</li>
-</ul>
-<h2 id="parent"><a href="#parent" class="headerlink" title="parent"></a>parent</h2><ul>
-<li>所有的SpringBoot项目要继承的项目，定义了若干个坐标版本号(依赖管理，而非依赖)，以达到<strong>减少依赖冲突</strong>的目的。</li>
-<li>spring-boot-starter-parent各版本间存在着诸多坐标版本不同。</li>
-</ul>
+                <p>早就听说大厂都在转Go，恰好今天收到一个Go岗位的意向，薪资很不错，加上朋友今天也受到了滴滴的Go offer，让我对Go有了不一样的看法，那么今天开始尝试系统学习Go</p>
+<h3 id="导包"><a href="#导包" class="headerlink" title="导包"></a>导包</h3><p><img src="D:\hexo\blog\source\Go_pic\1.png" srcset="/img/loading.gif" lazyload></p>
 
                 
               </div>
@@ -328,8 +294,8 @@
 
   <div class="license-box my-3">
     <div class="license-title">
-      <div>SpringBoot</div>
-      <div>http://example.com/2023/04/22/SpringBoot/</div>
+      <div>Go语言基础</div>
+      <div>http://example.com/2023/09/28/Go基础/</div>
     </div>
     <div class="license-meta">
       
@@ -341,7 +307,7 @@
       
         <div class="license-meta-item license-meta-date">
           <div>Posted on</div>
-          <div>April 22, 2023</div>
+          <div>September 28, 2023</div>
         </div>
       
       
@@ -373,9 +339,9 @@
                   <article class="post-prev col-6">
                     
                     
-                      <a href="/2023/04/26/Java8%E6%96%B0%E7%89%B9%E6%80%A7/" title="Java8新特性">
+                      <a href="/2023/10/05/Bean%E7%9A%84%E7%94%9F%E5%91%BD%E5%91%A8%E6%9C%9F/" title="Bean的生命周期">
                         <i class="iconfont icon-arrowleft"></i>
-                        <span class="hidden-mobile">Java8新特性</span>
+                        <span class="hidden-mobile">Bean的生命周期</span>
                         <span class="visible-mobile">Previous</span>
                       </a>
                     
@@ -383,8 +349,8 @@
                   <article class="post-next col-6">
                     
                     
-                      <a href="/2023/04/13/MySQL/" title="MySQL">
-                        <span class="hidden-mobile">MySQL</span>
+                      <a href="/2023/09/26/%E4%B8%BA%E4%BB%80%E4%B9%88%E8%A6%81%E5%9E%82%E7%9B%B4%E5%88%86%E8%A1%A8/" title="为什么要垂直分表">
+                        <span class="hidden-mobile">为什么要垂直分表</span>
                         <span class="visible-mobile">Next</span>
                         <i class="iconfont icon-arrowright"></i>
                       </a>
