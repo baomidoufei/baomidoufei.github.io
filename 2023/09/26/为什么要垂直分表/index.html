@@ -23,19 +23,19 @@
 <meta property="og:site_name" content="PJF">
 <meta property="og:description" content="问题 在以前，一张核心表的字段可能有上百个字段，这种肯定是有问题的，至于什么问题，后面分析 什么是垂直分表垂直分表则是将一张大表按“列”拆分为两张以上的小标，通过主外键关联来获取数据。 举例这是一张商品表拆分前与拆分后  拆分后的SQL变换  拆表原因先来看我们的InnoDB的存储结构  我们每一页(Page)默认的大小为16K，保存我们 页的叫做区(Extent)(1M)，我们一个区能够存储64">
 <meta property="og:locale" content="en_US">
-<meta property="og:image" content="d:\hexo\blog\source\%E5%9E%82%E7%9B%B4%E5%88%86%E8%A1%A8\1.png">
-<meta property="og:image" content="d:\hexo\blog\source\%E5%9E%82%E7%9B%B4%E5%88%86%E8%A1%A8\2.png">
-<meta property="og:image" content="d:\hexo\blog\source\%E5%9E%82%E7%9B%B4%E5%88%86%E8%A1%A8\3.png">
-<meta property="og:image" content="d:\hexo\blog\source\%E5%9E%82%E7%9B%B4%E5%88%86%E8%A1%A8\4.png">
-<meta property="og:image" content="d:\hexo\blog\source\%E5%9E%82%E7%9B%B4%E5%88%86%E8%A1%A8\2.png">
-<meta property="og:image" content="d:\hexo\blog\source\%E5%9E%82%E7%9B%B4%E5%88%86%E8%A1%A8\5.png">
-<meta property="og:image" content="d:\hexo\blog\source\%E5%9E%82%E7%9B%B4%E5%88%86%E8%A1%A8\6.png">
-<meta property="og:image" content="d:\hexo\blog\source\%E5%9E%82%E7%9B%B4%E5%88%86%E8%A1%A8\7.png">
+<meta property="og:image" content="http://example.com/..%5C%E5%9E%82%E7%9B%B4%E5%88%86%E8%A1%A8%5C1.png">
+<meta property="og:image" content="http://example.com/..%5C%E5%9E%82%E7%9B%B4%E5%88%86%E8%A1%A8%5C2.png">
+<meta property="og:image" content="http://example.com/..%5C%E5%9E%82%E7%9B%B4%E5%88%86%E8%A1%A8%5C3.png">
+<meta property="og:image" content="http://example.com/..%5C%E5%9E%82%E7%9B%B4%E5%88%86%E8%A1%A8%5C4.png">
+<meta property="og:image" content="http://example.com/..%5C%E5%9E%82%E7%9B%B4%E5%88%86%E8%A1%A8%5C2.png">
+<meta property="og:image" content="http://example.com/..%5C%E5%9E%82%E7%9B%B4%E5%88%86%E8%A1%A8%5C5.png">
+<meta property="og:image" content="http://example.com/..%5C%E5%9E%82%E7%9B%B4%E5%88%86%E8%A1%A8%5C6.png">
+<meta property="og:image" content="http://example.com/..%5C%E5%9E%82%E7%9B%B4%E5%88%86%E8%A1%A8%5C7.png">
 <meta property="article:published_time" content="2023-09-26T12:11:03.210Z">
-<meta property="article:modified_time" content="2023-09-26T12:41:33.180Z">
+<meta property="article:modified_time" content="2023-10-11T14:18:58.189Z">
 <meta property="article:author" content="彭">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image" content="d:\hexo\blog\source\%E5%9E%82%E7%9B%B4%E5%88%86%E8%A1%A8\1.png">
+<meta name="twitter:image" content="http://example.com/..%5C%E5%9E%82%E7%9B%B4%E5%88%86%E8%A1%A8%5C1.png">
   
   
   
@@ -282,24 +282,24 @@
             
               <div class="markdown-body">
                 
-                <h3 id="问题"><a href="#问题" class="headerlink" title="问题"></a>问题</h3><p><img src="D:\hexo\blog\source\垂直分表\1.png" srcset="/img/loading.gif" lazyload></p>
+                <h3 id="问题"><a href="#问题" class="headerlink" title="问题"></a>问题</h3><p><img src="/..%5C%E5%9E%82%E7%9B%B4%E5%88%86%E8%A1%A8%5C1.png" srcset="/img/loading.gif" lazyload></p>
 <p>在以前，一张核心表的字段可能有上百个字段，这种肯定是有问题的，至于什么问题，后面分析</p>
 <h3 id="什么是垂直分表"><a href="#什么是垂直分表" class="headerlink" title="什么是垂直分表"></a>什么是垂直分表</h3><p>垂直分表则是将一张大表按“列”拆分为两张以上的小标，通过主外键关联来获取数据。</p>
 <h3 id="举例"><a href="#举例" class="headerlink" title="举例"></a>举例</h3><p>这是一张商品表拆分前与拆分后</p>
-<p><img src="D:\hexo\blog\source\垂直分表\2.png" srcset="/img/loading.gif" lazyload></p>
+<p><img src="/..%5C%E5%9E%82%E7%9B%B4%E5%88%86%E8%A1%A8%5C2.png" srcset="/img/loading.gif" lazyload></p>
 <p>拆分后的SQL变换</p>
-<p><img src="D:\hexo\blog\source\垂直分表\3.png" srcset="/img/loading.gif" lazyload></p>
+<p><img src="/..%5C%E5%9E%82%E7%9B%B4%E5%88%86%E8%A1%A8%5C3.png" srcset="/img/loading.gif" lazyload></p>
 <h3 id="拆表原因"><a href="#拆表原因" class="headerlink" title="拆表原因"></a>拆表原因</h3><p>先来看我们的InnoDB的存储结构</p>
-<p><img src="D:\hexo\blog\source\垂直分表\4.png" srcset="/img/loading.gif" lazyload></p>
+<p><img src="/..%5C%E5%9E%82%E7%9B%B4%E5%88%86%E8%A1%A8%5C4.png" srcset="/img/loading.gif" lazyload></p>
 <p>我们每一页(Page)默认的大小为16K，保存我们 页的叫做区(Extent)(1M)，我们一个区能够存储64个页，我们的每一页存储<strong>行数据</strong>，我们的InnoDB 1.0版本之后，引入了一个<strong>压缩页</strong>，这比之前可以占用更小的空间，有压缩就有解压缩，在我们的跨页检索中，压缩和解压缩是效率不高的，所以我们的每一页尽可能多的存储一些行数据，这就是我们的理论支撑。</p>
-<h3 id="对比"><a href="#对比" class="headerlink" title="对比"></a>对比</h3><p><img src="D:\hexo\blog\source\垂直分表\2.png" srcset="/img/loading.gif" lazyload></p>
+<h3 id="对比"><a href="#对比" class="headerlink" title="对比"></a>对比</h3><p><img src="/..%5C%E5%9E%82%E7%9B%B4%E5%88%86%E8%A1%A8%5C2.png" srcset="/img/loading.gif" lazyload></p>
 <p>假如有一亿条数据，每一条数据占用1K大小，那么此时需要625W页，做了垂直切分，小标64字节&#x2F;行，存储小标需要39W页。</p>
-<p><img src="D:\hexo\blog\source\垂直分表\5.png" srcset="/img/loading.gif" lazyload></p>
+<p><img src="/..%5C%E5%9E%82%E7%9B%B4%E5%88%86%E8%A1%A8%5C5.png" srcset="/img/loading.gif" lazyload></p>
 <p>假如上面sql中的商品标题因为某种原因没有走索引，那么需要625W页全部扫描，那么我们拆表之后39W页效率就比之前提升了16倍</p>
 <h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3><p>通过将重要字段单独剥离出一张小表，让每一页能够容纳更多的行，进而缩小数据扫描的范围，达到提高执行效率的目的</p>
 <h3 id="触发垂直分表的条件"><a href="#触发垂直分表的条件" class="headerlink" title="触发垂直分表的条件"></a>触发垂直分表的条件</h3><p>单表数据量未来可能千万、字段超过20个，并且包含了超长的Varchar、CLOB、BLOB等字段</p>
-<h3 id="小标的字段"><a href="#小标的字段" class="headerlink" title="小标的字段"></a>小标的字段</h3><p><img src="D:\hexo\blog\source\垂直分表\6.png" srcset="/img/loading.gif" lazyload></p>
-<h3 id="大表的字段"><a href="#大表的字段" class="headerlink" title="大表的字段"></a>大表的字段</h3><p><img src="D:\hexo\blog\source\垂直分表\7.png" srcset="/img/loading.gif" lazyload></p>
+<h3 id="小标的字段"><a href="#小标的字段" class="headerlink" title="小标的字段"></a>小标的字段</h3><p><img src="/..%5C%E5%9E%82%E7%9B%B4%E5%88%86%E8%A1%A8%5C6.png" srcset="/img/loading.gif" lazyload></p>
+<h3 id="大表的字段"><a href="#大表的字段" class="headerlink" title="大表的字段"></a>大表的字段</h3><p><img src="/..%5C%E5%9E%82%E7%9B%B4%E5%88%86%E8%A1%A8%5C7.png" srcset="/img/loading.gif" lazyload></p>
 
                 
               </div>
