@@ -40,7 +40,7 @@
 <meta property="og:image" content="http://example.com/Jvm_pic/13.png">
 <meta property="og:image" content="http://example.com/Jvm_pic/14.png">
 <meta property="article:published_time" content="2023-02-22T02:15:53.343Z">
-<meta property="article:modified_time" content="2023-09-20T07:56:39.138Z">
+<meta property="article:modified_time" content="2023-10-08T13:59:34.542Z">
 <meta property="article:author" content="彭">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:image" content="http://example.com/Jvm_pic/1.png">
@@ -297,7 +297,7 @@
 <p>方法区主要用于存储虚拟机加载的<em><strong>类信息、常量、静态变量，以及编译器编译后的代码</strong></em>等数据。在<em><strong>jdk1.7</strong></em>及<em><strong>其之前</strong></em>，方法区是堆的一个“<em><strong>逻辑部分</strong></em>”（一片连续的堆空间），但为了与堆做区分，方法区还有个名字叫“非堆”，也有人用“永久代”（<em><strong>HotSpot</strong></em>对方法区的实现方法）来表示方法区。</p>
 <p>从<em><strong>jdk1.7</strong></em>已经开始准备“去永久代”的规划，jdk1.7的HotSpot中，已经把原本放在方法区中的<em><strong>静态变量</strong></em>、<em><strong>字符串常量池</strong></em>等<em><strong>移到堆内存</strong></em>中，（常量池除字符串常量池还有class常量池等），这里只是把字符串常量池移到堆内存中；在<em><strong>jdk1.8</strong></em>中，方法区已经不存在，原方法区中存储的类信息、编译后的代码数据等已经移动到了<em><strong>元空间</strong></em>（MetaSpace）中，<em><strong>元空间并没有处于堆内存上</strong></em>，而是直接占用的<em><strong>本地内存</strong></em>（NativeMemory）。根据网上的资料结合自己的理解对jdk1.3~1.6、jdk1.7、jdk1.8中方法区的变迁画了张图如下（如有不合理的地方希望读者指出）：</p>
 <p><img src="/../Jvm_pic/Jvm%E7%89%88%E6%9C%AC%E5%8F%98%E8%BF%81.png" srcset="/img/loading.gif" lazyload></p>
-<p>去永久代的原因有：</p>
+<p>去永久代的原因有： </p>
 <p>（1）字符串存在永久代中，容易出现性能问题和内存溢出。</p>
 <p>（2）类及方法的信息等比较难确定其大小，因此对于永久代的大小指定比较困难，太小容易出现永久代溢出，太大则容易导致老年代溢出。</p>
 <p>（3）永久代会为 GC 带来不必要的复杂度，并且回收效率偏低。</p>
