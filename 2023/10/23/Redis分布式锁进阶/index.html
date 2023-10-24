@@ -1,0 +1,682 @@
+
+
+<!DOCTYPE html>
+<html lang="en" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/fluid.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="彭">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="条件与刚需一个靠谱的分布式锁需要具备的条件和刚需  独占性 高可用 防死锁 不乱抢 重入性  Lua脚本在我们redis中，判断分布式锁的K-V中，K是业务相关的锁名称，可以随意，而V是跟线程有关的ID，因为我们del 删除K的时候要判断是不是当前线程加的，不能删除别的线程加的锁(不能误删)，所以我们在删除K的时候会判断V是不是当前线程自己的，而在高并发多线程的情况下，判断和删除不是原子性的，因为">
+<meta property="og:type" content="article">
+<meta property="og:title" content="手写Redis分布式锁">
+<meta property="og:url" content="http://example.com/2023/10/23/Redis%E5%88%86%E5%B8%83%E5%BC%8F%E9%94%81%E8%BF%9B%E9%98%B6/index.html">
+<meta property="og:site_name" content="PJF">
+<meta property="og:description" content="条件与刚需一个靠谱的分布式锁需要具备的条件和刚需  独占性 高可用 防死锁 不乱抢 重入性  Lua脚本在我们redis中，判断分布式锁的K-V中，K是业务相关的锁名称，可以随意，而V是跟线程有关的ID，因为我们del 删除K的时候要判断是不是当前线程加的，不能删除别的线程加的锁(不能误删)，所以我们在删除K的时候会判断V是不是当前线程自己的，而在高并发多线程的情况下，判断和删除不是原子性的，因为">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="http://example.com/Redis%E5%88%86%E5%B8%83%E5%BC%8F%E9%94%81%E6%8F%90%E5%8D%87%E7%82%B9/1.png">
+<meta property="og:image" content="http://example.com/Redis%E5%88%86%E5%B8%83%E5%BC%8F%E9%94%81%E6%8F%90%E5%8D%87%E7%82%B9/2.png">
+<meta property="og:image" content="http://example.com/Redis%E5%88%86%E5%B8%83%E5%BC%8F%E9%94%81%E6%8F%90%E5%8D%87%E7%82%B9/3.png">
+<meta property="article:published_time" content="2023-10-23T14:01:11.118Z">
+<meta property="article:modified_time" content="2023-10-24T15:06:46.972Z">
+<meta property="article:author" content="彭">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="http://example.com/Redis%E5%88%86%E5%B8%83%E5%BC%8F%E9%94%81%E6%8F%90%E5%8D%87%E7%82%B9/1.png">
+  
+  
+  
+  <title>手写Redis分布式锁 - PJF</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"example.com","root":"/","version":"1.9.4","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml"};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>PJF</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                <span>Home</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>Archives</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                <span>Categories</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>Tags</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                <span>About</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="手写Redis分布式锁"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2023-10-23 22:01" pubdate>
+          October 23, 2023 pm
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          4.7k words
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          39 mins
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">手写Redis分布式锁</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <h2 id="条件与刚需"><a href="#条件与刚需" class="headerlink" title="条件与刚需"></a>条件与刚需</h2><p>一个靠谱的分布式锁需要具备的条件和刚需</p>
+<ul>
+<li>独占性</li>
+<li>高可用</li>
+<li>防死锁</li>
+<li>不乱抢</li>
+<li>重入性</li>
+</ul>
+<h2 id="Lua脚本"><a href="#Lua脚本" class="headerlink" title="Lua脚本"></a>Lua脚本</h2><p>在我们redis中，判断分布式锁的K-V中，K是业务相关的锁名称，可以随意，而V是跟线程有关的ID，因为我们del 删除K的时候要判断是不是当前线程加的，不能删除别的线程加的锁(不能误删)，所以我们在删除K的时候会判断V是不是当前线程自己的，而在高并发多线程的情况下，判断和删除不是原子性的，因为我们采用Lua脚本确保两个操作的原子性。</p>
+<h2 id="Lua案例"><a href="#Lua案例" class="headerlink" title="Lua案例"></a>Lua案例</h2><p>在我们的Redis官网中，解决上述判断锁和删除锁的Lua脚本是这样的</p>
+<figure class="highlight pgsql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs pgsql"><span class="hljs-keyword">if</span> redis.<span class="hljs-keyword">call</span>(<span class="hljs-string">&#x27;get&#x27;</span>,KEYS[<span class="hljs-number">1</span>]) == ARGV[<span class="hljs-number">1</span>] <span class="hljs-keyword">then</span><br>    <span class="hljs-keyword">return</span> redis.<span class="hljs-keyword">call</span>(<span class="hljs-string">&#x27;del&#x27;</span>,KEYS[<span class="hljs-number">1</span>])<br><span class="hljs-keyword">else</span><br>	<span class="hljs-keyword">return</span> <span class="hljs-number">0</span><br><span class="hljs-keyword">end</span><br></code></pre></td></tr></table></figure>
+
+<p><strong>传入参数是KEYS[]和ARGV[]</strong>,<strong>并且数组下标是以1开始的</strong></p>
+<p>在我们redis中，调用脚本使用EVAL命令</p>
+<p>案例：使用mset写入多个值，我们的Lua脚本是这样写的</p>
+<p><img src="/../Redis%E5%88%86%E5%B8%83%E5%BC%8F%E9%94%81%E6%8F%90%E5%8D%87%E7%82%B9/1.png" srcset="/img/loading.gif" lazyload></p>
+<p>但是这样写有个弊端：k1,v1,k2,v2写死了，不利于复用</p>
+<p>改下如下:</p>
+<p><img src="/../Redis%E5%88%86%E5%B8%83%E5%BC%8F%E9%94%81%E6%8F%90%E5%8D%87%E7%82%B9/2.png" srcset="/img/loading.gif" lazyload></p>
+<p>分析：这里的KEYS[]是Key数组，call是调用的意思，ARGV[]是value数组，后面的2是numKeys的意思，代表是keys的数量，这里有两个key所以是2，k1,k2是key，连续传入，lua1，lua2是参数</p>
+<h2 id="Lua条件判断"><a href="#Lua条件判断" class="headerlink" title="Lua条件判断"></a>Lua条件判断</h2><p>格式：</p>
+<figure class="highlight gauss"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs gauss"><span class="hljs-keyword">if</span> 布尔条件 then<br>	业务代码<br><span class="hljs-keyword">elseif</span> 布尔条件 then<br>	业务代码<br><span class="hljs-keyword">else</span><br>	业务代码<br><span class="hljs-keyword">end</span><br></code></pre></td></tr></table></figure>
+
+<p>除了最后一个判断，每个条件判断后都需要加上then，并且有if最后一定得有end结尾，其他和Java差不多，条件判断内括号可加可不加</p>
+<h2 id="解决上述误删所调用的Lua脚本编写"><a href="#解决上述误删所调用的Lua脚本编写" class="headerlink" title="解决上述误删所调用的Lua脚本编写"></a>解决上述误删所调用的Lua脚本编写</h2><p><img src="/../Redis%E5%88%86%E5%B8%83%E5%BC%8F%E9%94%81%E6%8F%90%E5%8D%87%E7%82%B9/3.png" srcset="/img/loading.gif" lazyload></p>
+<h2 id="可重入"><a href="#可重入" class="headerlink" title="可重入"></a>可重入</h2><p>我们上面实现的分布式没有考虑可重入问题，容易导致死锁问题，</p>
+<p>我们原来的分布式锁长这样： keyName   UUID+ThreadID,改进之后需要记录重入次数，所以改进之后的结果长这样</p>
+<figure class="highlight apache"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs apache"><span class="hljs-attribute">keyName</span> UUID+ThreadID <span class="hljs-number">0</span><br><span class="hljs-attribute">keyName</span> UUID+ThreadID <span class="hljs-number">1</span><br><span class="hljs-attribute">keyName</span> UUID+ThreadID <span class="hljs-number">2</span><br><span class="hljs-attribute">keyName</span> UUID+ThreadID <span class="hljs-number">1</span><br><span class="hljs-attribute">keyName</span> UUID+ThreadID <span class="hljs-number">0</span><br></code></pre></td></tr></table></figure>
+
+<p>重入一次+1，当为0时表示已经可以释放锁了</p>
+<p><strong>那么就需要采用hash结构</strong></p>
+<h2 id="改为hash结构后lock-x2F-unlock的Lua脚本编写"><a href="#改为hash结构后lock-x2F-unlock的Lua脚本编写" class="headerlink" title="改为hash结构后lock&#x2F;unlock的Lua脚本编写"></a>改为hash结构后lock&#x2F;unlock的Lua脚本编写</h2><h3 id="Lock"><a href="#Lock" class="headerlink" title="Lock"></a>Lock</h3><ul>
+<li>加锁的Lua脚本，对标我们的lock方法(v1版)</li>
+</ul>
+<figure class="highlight gradle"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><code class="hljs gradle"><span class="hljs-comment">//1.首先判断我们的Key是否存在</span><br><span class="hljs-keyword">if</span> redis.<span class="hljs-keyword">call</span>(<span class="hljs-string">&#x27;exists&#x27;</span>,<span class="hljs-string">&#x27;key&#x27;</span>) == <span class="hljs-number">0</span> then <span class="hljs-comment">//不存在可以直接lock</span><br>	redis.<span class="hljs-keyword">call</span>(<span class="hljs-string">&#x27;hset&#x27;</span>,<span class="hljs-string">&#x27;key&#x27;</span>,<span class="hljs-string">&#x27;uuid:threadID&#x27;</span>,<span class="hljs-number">1</span>)<br>	redis.<span class="hljs-keyword">call</span>(<span class="hljs-string">&#x27;expire&#x27;</span>,<span class="hljs-string">&#x27;key&#x27;</span>,<span class="hljs-number">30</span>) <span class="hljs-comment">//加上过期时间</span><br>	<span class="hljs-keyword">return</span> <span class="hljs-number">1</span><br> <span class="hljs-comment">//2.key已经存在，判断是不是我们当前线程自己加的锁	</span><br> <span class="hljs-comment">//2.1 是我们自己的锁的话，重入次数+1</span><br>elseif redis.<span class="hljs-keyword">call</span>(<span class="hljs-string">&#x27;hexists&#x27;</span>,<span class="hljs-string">&#x27;key&#x27;</span>,<span class="hljs-string">&#x27;uuid:threadID&#x27;</span>) == <span class="hljs-number">1</span> then<br>	redis.<span class="hljs-keyword">call</span>(<span class="hljs-string">&#x27;hincrby&#x27;</span>,<span class="hljs-string">&#x27;key&#x27;</span>,<span class="hljs-string">&#x27;uuid:threadID&#x27;</span>,<span class="hljs-number">1</span>)<br>	redis.<span class="hljs-keyword">call</span>(<span class="hljs-string">&#x27;expire&#x27;</span>,<span class="hljs-number">30</span>)<br>	<span class="hljs-keyword">return</span> <span class="hljs-number">1</span><br><span class="hljs-keyword">else</span> <br>	<span class="hljs-keyword">return</span> <span class="hljs-number">0</span><br>end<br>	<br></code></pre></td></tr></table></figure>
+
+<p>但是上述的代码前两个逻辑几乎一致，所以是否可以合并简洁？经过测试，</p>
+<p>hincrby可以代替hset的作用，也能创建key，所以v1版本可以改进</p>
+<ul>
+<li>v2</li>
+</ul>
+<figure class="highlight pgsql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs pgsql"><span class="hljs-keyword">if</span> redis.<span class="hljs-keyword">call</span>(<span class="hljs-string">&#x27;exists&#x27;</span>,<span class="hljs-string">&#x27;key&#x27;</span>) == <span class="hljs-number">0</span> <span class="hljs-keyword">or</span> redis.<span class="hljs-keyword">call</span>(<span class="hljs-string">&#x27;hexists&#x27;</span>,<span class="hljs-string">&#x27;key&#x27;</span>,<span class="hljs-string">&#x27;uuid:threadID&#x27;</span>) == <span class="hljs-number">1</span> <span class="hljs-keyword">then</span> <br>	redis.<span class="hljs-keyword">call</span>(<span class="hljs-string">&#x27;hincrby&#x27;</span>,<span class="hljs-string">&#x27;key&#x27;</span>,<span class="hljs-string">&#x27;uuid:threadID&#x27;</span>,<span class="hljs-number">1</span>)<br>	redis.<span class="hljs-keyword">call</span>(<span class="hljs-string">&#x27;expire&#x27;</span>,<span class="hljs-number">30</span>)<br>	<span class="hljs-keyword">return</span> <span class="hljs-number">1</span>	<br><span class="hljs-keyword">else</span> <br>	<span class="hljs-keyword">return</span> <span class="hljs-number">0</span><br><span class="hljs-keyword">end</span><br></code></pre></td></tr></table></figure>
+
+<ul>
+<li>v3,换上我们的参数</li>
+</ul>
+<figure class="highlight sas"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs sas"><span class="hljs-keyword">if</span> redis.<span class="hljs-keyword">call</span>(<span class="hljs-string">&#x27;exists&#x27;</span>,<span class="hljs-keyword">KEY</span>[1]) == 0 <span class="hljs-keyword">or</span> redis.<span class="hljs-keyword">call</span>(<span class="hljs-string">&#x27;hexists&#x27;</span>,<span class="hljs-keyword">KEY</span>[1],ARGV[1]) == 1 <span class="hljs-keyword">then</span> <br>	redis.<span class="hljs-keyword">call</span>(<span class="hljs-string">&#x27;hincrby&#x27;</span>,<span class="hljs-keyword">KEY</span>[1],ARGV[1],1)<br>	redis.<span class="hljs-keyword">call</span>(<span class="hljs-string">&#x27;expire&#x27;</span>,ARGV[2])<br>	<span class="hljs-keyword">return</span> 1	<br><span class="hljs-keyword">else</span> <br>	<span class="hljs-keyword">return</span> 0<br><span class="hljs-keyword">end</span><br></code></pre></td></tr></table></figure>
+
+<h3 id="unlock"><a href="#unlock" class="headerlink" title="unlock"></a>unlock</h3><p>流程：首先判断是否有锁，没有直接返回nil，如果有且是自己的，调用incrby -1直到为0时删除锁</p>
+<ul>
+<li>v1</li>
+</ul>
+<figure class="highlight gradle"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><code class="hljs gradle"><span class="hljs-comment">//1.首先判断是否有锁</span><br><span class="hljs-comment">//1.1,不存在 直接返回nil</span><br><span class="hljs-keyword">if</span> redis.<span class="hljs-keyword">call</span>(<span class="hljs-string">&#x27;hexists&#x27;</span>,<span class="hljs-string">&#x27;key&#x27;</span>,<span class="hljs-string">&#x27;uuid:threadID&#x27;</span>) == <span class="hljs-number">0</span> then <br>	<span class="hljs-keyword">return</span> nil<br><span class="hljs-comment">//1.2 ,存在的话重入次数-1，当为0时del key</span><br>elseif redis.<span class="hljs-keyword">call</span>(<span class="hljs-string">&#x27;hincrby&#x27;</span>,<span class="hljs-string">&#x27;key&#x27;</span>,<span class="hljs-string">&#x27;uuid:threadID&#x27;</span>,-<span class="hljs-number">1</span>) == <span class="hljs-number">0</span> then<br>	<span class="hljs-keyword">return</span> redis.<span class="hljs-keyword">call</span>(<span class="hljs-string">&#x27;del&#x27;</span>,key)<br><span class="hljs-keyword">else</span> <span class="hljs-comment">//有锁，但是还没减为0</span><br>	<span class="hljs-keyword">return</span> <span class="hljs-number">0</span><br>end<br></code></pre></td></tr></table></figure>
+
+<ul>
+<li>v2，将我们的参数替换上去</li>
+</ul>
+<figure class="highlight sas"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs sas"><span class="hljs-keyword">if</span> redis.<span class="hljs-keyword">call</span>(<span class="hljs-string">&#x27;hexists&#x27;</span>,KEYS[1],ARGV[1]) == 0 <span class="hljs-keyword">then</span> <br>	<span class="hljs-keyword">return</span> nil<br>//1.2 ,存在的话重入次数-1，当为0时del <span class="hljs-keyword">key</span><br>elseif redis.<span class="hljs-keyword">call</span>(<span class="hljs-string">&#x27;hincrby&#x27;</span>,KEYS[1],ARGV[1],-1) == 0 <span class="hljs-keyword">then</span><br>	<span class="hljs-keyword">return</span> redis.<span class="hljs-keyword">call</span>(<span class="hljs-string">&#x27;del&#x27;</span>,<span class="hljs-keyword">key</span>)<br><span class="hljs-keyword">else</span><br>	<span class="hljs-keyword">return</span> 0<br><span class="hljs-keyword">end</span><br></code></pre></td></tr></table></figure>
+
+<h3 id="分布式锁在Java中的应用"><a href="#分布式锁在Java中的应用" class="headerlink" title="分布式锁在Java中的应用"></a>分布式锁在Java中的应用</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">RedisDistributedLock</span> <span class="hljs-keyword">implements</span> <span class="hljs-title class_">Lock</span> &#123;<br><br>    <span class="hljs-keyword">private</span> StringRedisTemplate redisTemplate;<br>    <span class="hljs-keyword">private</span> String lockName; <span class="hljs-comment">//keys[1]</span><br>    <span class="hljs-keyword">private</span> String field; <span class="hljs-comment">//ARGV[1]</span><br>    <span class="hljs-keyword">private</span> <span class="hljs-type">int</span> EXPIRE; <span class="hljs-comment">//ARGV[2]</span><br><br>    <span class="hljs-keyword">public</span> <span class="hljs-title function_">RedisDistributedLock</span><span class="hljs-params">(StringRedisTemplate redisTemplate, String lockName)</span> &#123;<br>        <span class="hljs-built_in">this</span>.redisTemplate = redisTemplate;<br>        <span class="hljs-built_in">this</span>.lockName = lockName;<br>        <span class="hljs-built_in">this</span>.field = <span class="hljs-string">&quot;UUID&quot;</span>+Thread.currentThread().getId();<br>        <span class="hljs-built_in">this</span>.EXPIRE = <span class="hljs-number">25</span>;<br>    &#125;<br><br>    <span class="hljs-meta">@Override</span><br>    <span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">lock</span><span class="hljs-params">()</span> &#123;<br>        tryLock();<br>    &#125;<br><br>    <span class="hljs-meta">@Override</span><br>    <span class="hljs-keyword">public</span> <span class="hljs-type">boolean</span> <span class="hljs-title function_">tryLock</span><span class="hljs-params">()</span> &#123;<br>        <span class="hljs-keyword">try</span> &#123;<br>            tryLock(-<span class="hljs-number">1</span>,TimeUnit.SECONDS);<br>        &#125; <span class="hljs-keyword">catch</span> (InterruptedException e) &#123;<br>            e.printStackTrace();<br>        &#125;<br>        <span class="hljs-keyword">return</span> <span class="hljs-literal">false</span>;<br>    &#125;<br><br>    <span class="hljs-meta">@Override</span><br>    <span class="hljs-keyword">public</span> <span class="hljs-type">boolean</span> <span class="hljs-title function_">tryLock</span><span class="hljs-params">(<span class="hljs-type">long</span> time, TimeUnit unit)</span> <span class="hljs-keyword">throws</span> InterruptedException &#123;<br>        <span class="hljs-keyword">if</span>(time == -<span class="hljs-number">1</span>)&#123;<br>            <span class="hljs-type">String</span> <span class="hljs-variable">script</span> <span class="hljs-operator">=</span><br>                    <span class="hljs-string">&quot;if redis.call(&#x27;exists&#x27;,KEY[1]) == 0 or redis.call(&#x27;hexists&#x27;,KEY[1],ARGV[1]) == 1 then &quot;</span> +<br>                            <span class="hljs-string">&quot;redis.call(&#x27;hincrby&#x27;,KEY[1],ARGV[1],1)&quot;</span> +<br>                            <span class="hljs-string">&quot;redis.call(&#x27;expire&#x27;,ARGV[2])&quot;</span> +<br>                            <span class="hljs-string">&quot;return 1&quot;</span> +<br>                    <span class="hljs-string">&quot;else &quot;</span> +<br>                            <span class="hljs-string">&quot;treturn 0&quot;</span> +<br>                    <span class="hljs-string">&quot;end&quot;</span>;<br>            <span class="hljs-keyword">while</span>(!redisTemplate.execute(<span class="hljs-keyword">new</span> <span class="hljs-title class_">DefaultRedisScript</span>&lt;&gt;(script,Boolean.class), Arrays.asList(lockName),field,EXPIRE))&#123;<br>                Thread.sleep(<span class="hljs-number">60</span>);<br>            &#125;<br>            <span class="hljs-keyword">return</span> <span class="hljs-literal">true</span>;<br>        &#125;<br>        <span class="hljs-keyword">return</span> <span class="hljs-literal">false</span>;<br>    &#125;<br>    <span class="hljs-meta">@Override</span><br>    <span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">unlock</span><span class="hljs-params">()</span> &#123;<br>        <span class="hljs-type">String</span> <span class="hljs-variable">script</span> <span class="hljs-operator">=</span><br>                <span class="hljs-string">&quot;if redis.call(&#x27;hexists&#x27;,KEYS[1],ARGV[1]) == 0 then &quot;</span> +<br>                        <span class="hljs-string">&quot;return nil&quot;</span> +<br>                <span class="hljs-string">&quot;elseif redis.call(&#x27;incrby&#x27;,KEYS[1],ARGV[1],-1) == 0 then&quot;</span> +<br>                        <span class="hljs-string">&quot;return redis.call(&#x27;del&#x27;,key)&quot;</span> +<br>                <span class="hljs-string">&quot;else&quot;</span> +<br>                        <span class="hljs-string">&quot;return 0&quot;</span> +<br>                <span class="hljs-string">&quot;end&quot;</span>;<br>        <span class="hljs-type">Long</span> <span class="hljs-variable">flag</span> <span class="hljs-operator">=</span> redisTemplate.execute(<span class="hljs-keyword">new</span> <span class="hljs-title class_">DefaultRedisScript</span>&lt;&gt;(script,Long.class), Arrays.asList(lockName),field);<br><br>        <span class="hljs-keyword">if</span> (flag == <span class="hljs-literal">null</span>)&#123;<br>            <span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">RuntimeException</span>(<span class="hljs-string">&quot;锁不存在&quot;</span>);<br>        &#125;<br>    &#125;<br><br>    <span class="hljs-meta">@Override</span><br>    <span class="hljs-keyword">public</span> Condition <span class="hljs-title function_">newCondition</span><span class="hljs-params">()</span> &#123;<br>        <span class="hljs-keyword">return</span> <span class="hljs-literal">null</span>;<br>    &#125;<br>    <span class="hljs-meta">@Override</span><br>    <span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">lockInterruptibly</span><span class="hljs-params">()</span> <span class="hljs-keyword">throws</span> InterruptedException &#123;<br><br>    &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>手写Redis分布式锁</div>
+      <div>http://example.com/2023/10/23/Redis分布式锁进阶/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>Author</div>
+          <div>彭</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>Posted on</div>
+          <div>October 23, 2023</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>Licensed under</div>
+          <div>
+            
+              
+              
+                <a target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - Attribution">
+                    <i class="iconfont icon-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2023/10/23/%E6%89%8B%E5%86%99Redis%E5%88%86%E5%B8%83%E5%BC%8F%E9%94%81/" title="手写Redis分布式锁">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">手写Redis分布式锁</span>
+                        <span class="visible-mobile">Previous</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2023/10/22/RedisBigKey/" title="Redis BigKey问题">
+                        <span class="hidden-mobile">Redis BigKey问题</span>
+                        <span class="visible-mobile">Next</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>Table of Contents</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">Search</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">Keyword</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.0/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.18.2/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">Blog works best with JavaScript enabled</div>
+  </noscript>
+</body>
+</html>

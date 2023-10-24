@@ -224,6 +224,72 @@
     <article class="col-12 col-md-12 mx-auto index-info">
       <h1 class="index-header">
         
+        <a href="/2023/10/23/%E6%89%8B%E5%86%99Redis%E5%88%86%E5%B8%83%E5%BC%8F%E9%94%81/" target="_self">
+          手写Redis分布式锁
+        </a>
+      </h1>
+
+      
+      <a class="index-excerpt index-excerpt__noimg" href="/2023/10/23/%E6%89%8B%E5%86%99Redis%E5%88%86%E5%B8%83%E5%BC%8F%E9%94%81/" target="_self">
+        <div>
+          条件与刚需一个靠谱的分布式锁需要具备的条件和刚需  独占性 高可用 防死锁 不乱抢 重入性  Lua脚本在我们redis中，判断分布式锁的K-V中，K是业务相关的锁名称，可以随意，而V是跟线程有关的ID，因为我们del 删除K的时候要判断是不是当前线程加的，不能删除别的线程加的锁(不能误删)，所以我们在删除K的时候会判断V是不是当前线程自己的，而在高并发多线程的情况下，判断和删除不是原子性的，因为
+        </div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2023-10-23 22:51" pubdate>
+              2023-10-23
+            </time>
+          </div>
+        
+        
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h1 class="index-header">
+        
+        <a href="/2023/10/23/Redis%E5%88%86%E5%B8%83%E5%BC%8F%E9%94%81%E8%BF%9B%E9%98%B6/" target="_self">
+          手写Redis分布式锁
+        </a>
+      </h1>
+
+      
+      <a class="index-excerpt index-excerpt__noimg" href="/2023/10/23/Redis%E5%88%86%E5%B8%83%E5%BC%8F%E9%94%81%E8%BF%9B%E9%98%B6/" target="_self">
+        <div>
+          条件与刚需一个靠谱的分布式锁需要具备的条件和刚需  独占性 高可用 防死锁 不乱抢 重入性  Lua脚本在我们redis中，判断分布式锁的K-V中，K是业务相关的锁名称，可以随意，而V是跟线程有关的ID，因为我们del 删除K的时候要判断是不是当前线程加的，不能删除别的线程加的锁(不能误删)，所以我们在删除K的时候会判断V是不是当前线程自己的，而在高并发多线程的情况下，判断和删除不是原子性的，因为
+        </div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2023-10-23 22:01" pubdate>
+              2023-10-23
+            </time>
+          </div>
+        
+        
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h1 class="index-header">
+        
         <a href="/2023/10/22/RedisBigKey/" target="_self">
           Redis BigKey问题
         </a>
@@ -473,72 +539,6 @@
             <i class="iconfont icon-date"></i>
             <time datetime="2023-09-08 10:23" pubdate>
               2023-09-08
-            </time>
-          </div>
-        
-        
-        
-      </div>
-    </article>
-  </div>
-
-  <div class="row mx-auto index-card">
-    
-    
-    <article class="col-12 col-md-12 mx-auto index-info">
-      <h1 class="index-header">
-        
-        <a href="/2023/09/07/%E5%88%86%E5%BA%93%E5%88%86%E8%A1%A8/" target="_self">
-          分库分表
-        </a>
-      </h1>
-
-      
-      <a class="index-excerpt index-excerpt__noimg" href="/2023/09/07/%E5%88%86%E5%BA%93%E5%88%86%E8%A1%A8/" target="_self">
-        <div>
-          时机 前提，项目业务数据越来越多，或者业务发展比较迅速(单表的数据量达1000W或10G以后)  优化已经解决不了性能问题(主从读写分离、查询索引…)  IO瓶颈(磁盘IO、网络IO)、CPU瓶颈(聚合查询、连接数太多)   拆分策略 垂直 垂直分库 垂直分表   水平 水平分库 水平分表     垂直分库以表为依据，根据业务将不同表拆分到不同库中  特点：  按业务对数据分级管理、维护、监控、扩
-        </div>
-      </a>
-
-      <div class="index-btm post-metas">
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>
-            <time datetime="2023-09-07 13:27" pubdate>
-              2023-09-07
-            </time>
-          </div>
-        
-        
-        
-      </div>
-    </article>
-  </div>
-
-  <div class="row mx-auto index-card">
-    
-    
-    <article class="col-12 col-md-12 mx-auto index-info">
-      <h1 class="index-header">
-        
-        <a href="/2023/09/07/%E7%BA%BF%E7%A8%8B%E6%B1%A0%E4%BD%BF%E7%94%A8%E5%9C%BA%E6%99%AF/" target="_self">
-          线程池
-        </a>
-      </h1>
-
-      
-      <a class="index-excerpt index-excerpt__noimg" href="/2023/09/07/%E7%BA%BF%E7%A8%8B%E6%B1%A0%E4%BD%BF%E7%94%A8%E5%9C%BA%E6%99%AF/" target="_self">
-        <div>
-          核心参数 执行流程 有哪些常见队列  场景一 场景二 场景三    这个@Async注解的使用在实习的时候坤哥代码也有用到过，相对来说用起来更加优雅 总结 如何控制某个方法允许并发访问线程数量Semaphore [ ‘scme ,for]信号量，是JUC包下的一个工具类，底层是AQS，我们可以通过其限制执行的线程数量使用场景: 通常用于那些资源有明确访问数量限制的场景，常用于限流。  在多线程中提
-        </div>
-      </a>
-
-      <div class="index-btm post-metas">
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>
-            <time datetime="2023-09-07 09:59" pubdate>
-              2023-09-07
             </time>
           </div>
         
