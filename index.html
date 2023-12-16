@@ -224,6 +224,72 @@
     <article class="col-12 col-md-12 mx-auto index-info">
       <h1 class="index-header">
         
+        <a href="/2023/12/16/%E9%9B%AA%E8%8A%B1%E7%AE%97%E6%B3%95/" target="_self">
+          雪花算法
+        </a>
+      </h1>
+
+      
+      <a class="index-excerpt index-excerpt__noimg" href="/2023/12/16/%E9%9B%AA%E8%8A%B1%E7%AE%97%E6%B3%95/" target="_self">
+        <div>
+          概念snowflake是Twitter开源的分布式ID生成算法，结果是一个long型的ID。其核心思想是：使用41bit作为毫秒数，10bit作为机器的ID（5个bit是数据中心，5个bit的机器ID），12bit作为毫秒内的流水号（意味着每个节点在每毫秒可以产生 4096 个 ID），最后还有一个符号位，永远是0。  这个算法单机每秒内理论上最多可以生成1000*(2^12)，也就是409.6万
+        </div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2023-12-16 17:28" pubdate>
+              2023-12-16
+            </time>
+          </div>
+        
+        
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h1 class="index-header">
+        
+        <a href="/2023/12/13/DDIA/" target="_self">
+          DDIA
+        </a>
+      </h1>
+
+      
+      <a class="index-excerpt index-excerpt__noimg" href="/2023/12/13/DDIA/" target="_self">
+        <div>
+          数据系统基础可靠性、可扩展性、可维护性现今很多应用程序都是数据密集型，CPU很少成为这类应用的瓶颈，更大的问题来自是数据量、数据复杂性以及数据的变更速度。 数据密集型应用通常由标准组件构建而成，标准组件提供了很多通用的功能；例如，许多应 用程序都需要：  数据库（database）  存储数据，以便自己或其他应用程序之后能再次找到  缓存（cache）  记住开销昂贵操作的结果，加快读取速度  搜
+        </div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2023-12-13 18:10" pubdate>
+              2023-12-13
+            </time>
+          </div>
+        
+        
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h1 class="index-header">
+        
         <a href="/2023/10/25/Redis%E7%BC%93%E5%AD%98%E6%B7%98%E6%B1%B0%E7%AD%96%E7%95%A5/" target="_self">
           Redis缓存淘汰策略
         </a>
@@ -473,72 +539,6 @@
             <i class="iconfont icon-date"></i>
             <time datetime="2023-09-26 20:11" pubdate>
               2023-09-26
-            </time>
-          </div>
-        
-        
-        
-      </div>
-    </article>
-  </div>
-
-  <div class="row mx-auto index-card">
-    
-    
-    <article class="col-12 col-md-12 mx-auto index-info">
-      <h1 class="index-header">
-        
-        <a href="/2023/09/09/JVM%E5%AE%9E%E8%B7%B5%E9%97%AE%E9%A2%98%E6%8E%92%E6%9F%A5/" target="_self">
-          JVM实践问题排查
-        </a>
-      </h1>
-
-      
-      <a class="index-excerpt index-excerpt__noimg" href="/2023/09/09/JVM%E5%AE%9E%E8%B7%B5%E9%97%AE%E9%A2%98%E6%8E%92%E6%9F%A5/" target="_self">
-        <div>
-          CPU突然飙高如何排查  top    ps命令查看进程及包含的线程和CPU情况   jstack打印各线程情况   根据刚刚的线程和CPU情况讲对应的16进制的线程ID去查找对应经常，观看日志信息，分析是哪一行代码即可 JVM常见调优参数 堆空间大小    虚拟机栈大小    年轻代及老年代    设置垃圾收集器   Java内存泄漏排查   获取dump文件
-        </div>
-      </a>
-
-      <div class="index-btm post-metas">
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>
-            <time datetime="2023-09-09 22:45" pubdate>
-              2023-09-09
-            </time>
-          </div>
-        
-        
-        
-      </div>
-    </article>
-  </div>
-
-  <div class="row mx-auto index-card">
-    
-    
-    <article class="col-12 col-md-12 mx-auto index-info">
-      <h1 class="index-header">
-        
-        <a href="/2023/09/08/HashMap/" target="_self">
-          HashMap
-        </a>
-      </h1>
-
-      
-      <a class="index-excerpt index-excerpt__noimg" href="/2023/09/08/HashMap/" target="_self">
-        <div>
-          Put方法流程  JDK1.8 之前 HashMap 由 数组+链表 组成的，数组是 HashMap 的主体，链表则是主要为了解决哈希冲突而存在的（“拉链法”解决冲突）。 JDK1.8 以后的 HashMap 在解决哈希冲突时有了较大的变化，当链表长度大于等于阈值（默认为 8）（将链表转换成红黑树前会判断，如果当前数组的长度小于 64，那么会选择先进行数组扩容，而不是转换为红黑树）时，将链表转化为
-        </div>
-      </a>
-
-      <div class="index-btm post-metas">
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>
-            <time datetime="2023-09-08 10:23" pubdate>
-              2023-09-08
             </time>
           </div>
         

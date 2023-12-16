@@ -16,19 +16,21 @@
   <meta name="author" content="彭">
   <meta name="keywords" content="">
   
-    <meta property="og:type" content="article">
-<meta property="og:title" content="Redis缓存淘汰策略">
-<meta property="og:url" content="http://example.com/2023/10/25/Redis%E7%BC%93%E5%AD%98%E6%B7%98%E6%B1%B0%E7%AD%96%E7%95%A5/index.html">
+    <meta name="description" content="数据系统基础可靠性、可扩展性、可维护性现今很多应用程序都是数据密集型，CPU很少成为这类应用的瓶颈，更大的问题来自是数据量、数据复杂性以及数据的变更速度。 数据密集型应用通常由标准组件构建而成，标准组件提供了很多通用的功能；例如，许多应 用程序都需要：  数据库（database）  存储数据，以便自己或其他应用程序之后能再次找到  缓存（cache）  记住开销昂贵操作的结果，加快读取速度  搜">
+<meta property="og:type" content="article">
+<meta property="og:title" content="DDIA">
+<meta property="og:url" content="http://example.com/2023/12/13/DDIA/index.html">
 <meta property="og:site_name" content="PJF">
+<meta property="og:description" content="数据系统基础可靠性、可扩展性、可维护性现今很多应用程序都是数据密集型，CPU很少成为这类应用的瓶颈，更大的问题来自是数据量、数据复杂性以及数据的变更速度。 数据密集型应用通常由标准组件构建而成，标准组件提供了很多通用的功能；例如，许多应 用程序都需要：  数据库（database）  存储数据，以便自己或其他应用程序之后能再次找到  缓存（cache）  记住开销昂贵操作的结果，加快读取速度  搜">
 <meta property="og:locale" content="en_US">
-<meta property="article:published_time" content="2023-10-25T13:50:14.636Z">
-<meta property="article:modified_time" content="2023-10-25T14:40:02.465Z">
+<meta property="article:published_time" content="2023-12-13T10:10:00.487Z">
+<meta property="article:modified_time" content="2023-12-13T11:07:49.724Z">
 <meta property="article:author" content="彭">
 <meta name="twitter:card" content="summary_large_image">
   
   
   
-  <title>Redis缓存淘汰策略 - PJF</title>
+  <title>DDIA - PJF</title>
 
   <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
 
@@ -194,7 +196,7 @@
       <div class="banner-text text-center fade-in-up">
         <div class="h2">
           
-            <span id="subtitle" data-typed-text="Redis缓存淘汰策略"></span>
+            <span id="subtitle" data-typed-text="DDIA"></span>
           
         </div>
 
@@ -205,8 +207,8 @@
     
       <span class="post-meta">
         <i class="iconfont icon-date-fill" aria-hidden="true"></i>
-        <time datetime="2023-10-25 21:50" pubdate>
-          October 25, 2023 pm
+        <time datetime="2023-12-13 18:10" pubdate>
+          December 13, 2023 pm
         </time>
       </span>
     
@@ -217,7 +219,7 @@
       <span class="post-meta mr-2">
         <i class="iconfont icon-chart"></i>
         
-          0 words
+          301 words
         
       </span>
     
@@ -228,7 +230,7 @@
         
         
         
-          1 mins
+          3 mins
         
       </span>
     
@@ -266,12 +268,34 @@
         <div id="board">
           <article class="post-content mx-auto">
             <!-- SEO header -->
-            <h1 style="display: none">Redis缓存淘汰策略</h1>
+            <h1 style="display: none">DDIA</h1>
             
             
               <div class="markdown-body">
                 
-                
+                <h2 id="数据系统基础"><a href="#数据系统基础" class="headerlink" title="数据系统基础"></a>数据系统基础</h2><h3 id="可靠性、可扩展性、可维护性"><a href="#可靠性、可扩展性、可维护性" class="headerlink" title="可靠性、可扩展性、可维护性"></a>可靠性、可扩展性、可维护性</h3><p>现今很多应用程序都是<strong>数据密集型</strong>，CPU很少成为这类应用的瓶颈，更大的问题来自是<strong>数据量、数据复杂性以及数据的变更速度。</strong></p>
+<p>数据密集型应用通常由标准组件构建而成，标准组件提供了很多通用的功能；例如，许多应 用程序都需要：</p>
+<ul>
+<li>数据库（database）</li>
+</ul>
+<p>存储数据，以便自己或其他应用程序之后能再次找到</p>
+<ul>
+<li>缓存（cache）</li>
+</ul>
+<p>记住开销昂贵操作的结果，加快读取速度</p>
+<ul>
+<li>搜索索引（search indexes）</li>
+</ul>
+<p>允许用户按关键字搜索数据，或以各种方式对数据进行过滤</p>
+<ul>
+<li>流处理（stream processing）</li>
+</ul>
+<p>向其他进程发送消息，进行异步处理</p>
+<ul>
+<li>批处理（batch processing）</li>
+</ul>
+<p>定期处理累积的大批量数据</p>
+
                 
               </div>
             
@@ -288,8 +312,8 @@
 
   <div class="license-box my-3">
     <div class="license-title">
-      <div>Redis缓存淘汰策略</div>
-      <div>http://example.com/2023/10/25/Redis缓存淘汰策略/</div>
+      <div>DDIA</div>
+      <div>http://example.com/2023/12/13/DDIA/</div>
     </div>
     <div class="license-meta">
       
@@ -301,7 +325,7 @@
       
         <div class="license-meta-item license-meta-date">
           <div>Posted on</div>
-          <div>October 25, 2023</div>
+          <div>December 13, 2023</div>
         </div>
       
       
@@ -333,9 +357,9 @@
                   <article class="post-prev col-6">
                     
                     
-                      <a href="/2023/12/13/DDIA/" title="DDIA">
+                      <a href="/2023/12/16/%E9%9B%AA%E8%8A%B1%E7%AE%97%E6%B3%95/" title="雪花算法">
                         <i class="iconfont icon-arrowleft"></i>
-                        <span class="hidden-mobile">DDIA</span>
+                        <span class="hidden-mobile">雪花算法</span>
                         <span class="visible-mobile">Previous</span>
                       </a>
                     
@@ -343,8 +367,8 @@
                   <article class="post-next col-6">
                     
                     
-                      <a href="/2023/10/25/Redis%E4%BA%94%E5%A4%A7%E7%B1%BB%E5%9E%8B%E6%BA%90%E7%A0%81%E5%8F%8A%E5%BA%95%E5%B1%82%E5%AE%9E%E7%8E%B0/" title="Redis五大类型源码及底层实现">
-                        <span class="hidden-mobile">Redis五大类型源码及底层实现</span>
+                      <a href="/2023/10/25/Redis%E7%BC%93%E5%AD%98%E6%B7%98%E6%B1%B0%E7%AD%96%E7%95%A5/" title="Redis缓存淘汰策略">
+                        <span class="hidden-mobile">Redis缓存淘汰策略</span>
                         <span class="visible-mobile">Next</span>
                         <i class="iconfont icon-arrowright"></i>
                       </a>
