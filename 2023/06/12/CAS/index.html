@@ -1,0 +1,676 @@
+
+
+<!DOCTYPE html>
+<html lang="en" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/fluid.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="彭">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="CAS概述CAS是JDK提供的非阻塞原子性操作，它通过硬件保证了比较-更新的原子性。 它是非阻塞的且自身具有原子性，也就是说这玩意效率更高且通过硬件保证，说明这玩意更可靠。 CAS是一条CPU的原子指令(cmpxchg指令），不会造成所谓的数据不一致问题，Unsafe提供的CAS方法（如compareAndSwapXXX）底层实现即为CPU指令cmpxchg。 执行cmpxchg指令的时候，会判断">
+<meta property="og:type" content="article">
+<meta property="og:title" content="CAS">
+<meta property="og:url" content="http://example.com/2023/06/12/CAS/index.html">
+<meta property="og:site_name" content="PJF">
+<meta property="og:description" content="CAS概述CAS是JDK提供的非阻塞原子性操作，它通过硬件保证了比较-更新的原子性。 它是非阻塞的且自身具有原子性，也就是说这玩意效率更高且通过硬件保证，说明这玩意更可靠。 CAS是一条CPU的原子指令(cmpxchg指令），不会造成所谓的数据不一致问题，Unsafe提供的CAS方法（如compareAndSwapXXX）底层实现即为CPU指令cmpxchg。 执行cmpxchg指令的时候，会判断">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="http://example.com/cas_pic/1.png">
+<meta property="og:image" content="http://example.com/cas_pic/2.png">
+<meta property="og:image" content="http://example.com/cas_pic/3.png">
+<meta property="og:image" content="http://example.com/cas_pic/4.png">
+<meta property="og:image" content="http://example.com/cas_pic/4.png">
+<meta property="article:published_time" content="2023-06-12T14:10:28.559Z">
+<meta property="article:modified_time" content="2023-07-29T02:57:04.698Z">
+<meta property="article:author" content="彭">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="http://example.com/cas_pic/1.png">
+  
+  
+  
+  <title>CAS - PJF</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"example.com","root":"/","version":"1.9.4","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml"};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>PJF</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                <span>Home</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>Archives</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                <span>Categories</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>Tags</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                <span>About</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="CAS"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2023-06-12 22:10" pubdate>
+          June 12, 2023 pm
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          5.1k words
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          43 mins
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">CAS</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <h2 id="CAS概述"><a href="#CAS概述" class="headerlink" title="CAS概述"></a>CAS概述</h2><p>CAS是JDK提供的<strong>非阻塞原子性</strong>操作，它通过<strong>硬件</strong>保证了比较-更新的原子性。</p>
+<p>它是非阻塞的且自身具有原子性，也就是说这玩意效率更高且通过硬件保证，说明这玩意更可靠。</p>
+<p><strong>CAS是一条CPU的原子指令(cmpxchg指令）</strong>，不会造成所谓的数据不一致问题，<strong>Unsafe</strong>提供的CAS方法（如compareAndSwapXXX）底层实现即为CPU指令cmpxchg。</p>
+<p>执行cmpxchg指令的时候，会判断当前系统是否为多核系统(一般都是多核系统)，如果是就<strong>给总线加锁</strong>，只有一个线程会对总线加锁成功，加锁成功之后会执行cas操作，<strong>也就是说CAS的原子性实际上是CPU实现独占的</strong>，比起用synchronized重量级锁，这里的排他时间要短很多，所以在多线程情况下性能会比较好。</p>
+<h3 id="CAS乐观锁"><a href="#CAS乐观锁" class="headerlink" title="CAS乐观锁"></a>CAS乐观锁</h3><p>CAS 全称为 <code>Compare And Swap</code> 翻译过来就是<code>比较并且交换</code></p>
+<ul>
+<li>Synchornized 是悲观锁，线程一旦得到锁，其他的线程就只能挂起了</li>
+<li>CAS 的操作则是乐观锁，他认为自己一定会拿到锁，所以他会一直尝试，直到成功拿到为止；</li>
+</ul>
+<h3 id="CAS-机制"><a href="#CAS-机制" class="headerlink" title="CAS 机制"></a>CAS 机制</h3><p>在看到 Compare 和 Swap 后，我们就应该知道，CAS 里面至少包含了两个动作，分别是比较和交换，在现在的 CPU 中，为这两个动作专门提供了一个指令，就是<code>CAH</code> 指令，<strong>由 CPU 来保证</strong>这两个操作一定是原子的，也就是说比较和交换这两个操作只能是<code>要么全部完成，要么全部没有完成</code></p>
+<h3 id="Java中CAS实现"><a href="#Java中CAS实现" class="headerlink" title="Java中CAS实现"></a>Java中CAS实现</h3><p>来看一个方法compareAndSet</p>
+<p><img src="/../cas_pic/1.png" srcset="/img/loading.gif" lazyload></p>
+<p>点开方发现是一个Unsafe类的compareAndSwapInt方法</p>
+<p>参数：(当前要操作的对象，要操作对象中属性地址的偏移量，需要修改数据的期望值，需要修改的新值)</p>
+<p>Java中一般是这三个方法</p>
+<p><img src="/../cas_pic/2.png" srcset="/img/loading.gif" lazyload></p>
+<h3 id="Unsafe"><a href="#Unsafe" class="headerlink" title="Unsafe"></a>Unsafe</h3><p>Unsafe是CAS的核心类，由于Java方法无法直接访问底层系统，需要通过本地〈native)方法来访问，Unsafe相当于一个后门，基于该类可以直接操作特定内存的数据。<strong>Unsafe类存在于sun.misc包中</strong>，其内部方法操作可以像c的<strong>指针</strong>一样直接操作内存，因为Java中CAS操作的执行依赖于Unsafe类的方法。</p>
+<p>再次强调！由于CAS是一种系统原语，原语属于操作系统用于范畴，是由若干条指令组成的，用于完成某个功能的一个过程，并且原语的执行必须是连续的，在执行的过程中不允许被中断，也就是说<strong>CAS是一条CPU的原子指令</strong>，不会造成所谓的数据不一致问题。</p>
+<p>CAS核心思想：<strong>比较要更新变量的值V和要预期值E，相等才会将V的值设为新值N，如果不相等自选再来</strong></p>
+<h3 id="AtomicReference"><a href="#AtomicReference" class="headerlink" title="AtomicReference"></a>AtomicReference</h3><p>我们看了AtomicInteger、AtomicLong、AtomicBoolean等等方法，那能不能所以类型都有原子类呢？当然可以——AtomicReference！</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs xml">Class AtomicReference<span class="hljs-tag">&lt;<span class="hljs-name">V</span>&gt;</span><br></code></pre></td></tr></table></figure>
+
+<p>看到V就知道可以装任意类型进去了</p>
+<p>定义一个User类</p>
+<figure class="highlight less"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs less"><span class="hljs-variable">@Getter</span><br><span class="hljs-variable">@Setter</span><br><span class="hljs-variable">@ToString</span><br><span class="hljs-variable">@Builder</span><br>class User&#123;<br>    <span class="hljs-selector-tag">private</span> <span class="hljs-selector-tag">String</span> <span class="hljs-selector-tag">name</span>;<br>    <span class="hljs-selector-tag">private</span> <span class="hljs-selector-tag">Integer</span> <span class="hljs-selector-tag">age</span>;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<figure class="highlight pgsql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs pgsql"><span class="hljs-built_in">public</span> static <span class="hljs-type">void</span> main(String[] args) &#123;<br>        AtomicReference&lt;<span class="hljs-keyword">User</span>&gt; atomicReference = <span class="hljs-built_in">new</span> AtomicReference&lt;&gt;();<br>        <span class="hljs-keyword">User</span> pjf = <span class="hljs-built_in">new</span> <span class="hljs-keyword">User</span>(&quot;彭建飞&quot;,<span class="hljs-number">21</span>);<br>        <span class="hljs-keyword">User</span> xxx = <span class="hljs-built_in">new</span> <span class="hljs-keyword">User</span>(&quot;xxx&quot;,<span class="hljs-number">21</span>);<br>        atomicReference.<span class="hljs-keyword">set</span>(pjf);<br><br>        atomicReference.compareAndSet(pjf,xxx);<br>        <span class="hljs-keyword">System</span>.<span class="hljs-keyword">out</span>.println(atomicReference.<span class="hljs-keyword">get</span>());<br>    &#125;<br></code></pre></td></tr></table></figure>
+
+<p>输出：</p>
+<figure class="highlight reasonml"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs reasonml"><span class="hljs-constructor">User(<span class="hljs-params">name</span>=<span class="hljs-params">xxx</span>, <span class="hljs-params">age</span>=21)</span><br></code></pre></td></tr></table></figure>
+
+<h3 id="CAS与自旋锁"><a href="#CAS与自旋锁" class="headerlink" title="CAS与自旋锁"></a>CAS与自旋锁</h3><p>CAS是实现自旋锁的基础，<strong>CAS利用CPU指令保证了操作的原子性以达到锁的效果</strong>，至于自选看字面意思就能明白，自己<strong>旋转(while)<strong>，是指尝试获取锁的线程不会立即阻塞，而是</strong>采取循环的方式去尝试获取锁</strong>，当线程发现锁被占用时，会不断循环判断锁的状态，直到获取。这样的好处是减少线程上下文切换的消耗，缺点是循环会消耗CPU</p>
+<figure class="highlight abnf"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs abnf">AtomicInteger atomicInteger <span class="hljs-operator">=</span> new AtomicInteger(<span class="hljs-number">1</span>)<span class="hljs-comment">;</span><br>        atomicInteger.incrementAndGet()<span class="hljs-comment">;</span><br></code></pre></td></tr></table></figure>
+
+<p><img src="/../cas_pic/3.png" srcset="/img/loading.gif" lazyload></p>
+<p>循环自选</p>
+<p><img src="/../cas_pic/4.png" srcset="/img/loading.gif" lazyload></p>
+<h4 id="自定义自旋锁"><a href="#自定义自旋锁" class="headerlink" title="自定义自旋锁"></a>自定义自旋锁</h4><p>题目：实现一个自旋锁，复习CAS思想</p>
+<p>自旋锁的好处：循环比较获取没有类似wait的阻塞</p>
+<p>通过CAS操作完成自旋锁，A线程先进来调用myLock方法自己持有锁5秒钟，B随后进来后发现当前有线程持有锁，所以只能通过自选等待，直到A释放锁后B随后抢到</p>
+<figure class="highlight livescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br></pre></td><td class="code"><pre><code class="hljs livescript">public <span class="hljs-keyword">class</span> <span class="hljs-title class_">SpinLockDemo</span> &#123;<br>    AtomicReference&lt;Thread&gt; atomicReference = <span class="hljs-keyword">new</span> AtomicReference&lt;&gt;();<br><br>    public <span class="hljs-literal">void</span> lock() throws InterruptedException &#123;<br>        Thread currentThread = Thread.currentThread();<br>        System.out.println(Thread.currentThread().getName()+<span class="hljs-string">&quot;   come in&quot;</span>);<br>        <span class="hljs-keyword">while</span>(!atomicReference.compareAndSet(<span class="hljs-literal">null</span>,currentThread))&#123;<br>            Thread.sleep(<span class="hljs-number">10</span>);<br>        &#125;<br>    &#125;<br><br>    public <span class="hljs-literal">void</span> unLock()&#123;<br>        atomicReference.compareAndSet(Thread.currentThread(),<span class="hljs-literal">null</span>);<br>        System.out.println(Thread.currentThread().getName()+<span class="hljs-string">&quot;task over&quot;</span>);<br>    &#125;<br><br>    public <span class="hljs-keyword">static</span> <span class="hljs-literal">void</span> main(<span class="hljs-built_in">String</span>[] args) &#123;<br>        SpinLockDemo spinLockDemo = <span class="hljs-keyword">new</span> SpinLockDemo();<br><br>        <span class="hljs-keyword">new</span> Thread<span class="hljs-function"><span class="hljs-params">(()-&gt;&#123;</span></span><br><span class="hljs-params"><span class="hljs-function">            <span class="hljs-keyword">try</span> &#123;</span></span><br><span class="hljs-params"><span class="hljs-function">                spinLockDemo.lock();</span></span><br><span class="hljs-params"><span class="hljs-function">            &#125; <span class="hljs-keyword">catch</span> (InterruptedException e) &#123;</span></span><br><span class="hljs-params"><span class="hljs-function">                e.printStackTrace();</span></span><br><span class="hljs-params"><span class="hljs-function">            &#125;</span></span><br><span class="hljs-params"><span class="hljs-function">            <span class="hljs-keyword">try</span> &#123;</span></span><br><span class="hljs-params"><span class="hljs-function">                Thread.sleep(<span class="hljs-number">5000</span>);</span></span><br><span class="hljs-params"><span class="hljs-function">            &#125; <span class="hljs-keyword">catch</span> (InterruptedException e) &#123;</span></span><br><span class="hljs-params"><span class="hljs-function">                e.printStackTrace();</span></span><br><span class="hljs-params"><span class="hljs-function">            &#125;</span></span><br><span class="hljs-params"><span class="hljs-function">            spinLockDemo.unLock();</span></span><br><span class="hljs-params"><span class="hljs-function">        &#125;,<span class="hljs-string">&quot;A&quot;</span>)</span>.<span class="hljs-title">start</span><span class="hljs-params">()</span>;</span><br><span class="hljs-function"></span><br><span class="hljs-function">        <span class="hljs-title">new</span> <span class="hljs-title">Thread</span><span class="hljs-params">(()-&gt;&#123;</span></span><br><span class="hljs-params"><span class="hljs-function">            <span class="hljs-keyword">try</span> &#123;</span></span><br><span class="hljs-params"><span class="hljs-function">                spinLockDemo.lock();</span></span><br><span class="hljs-params"><span class="hljs-function">            &#125; <span class="hljs-keyword">catch</span> (InterruptedException e) &#123;</span></span><br><span class="hljs-params"><span class="hljs-function">                e.printStackTrace();</span></span><br><span class="hljs-params"><span class="hljs-function">            &#125;</span></span><br><span class="hljs-params"><span class="hljs-function"></span></span><br><span class="hljs-params"><span class="hljs-function">            spinLockDemo.unLock();</span></span><br><span class="hljs-params"><span class="hljs-function">        &#125;,<span class="hljs-string">&quot;B&quot;</span>)</span>.<span class="hljs-title">start</span><span class="hljs-params">()</span>;</span><br><span class="hljs-function">    &#125;</span><br><span class="hljs-function">&#125;</span><br></code></pre></td></tr></table></figure>
+
+
+
+<h3 id="CAS缺点"><a href="#CAS缺点" class="headerlink" title="CAS缺点"></a>CAS缺点</h3><h4 id="循环时间长CPU开销大"><a href="#循环时间长CPU开销大" class="headerlink" title="循环时间长CPU开销大"></a>循环时间长CPU开销大</h4><p><img src="/../cas_pic/4.png" srcset="/img/loading.gif" lazyload></p>
+<p>一直靠循环去竞争获取锁，CPU开销大</p>
+<h4 id="ABA问题"><a href="#ABA问题" class="headerlink" title="ABA问题"></a>ABA问题</h4><p>CAS会导致“ABA”问题</p>
+<p>CAS算法实现一个重要前提需要取出内存中某时刻的数据并在当下时刻比较并替换，那么在这个<strong>时间差类</strong>会导致数据的变化。</p>
+<p>比如说一个线程1从内存位置V中取出A，这时候另一个线程2也从内存中取出A，并且线程2进行了一些操作将值变成了B,然后线程2又将V位置的数据变成A，这时候线程1进行CAS操作发现内存中仍然是A，预期OK，然后线程1操作成功。</p>
+<p>尽管线程1的CAS操作成功，但不是代表这个过程就是没有问题的</p>
+<p>分析为什么普通CAS会有ABA问题，因为我们比较的时候<strong>只比较了内容</strong>，那么这里可以解决的办法就是<strong>加上时间戳记(Stamp)</strong>,在我们的原子类中有一个<strong>AtomicStampedReference类</strong>,在AtomicReference之上加了一个Stamped</p>
+<figure class="highlight reasonml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br></pre></td><td class="code"><pre><code class="hljs reasonml">public <span class="hljs-keyword">class</span> AtomicStampReference &#123;<br>    static AtomicStampedReference&lt;Integer&gt; atomicStampedReference = <span class="hljs-keyword">new</span> AtomicStampedReference&lt;&gt;(<span class="hljs-number">100</span>,<span class="hljs-number">1</span>);<br>    public static void main(String<span class="hljs-literal">[]</span> args) &#123;<br>        <span class="hljs-keyword">new</span> <span class="hljs-constructor">Thread(()</span>-&gt;&#123;<br>            <span class="hljs-built_in">int</span> stamp = atomicStampedReference.get<span class="hljs-constructor">Stamp()</span>;<br>            <span class="hljs-module-access"><span class="hljs-module"><span class="hljs-identifier">System</span>.</span></span>out.println(<span class="hljs-module-access"><span class="hljs-module"><span class="hljs-identifier">Thread</span>.</span></span>current<span class="hljs-constructor">Thread()</span>.get<span class="hljs-constructor">Name()</span>+<span class="hljs-string">&quot;    &quot;</span>+<span class="hljs-string">&quot;首次版本号：&quot;</span>+stamp);<br>            <span class="hljs-comment">//暂停500毫秒保证t4线程初始化拿到的版本号一样</span><br>            <span class="hljs-keyword">try</span> &#123;<br>                <span class="hljs-module-access"><span class="hljs-module"><span class="hljs-identifier">Thread</span>.</span></span>sleep(<span class="hljs-number">500</span>);<br>            &#125; catch (InterruptedException e) &#123;<br>                e.print<span class="hljs-constructor">StackTrace()</span>;<br>            &#125;<br><br>            atomicStampedReference.compare<span class="hljs-constructor">AndSet(100,101,<span class="hljs-params">atomicStampedReference</span>.<span class="hljs-params">getStamp</span>()</span>,atomicStampedReference.get<span class="hljs-constructor">Stamp()</span>+<span class="hljs-number">1</span>);<br>            <span class="hljs-module-access"><span class="hljs-module"><span class="hljs-identifier">System</span>.</span></span>out.println(<span class="hljs-module-access"><span class="hljs-module"><span class="hljs-identifier">Thread</span>.</span></span>current<span class="hljs-constructor">Thread()</span>.get<span class="hljs-constructor">Name()</span>+<span class="hljs-string">&quot;    &quot;</span>+<span class="hljs-string">&quot;第二次次版本号：&quot;</span>+atomicStampedReference.get<span class="hljs-constructor">Stamp()</span>);<br><br>            atomicStampedReference.compare<span class="hljs-constructor">AndSet(101,100,<span class="hljs-params">atomicStampedReference</span>.<span class="hljs-params">getStamp</span>()</span>,atomicStampedReference.get<span class="hljs-constructor">Stamp()</span>+<span class="hljs-number">1</span>);<br>            <span class="hljs-module-access"><span class="hljs-module"><span class="hljs-identifier">System</span>.</span></span>out.println(<span class="hljs-module-access"><span class="hljs-module"><span class="hljs-identifier">Thread</span>.</span></span>current<span class="hljs-constructor">Thread()</span>.get<span class="hljs-constructor">Name()</span>+<span class="hljs-string">&quot;    &quot;</span>+<span class="hljs-string">&quot;第二次次版本号：&quot;</span>+atomicStampedReference.get<span class="hljs-constructor">Stamp()</span>);<br>        &#125;,<span class="hljs-string">&quot;t3&quot;</span>).start<span class="hljs-literal">()</span>;<br><br>        <span class="hljs-keyword">new</span> <span class="hljs-constructor">Thread(()</span>-&gt;&#123;<br>            <span class="hljs-built_in">int</span> stamp = atomicStampedReference.get<span class="hljs-constructor">Stamp()</span>;<br>            <span class="hljs-module-access"><span class="hljs-module"><span class="hljs-identifier">System</span>.</span></span>out.println(<span class="hljs-module-access"><span class="hljs-module"><span class="hljs-identifier">Thread</span>.</span></span>current<span class="hljs-constructor">Thread()</span>.get<span class="hljs-constructor">Name()</span>+<span class="hljs-string">&quot;    &quot;</span>+<span class="hljs-string">&quot;首次版本号：&quot;</span>+stamp);<br>            <span class="hljs-comment">//暂停1秒保证t4线程初始化拿到的版本号一样</span><br>            <span class="hljs-keyword">try</span> &#123;<br>                <span class="hljs-module-access"><span class="hljs-module"><span class="hljs-identifier">Thread</span>.</span></span>sleep(<span class="hljs-number">1000</span>);<br>            &#125; catch (InterruptedException e) &#123;<br>                e.print<span class="hljs-constructor">StackTrace()</span>;<br>            &#125;<br><br>            boolean b = atomicStampedReference.compare<span class="hljs-constructor">AndSet(100, 2023, <span class="hljs-params">stamp</span>, <span class="hljs-params">stamp</span>+ 1)</span>;<br>            <span class="hljs-module-access"><span class="hljs-module"><span class="hljs-identifier">System</span>.</span></span>out.println(b+<span class="hljs-string">&quot;  &quot;</span>+atomicStampedReference.get<span class="hljs-constructor">Reference()</span>+<span class="hljs-string">&quot;    &quot;</span>+<span class="hljs-string">&quot;第二次次版本号：&quot;</span>+atomicStampedReference.get<span class="hljs-constructor">Stamp()</span>);<br><br>        &#125;,<span class="hljs-string">&quot;t4&quot;</span>).start<span class="hljs-literal">()</span>;<br>    &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>CAS</div>
+      <div>http://example.com/2023/06/12/CAS/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>Author</div>
+          <div>彭</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>Posted on</div>
+          <div>June 12, 2023</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>Licensed under</div>
+          <div>
+            
+              
+              
+                <a target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - Attribution">
+                    <i class="iconfont icon-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2023/07/22/CompetableFuture/" title="CompetableFutrue">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">CompetableFutrue</span>
+                        <span class="visible-mobile">Previous</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2023/05/30/Redis/" title="Redis">
+                        <span class="hidden-mobile">Redis</span>
+                        <span class="visible-mobile">Next</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>Table of Contents</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">Search</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">Keyword</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.0/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.18.2/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">Blog works best with JavaScript enabled</div>
+  </noscript>
+</body>
+</html>
