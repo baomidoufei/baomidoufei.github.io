@@ -224,6 +224,72 @@
     <article class="col-12 col-md-12 mx-auto index-info">
       <h1 class="index-header">
         
+        <a href="/2023/10/22/RedisBigKey/" target="_self">
+          Redis BigKey问题
+        </a>
+      </h1>
+
+      
+      <a class="index-excerpt index-excerpt__noimg" href="/2023/10/22/RedisBigKey/" target="_self">
+        <div>
+          先来一张问题表  新闻  经过测试，使用 keys * 100W条数据也要花费16-30S，那么Redis单线程会阻塞其他命令 生产上限制key * &#x2F; flushdb &#x2F;flushall等危险命令解决： redis.conf在security这一项中配置禁用上述命令 123rename- command keys &quot;&quot;rename- command flu
+        </div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2023-10-22 21:06" pubdate>
+              2023-10-22
+            </time>
+          </div>
+        
+        
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h1 class="index-header">
+        
+        <a href="/2023/10/12/%E7%BA%BF%E7%A8%8B%E6%B1%A0%E6%BA%90%E7%A0%81%E5%89%96%E6%9E%90/" target="_self">
+          线程池源码剖析
+        </a>
+      </h1>
+
+      
+      <a class="index-excerpt index-excerpt__noimg" href="/2023/10/12/%E7%BA%BF%E7%A8%8B%E6%B1%A0%E6%BA%90%E7%A0%81%E5%89%96%E6%9E%90/" target="_self">
+        <div>
+          使用我们 JDK 中提供了一些封装好的线程池提供直接使用，比如  newFixedThreadPool：返回一个核心线程数为 nThreads 的线程池  1234public static ExecutorService newFixedThreadPool(int nThreads) &#123;    return new ThreadPoolExecutor(nThreads, nThre
+        </div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2023-10-12 18:31" pubdate>
+              2023-10-12
+            </time>
+          </div>
+        
+        
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h1 class="index-header">
+        
         <a href="/2023/10/11/SPI/" target="_self">
           SPI
         </a>
@@ -473,72 +539,6 @@
             <i class="iconfont icon-date"></i>
             <time datetime="2023-09-05 15:52" pubdate>
               2023-09-05
-            </time>
-          </div>
-        
-        
-        
-      </div>
-    </article>
-  </div>
-
-  <div class="row mx-auto index-card">
-    
-    
-    <article class="col-12 col-md-12 mx-auto index-info">
-      <h1 class="index-header">
-        
-        <a href="/2023/09/05/%E8%AF%BB%E5%86%99%E9%94%81/" target="_self">
-          ReentrantReadWriteLock
-        </a>
-      </h1>
-
-      
-      <a class="index-excerpt index-excerpt__noimg" href="/2023/09/05/%E8%AF%BB%E5%86%99%E9%94%81/" target="_self">
-        <div>
-          读写锁定义读写锁定义为：一个资源能够被多个读线程访问，或者被一个写线程访问，但是不能同时存在读写线程(读写互斥、读读共享) 锁演化过程 它只允许读读共存，而读写和写写依然是互斥的，大多实际场景是“读&#x2F;读”线程间并不存在互斥关系，只有”读&#x2F;写”线程或”写&#x2F;写”线程间的操作需要互斥的。因此引入ReentrantReadWriteLock。 总结一个ReentrantRea
-        </div>
-      </a>
-
-      <div class="index-btm post-metas">
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>
-            <time datetime="2023-09-05 10:28" pubdate>
-              2023-09-05
-            </time>
-          </div>
-        
-        
-        
-      </div>
-    </article>
-  </div>
-
-  <div class="row mx-auto index-card">
-    
-    
-    <article class="col-12 col-md-12 mx-auto index-info">
-      <h1 class="index-header">
-        
-        <a href="/2023/09/04/Java%E5%86%85%E5%AD%98%E5%B8%83%E5%B1%80%E5%92%8C%E5%AF%B9%E8%B1%A1%E5%A4%B4/" target="_self">
-          Java内存布局和对象头
-        </a>
-      </h1>
-
-      
-      <a class="index-excerpt index-excerpt__noimg" href="/2023/09/04/Java%E5%86%85%E5%AD%98%E5%B8%83%E5%B1%80%E5%92%8C%E5%AF%B9%E8%B1%A1%E5%A4%B4/" target="_self">
-        <div>
-          对象的内存布局在HotSpot虚拟机里，对象在堆内存中的存储布局可以分为三个部分：对象头(Header)、实例数据(Instance Data)和对齐填充(Padding)  内存布局详解 对象头 对象标记Mark Work 类元信息(类型指针)   实例数据 对齐填充   对象内部结构分为：对象头、实例数据、对齐填充(保证8个字节的倍数) 对象头分为对象标记(markOop)和类元信息(klas
-        </div>
-      </a>
-
-      <div class="index-btm post-metas">
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>
-            <time datetime="2023-09-04 12:25" pubdate>
-              2023-09-04
             </time>
           </div>
         

@@ -224,6 +224,72 @@
     <article class="col-12 col-md-12 mx-auto index-info">
       <h1 class="index-header">
         
+        <a href="/2024/01/02/Zookeeper/" target="_self">
+          
+        </a>
+      </h1>
+
+      
+      <a class="index-excerpt index-excerpt__noimg" href="/2024/01/02/Zookeeper/" target="_self">
+        <div>
+          一、Zookeeper介绍1、什么是Zookeeper​	Zookeeper 是一种分布式协调服务，用于管理大型主机。在分布式环境中协调和管理服务是一个复杂的过程，ZooKeeper通过其简单的架构和API解决了这个问题。ZooKeeper 能让开发人员专注于核心应用程序逻辑，而不必担心应用程序的分布式特性。 2、Zookeeper的应用场景 分布式协调组件   在分布式系统中，需要有zookee
+        </div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2024-01-02 17:12" pubdate>
+              2024-01-02
+            </time>
+          </div>
+        
+        
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h1 class="index-header">
+        
+        <a href="/2023/12/29/Redis%E5%A4%A7%E6%95%B0%E6%8D%AE%E7%BB%9F%E8%AE%A1/" target="_self">
+          Redis大数据统计
+        </a>
+      </h1>
+
+      
+      <a class="index-excerpt index-excerpt__noimg" href="/2023/12/29/Redis%E5%A4%A7%E6%95%B0%E6%8D%AE%E7%BB%9F%E8%AE%A1/" target="_self">
+        <div>
+          先来一些常见问题  HyperLogLog  基本命令：  基数统计：  统计百万级的用bitmap还算可以接受，但是如果是亿级那么占用的内存会很高，所以应该使用HyperLogLog  HyperLogLog是牺牲了一定的准确度来换取空间，在大数据的情况下，一点误差是可以接受的。 HyperLogLog只是进行不重复的基数统计，不是集合也不保存数据，只纪录数量而不是具体内存，提供不精确的去重计数
+        </div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2023-12-29 10:39" pubdate>
+              2023-12-29
+            </time>
+          </div>
+        
+        
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h1 class="index-header">
+        
         <a href="/2023/12/28/Redis%E7%9A%84IO%E5%A4%9A%E8%B7%AF%E5%A4%8D%E7%94%A8/" target="_self">
           Redis的IO多路复用
         </a>
@@ -473,72 +539,6 @@
             <i class="iconfont icon-date"></i>
             <time datetime="2023-10-23 22:01" pubdate>
               2023-10-23
-            </time>
-          </div>
-        
-        
-        
-      </div>
-    </article>
-  </div>
-
-  <div class="row mx-auto index-card">
-    
-    
-    <article class="col-12 col-md-12 mx-auto index-info">
-      <h1 class="index-header">
-        
-        <a href="/2023/10/22/RedisBigKey/" target="_self">
-          Redis BigKey问题
-        </a>
-      </h1>
-
-      
-      <a class="index-excerpt index-excerpt__noimg" href="/2023/10/22/RedisBigKey/" target="_self">
-        <div>
-          先来一张问题表  新闻  经过测试，使用 keys * 100W条数据也要花费16-30S，那么Redis单线程会阻塞其他命令 生产上限制key * &#x2F; flushdb &#x2F;flushall等危险命令解决： redis.conf在security这一项中配置禁用上述命令 123rename- command keys &quot;&quot;rename- command flu
-        </div>
-      </a>
-
-      <div class="index-btm post-metas">
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>
-            <time datetime="2023-10-22 21:06" pubdate>
-              2023-10-22
-            </time>
-          </div>
-        
-        
-        
-      </div>
-    </article>
-  </div>
-
-  <div class="row mx-auto index-card">
-    
-    
-    <article class="col-12 col-md-12 mx-auto index-info">
-      <h1 class="index-header">
-        
-        <a href="/2023/10/12/%E7%BA%BF%E7%A8%8B%E6%B1%A0%E6%BA%90%E7%A0%81%E5%89%96%E6%9E%90/" target="_self">
-          线程池源码剖析
-        </a>
-      </h1>
-
-      
-      <a class="index-excerpt index-excerpt__noimg" href="/2023/10/12/%E7%BA%BF%E7%A8%8B%E6%B1%A0%E6%BA%90%E7%A0%81%E5%89%96%E6%9E%90/" target="_self">
-        <div>
-          使用我们 JDK 中提供了一些封装好的线程池提供直接使用，比如  newFixedThreadPool：返回一个核心线程数为 nThreads 的线程池  1234public static ExecutorService newFixedThreadPool(int nThreads) &#123;    return new ThreadPoolExecutor(nThreads, nThre
-        </div>
-      </a>
-
-      <div class="index-btm post-metas">
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>
-            <time datetime="2023-10-12 18:31" pubdate>
-              2023-10-12
             </time>
           </div>
         
