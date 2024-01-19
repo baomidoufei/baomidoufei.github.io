@@ -224,6 +224,39 @@
     <article class="col-12 col-md-12 mx-auto index-info">
       <h1 class="index-header">
         
+        <a href="/2024/01/19/MySQL%E6%B7%B1%E5%88%86%E9%A1%B5%E4%BC%98%E5%8C%96/" target="_self">
+          MySQL深分页优化
+        </a>
+      </h1>
+
+      
+      <a class="index-excerpt index-excerpt__noimg" href="/2024/01/19/MySQL%E6%B7%B1%E5%88%86%E9%A1%B5%E4%BC%98%E5%8C%96/" target="_self">
+        <div>
+          深分页介绍查询偏移量过大的场景我们称为深度分页，这会导致查询性能较低 12# MySQL 在无法利用索引的情况下跳过1000000条记录后，再获取10条记录SELECT * FROM t_order ORDER BY id LIMIT 1000000, 10  范围查询当可以保证ID的连续性时，根据ID范围进行分页是比较好的解决方案： 1234# 查询指定 ID 范围的数据SELECT * FRO
+        </div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2024-01-19 11:18" pubdate>
+              2024-01-19
+            </time>
+          </div>
+        
+        
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h1 class="index-header">
+        
         <a href="/2024/01/18/MySQL%E4%B8%80%E6%9D%A1%E8%A1%8C%E8%AE%B0%E5%BD%95%E7%9A%84%E5%AD%98%E5%82%A8/" target="_self">
           MySQL一条行记录的存储细节
         </a>
@@ -505,39 +538,6 @@
           <div class="post-meta mr-3">
             <i class="iconfont icon-date"></i>
             <time datetime="2023-10-25 21:50" pubdate>
-              2023-10-25
-            </time>
-          </div>
-        
-        
-        
-      </div>
-    </article>
-  </div>
-
-  <div class="row mx-auto index-card">
-    
-    
-    <article class="col-12 col-md-12 mx-auto index-info">
-      <h1 class="index-header">
-        
-        <a href="/2023/10/25/Redis%E4%BA%94%E5%A4%A7%E7%B1%BB%E5%9E%8B%E6%BA%90%E7%A0%81%E5%8F%8A%E5%BA%95%E5%B1%82%E5%AE%9E%E7%8E%B0/" target="_self">
-          Redis五大类型源码及底层实现
-        </a>
-      </h1>
-
-      
-      <a class="index-excerpt index-excerpt__noimg" href="/2023/10/25/Redis%E4%BA%94%E5%A4%A7%E7%B1%BB%E5%9E%8B%E6%BA%90%E7%A0%81%E5%8F%8A%E5%BA%95%E5%B1%82%E5%AE%9E%E7%8E%B0/" target="_self">
-        <div>
-          涉及到的底层实现总览  通过上图可知，key一般都是String类型的字符串对象， 而value类型则为redis对象(redisObject) 10大类型说明(粗分)传统的5大类型  String Hash list set zset  新介绍的5大类型  bitmap —实质String  hyperLoglog — 实质String GEO — 实质Zset Stream — 实质Strea
-        </div>
-      </a>
-
-      <div class="index-btm post-metas">
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>
-            <time datetime="2023-10-25 20:40" pubdate>
               2023-10-25
             </time>
           </div>
