@@ -70,8 +70,9 @@
 <meta property="og:image" content="http://example.com/img/27.png">
 <meta property="og:image" content="http://example.com/img/28.png">
 <meta property="og:image" content="http://example.com/img/29.png">
+<meta property="og:image" content="http://example.com/img/30.png">
 <meta property="article:published_time" content="2023-02-20T13:01:34.866Z">
-<meta property="article:modified_time" content="2023-09-20T08:36:10.476Z">
+<meta property="article:modified_time" content="2024-02-28T10:30:27.913Z">
 <meta property="article:author" content="彭">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:image" content="http://example.com/img/Employee.jpg">
@@ -267,7 +268,7 @@
       <span class="post-meta mr-2">
         <i class="iconfont icon-chart"></i>
         
-          24k words
+          27k words
         
       </span>
     
@@ -278,7 +279,7 @@
         
         
         
-          204 mins
+          222 mins
         
       </span>
     
@@ -710,7 +711,7 @@
 <p><img src="/../img/15.png" srcset="/img/loading.gif" lazyload></p>
 <p>这种方式非常熟悉，我们在Java-IO流中经常看到，每次，Java-IO流大量使用到了装饰器模式。</p>
 <p><img src="/../img/16.png" srcset="/img/loading.gif" lazyload></p>
-<h1 id="行为型模式"><a href="#行为型模式" class="headerlink" title="行为型模式"></a>行为型模式</h1><h3 id="策略模式"><a href="#策略模式" class="headerlink" title="策略模式"></a>策略模式</h3><p>该模式定义了一系列算法，并将每个算法封装起来，使它们可以相互替换，且算法的变化不会影响使用 算法的客户。策略模式属于对象行为模式，它通过对算法进行封装，把使用算法的责任和算法的实现分 割开来，并委派给不同的对象对这些算法进行管理。</p>
+<h3 id="策略模式"><a href="#策略模式" class="headerlink" title="策略模式"></a>策略模式</h3><p>该模式定义了一系列算法，并将每个算法封装起来，使它们可以相互替换，且算法的变化不会影响使用 算法的客户。策略模式属于对象行为模式，它通过对算法进行封装，把使用算法的责任和算法的实现分 割开来，并委派给不同的对象对这些算法进行管理。</p>
 <p>举个生活中常见例子：洗衣机</p>
 <p><img src="/../img/17.png" srcset="/img/loading.gif" lazyload></p>
 <p>这里洗衣程序有四种策略(更<strong>注重的是行为</strong>)：标准、浸洗、快洗、大物</p>
@@ -779,6 +780,26 @@
 <p><img src="/../img/27.png" srcset="/img/loading.gif" lazyload></p>
 <h4 id="优缺点-1"><a href="#优缺点-1" class="headerlink" title="优缺点"></a>优缺点</h4><p><img src="/../img/28.png" srcset="/img/loading.gif" lazyload></p>
 <h4 id="适用场景"><a href="#适用场景" class="headerlink" title="适用场景"></a>适用场景</h4><p><img src="/../img/29.png" srcset="/img/loading.gif" lazyload></p>
+<h3 id="观察者模式"><a href="#观察者模式" class="headerlink" title="观察者模式"></a>观察者模式</h3><p>观察者模式(Observer Pattern):定义对象间的一种<strong>一堆多</strong>的依赖关系，使得每当一个对象状态发生改变时，其相关依赖对象皆得到通知并被自动更新(其实就相当于发布&#x2F;订阅模式)，<strong>当一个对象的状态发生改变时，已经登记的其他对象能够观察到这一改变从而作出自己相对应的改变。通过这种方式来达到减少依赖关系，解耦合的作用。</strong></p>
+<p>比如：举一个例子，就好比微信朋友圈，以当前个人作为订阅者，好友作为主题。一个人发一条动态朋友圈出去，他的好友都能看到这个朋友圈，并且可以在自主选择点赞或者评论。</p>
+<figure class="highlight makefile"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs makefile"><span class="hljs-section">Subject（主题）: 主要由类实现的可观察的接口，通知观察者使用attach方法，以及取消观察的detach方法。</span><br><span class="hljs-section">ConcreteSubject（具体主题）: 是一个实现主题接口的类，处理观察者的变化</span><br><span class="hljs-section">Observe（观察者）: 观察者是一个由对象水岸的接口，根据主题中的更改而进行更新。</span><br></code></pre></td></tr></table></figure>
+
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs java">先创建一个主题定义，定义添加删除关系以及通知订阅者<br><span class="hljs-keyword">public</span> <span class="hljs-keyword">interface</span> <span class="hljs-title class_">Subject</span> &#123;<br>    <span class="hljs-comment">// 添加订阅关系</span><br>    <span class="hljs-keyword">void</span> <span class="hljs-title function_">attach</span><span class="hljs-params">(Observer observer)</span>;<br>    <span class="hljs-comment">// 移除订阅关系</span><br>    <span class="hljs-keyword">void</span> <span class="hljs-title function_">detach</span><span class="hljs-params">(Observer observer)</span>;<br>    <span class="hljs-comment">// 通知订阅者</span><br>    <span class="hljs-keyword">void</span> <span class="hljs-title function_">notifyObservers</span><span class="hljs-params">(String message)</span>;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><code class="hljs typescript"><span class="hljs-comment">//其次再创建的具体主题，并且构建一个容器来维护订阅关系，支持添加删除关系，以及通知订阅者</span><br><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">ConcreteSubject</span> <span class="hljs-keyword">implements</span> <span class="hljs-title class_">Subject</span> &#123;<br><br>    <span class="hljs-comment">// 订阅者容器</span><br>    <span class="hljs-keyword">private</span> <span class="hljs-title class_">List</span>&lt;<span class="hljs-title class_">Observer</span>&gt; observers = <span class="hljs-keyword">new</span> <span class="hljs-title class_">ArrayList</span>&lt;<span class="hljs-title class_">Observer</span>&gt;();<br><br>    <span class="hljs-meta">@Override</span><br>    <span class="hljs-keyword">public</span> <span class="hljs-built_in">void</span> <span class="hljs-title function_">attach</span>(<span class="hljs-params">Observer observer</span>) &#123;<br>        <span class="hljs-comment">// 添加订阅关系</span><br>        observers.<span class="hljs-title function_">add</span>(observer);<br>    &#125;<br><br>    <span class="hljs-meta">@Override</span><br>    <span class="hljs-keyword">public</span> <span class="hljs-built_in">void</span> <span class="hljs-title function_">detach</span>(<span class="hljs-params">Observer observer</span>) &#123;<br>        <span class="hljs-comment">// 移除订阅关系</span><br>        observers.<span class="hljs-title function_">remove</span>(observer);<br>    &#125;<br><br>    <span class="hljs-meta">@Override</span><br>    <span class="hljs-keyword">public</span> <span class="hljs-built_in">void</span> <span class="hljs-title function_">notifyObservers</span>(<span class="hljs-params"><span class="hljs-built_in">String</span> message</span>) &#123;<br>        <span class="hljs-comment">// 通知订阅者们</span><br>        <span class="hljs-keyword">for</span> (<span class="hljs-title class_">Observer</span> observer : observers) &#123;<br>            observer.<span class="hljs-title function_">update</span>(message);<br>        &#125;<br>    &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>创建一个观察者接口，方便我们管理</p>
+<figure class="highlight angelscript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs angelscript"><span class="hljs-keyword">public</span> <span class="hljs-keyword">interface</span> <span class="hljs-symbol">Observer</span> &#123;<br>    <span class="hljs-comment">// 处理业务逻辑</span><br>    <span class="hljs-built_in">void</span> update(String message);<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>最后就是创建具体的观察者类，实现观察者接口的update方法，处理本身的业务逻辑</p>
+<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs typescript"><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">FriendOneObserver</span> <span class="hljs-keyword">implements</span> <span class="hljs-title class_">Observer</span> &#123;<br>   <br>  <span class="hljs-meta">@Override</span><br>    <span class="hljs-keyword">public</span> <span class="hljs-built_in">void</span> <span class="hljs-title function_">update</span>(<span class="hljs-params"><span class="hljs-built_in">String</span> message</span>) &#123;<br>        <span class="hljs-comment">// 模拟处理业务逻辑</span><br>        <span class="hljs-title class_">System</span>.<span class="hljs-property">out</span>.<span class="hljs-title function_">println</span>(<span class="hljs-string">&quot;FriendOne 知道了你发动态了&quot;</span> + message);<br>    &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>最后就是看测试结果了，通过ConcreteSubject 维护了一个订阅关系，在通过notifyObservers 方法通知订阅者之后，观察者都获取到消息从而处理自己的业务逻辑。</p>
+<figure class="highlight haxe"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><code class="hljs haxe"><span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">test</span> </span>&#123;<br>    <br>    <span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> void main(<span class="hljs-keyword">String</span>[] args) &#123;<br><br>        ConcreteSubject subject = <span class="hljs-keyword">new</span> <span class="hljs-type">ConcreteSubject</span>();<br>        <span class="hljs-comment">// 这里假设是添加好友</span><br>        subject.attach(<span class="hljs-keyword">new</span> <span class="hljs-type">FriendOneObserver</span>());<br>        FriendTwoObserver twoObserver = <span class="hljs-keyword">new</span> <span class="hljs-type">FriendTwoObserver</span>();<br>        subject.attach(twoObserver);<br><br>        <span class="hljs-comment">// 发送朋友圈动态</span><br>        subject.notifyObservers(<span class="hljs-string">&quot;第一个朋友圈消息&quot;</span>);<br>        <span class="hljs-comment">// 输出结果： FriendOne 知道了你发动态了第一个朋友圈消息</span><br>        <span class="hljs-comment">//          FriendTwo 知道了你发动态了第一个朋友圈消息</span><br><br>        <span class="hljs-comment">// 这里发现 twoObserver 是个推荐卖茶叶的，删除好友</span><br>        subject.detach(twoObserver);<br>        subject.notifyObservers(<span class="hljs-string">&quot;第二个朋友圈消息&quot;</span>);<br>        <span class="hljs-comment">// 输出结果：FriendOne 知道了你发动态了第二个朋友圈消息</span><br>    &#125;<br>&#125;<br><br></code></pre></td></tr></table></figure>
+
+<p><img src="/../img/30.png" srcset="/img/loading.gif" lazyload></p>
+<p>如果有新的业务添加进来，我们也只需要创建一个新的订阅者，并且维护到observers 容器中即可，也符合我们的开闭原则。</p>
+<p>这里只是一种同步的实现方式，我们还可以扩展更多其他的异步实现方式，或者采用多线程等实现方式。</p>
 
                 
               </div>
