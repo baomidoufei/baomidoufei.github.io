@@ -1,0 +1,664 @@
+
+
+<!DOCTYPE html>
+<html lang="en" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/fluid.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="彭">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="概念DDD(Domain-Driven Design)首先我们从名字上来进行简单的理解，“领域驱动设计”的驱动是“促进”的意思，可以理解为“基于领域的工程设计”，那么什么是“领域”呢？我们暂且可以将其理解为“业务问题的范畴”，领域可大可小，对应着大小业务问题的边界，简单来说，领域驱动设计就是将业务上要做的一件大事通过推演和抽象，拆分成多个内聚的领域。 案例1假设现在在做一个简单的数据统计系统，市场">
+<meta property="og:type" content="article">
+<meta property="og:title" content="DDD五板斧之一:Domain Primitive">
+<meta property="og:url" content="http://example.com/2024/08/25/DDD%E4%BA%94%E6%9D%BF%E6%96%A7%E4%B9%8B%E4%B8%80/index.html">
+<meta property="og:site_name" content="PJF">
+<meta property="og:description" content="概念DDD(Domain-Driven Design)首先我们从名字上来进行简单的理解，“领域驱动设计”的驱动是“促进”的意思，可以理解为“基于领域的工程设计”，那么什么是“领域”呢？我们暂且可以将其理解为“业务问题的范畴”，领域可大可小，对应着大小业务问题的边界，简单来说，领域驱动设计就是将业务上要做的一件大事通过推演和抽象，拆分成多个内聚的领域。 案例1假设现在在做一个简单的数据统计系统，市场">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="http://example.com/DDD/1.png">
+<meta property="og:image" content="http://example.com/DDD/2.png">
+<meta property="og:image" content="http://example.com/DDD/3.png">
+<meta property="og:image" content="http://example.com/DDD/4.png">
+<meta property="og:image" content="http://example.com/DDD/5.png">
+<meta property="og:image" content="http://example.com/DDD/6.png">
+<meta property="og:image" content="http://example.com/DDD/7.png">
+<meta property="og:image" content="http://example.com/DDD/8.png">
+<meta property="og:image" content="http://example.com/DDD/9.png">
+<meta property="og:image" content="http://example.com/DDD/10.png">
+<meta property="og:image" content="http://example.com/DDD/11.png">
+<meta property="article:published_time" content="2024-08-25T07:04:02.401Z">
+<meta property="article:modified_time" content="2024-08-25T12:03:36.447Z">
+<meta property="article:author" content="彭">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="http://example.com/DDD/1.png">
+  
+  
+  
+  <title>DDD五板斧之一:Domain Primitive - PJF</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"example.com","root":"/","version":"1.9.4","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml"};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>PJF</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                <span>Home</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>Archives</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                <span>Categories</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>Tags</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                <span>About</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="DDD五板斧之一:Domain Primitive"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2024-08-25 15:04" pubdate>
+          August 25, 2024 pm
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          4.7k words
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          40 mins
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">DDD五板斧之一:Domain Primitive</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <h2 id="概念"><a href="#概念" class="headerlink" title="概念"></a>概念</h2><p>DDD(Domain-Driven Design)首先我们从名字上来进行简单的理解，“领域驱动设计”的驱动是“促进”的意思，可以理解为“基于领域的工程设计”，那么什么是“领域”呢？我们暂且可以将其理解为“业务问题的范畴”，领域可大可小，对应着大小业务问题的边界，简单来说，领域驱动设计就是将业务上要做的一件大事通过推演和抽象，拆分成多个内聚的领域。</p>
+<h2 id="案例"><a href="#案例" class="headerlink" title="案例"></a>案例</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs Java">假设现在在做一个简单的数据统计系统，市场专员输入客户的姓名和手机号，根据客户手机号的归属地和所属运营商，将客户群体分组，分配给相应销售专员，由销售专员跟进后续的业务。<br></code></pre></td></tr></table></figure>
+
+<p>简单分析一下，根据这段需求，我们需要提供一个注册服务，这个服务的入参应该是客户的姓名和手机号，服务内部根据这个手机号查询对应的归属地编号和运营商编号，再根据这两个值获取分组号，最后将客户的姓名、手机号、分组号封装成一个对象，再存入数据表。</p>
+<p><img src="/../DDD/1.png" srcset="/img/loading.gif" lazyload></p>
+<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br></pre></td><td class="code"><pre><code class="hljs typescript"><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">User</span> &#123;<br>    <span class="hljs-title class_">Long</span> userId;<br>    <span class="hljs-title class_">String</span> name;<br>    <span class="hljs-title class_">String</span> phone;<br>    <span class="hljs-title class_">Long</span> repId;<br>&#125;<br><br><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">RegistrationServiceImpl</span> <span class="hljs-keyword">implements</span> <span class="hljs-title class_">RegistrationService</span> &#123;<br><br>    <span class="hljs-keyword">private</span> <span class="hljs-title class_">SalesRepRepository</span> salesRepRepo;<br>    <span class="hljs-keyword">private</span> <span class="hljs-title class_">UserRepository</span> userRepo;<br><br>    <span class="hljs-keyword">public</span> <span class="hljs-title class_">User</span> <span class="hljs-title function_">register</span>(<span class="hljs-title class_">String</span> name, <span class="hljs-title class_">String</span> phone)<br>            throws <span class="hljs-title class_">ValidationException</span> &#123;<br>        <span class="hljs-comment">// 参数校验</span><br>        <span class="hljs-keyword">if</span> (name == <span class="hljs-literal">null</span> || name.<span class="hljs-title function_">length</span>() == <span class="hljs-number">0</span>) &#123;<br>            <span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">ValidationException</span>(<span class="hljs-string">&quot;name&quot;</span>);<br>        &#125;<br>        <span class="hljs-keyword">if</span> (phone == <span class="hljs-literal">null</span> || !<span class="hljs-title function_">isValidPhoneNumber</span>(phone)) &#123;<br>            <span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">ValidationException</span>(<span class="hljs-string">&quot;phone&quot;</span>);<br>        &#125;<br><br>        <span class="hljs-comment">// 获取手机号归属地编号和运营商编号 然后通过编号找到区域内的SalesRep</span><br>        <span class="hljs-title class_">String</span> areaCode = <span class="hljs-title function_">getAreaCode</span>(phone);<br>        <span class="hljs-title class_">String</span> operatorCode = <span class="hljs-title function_">getOperatorCode</span>(phone);<br>        <span class="hljs-title class_">SalesRep</span> rep = salesRepRepo.<span class="hljs-title function_">findRep</span>(areaCode, operatorCode);<br><br>        <span class="hljs-comment">// 最后创建用户，落盘，然后返回</span><br>        <span class="hljs-title class_">User</span> user = <span class="hljs-keyword">new</span> <span class="hljs-title class_">User</span>();<br>        user.<span class="hljs-property">name</span> = name;<br>        user.<span class="hljs-property">phone</span> = phone;<br><br>        <span class="hljs-keyword">if</span> (rep != <span class="hljs-literal">null</span>) &#123;<br>            user.<span class="hljs-property">repId</span> = rep.<span class="hljs-property">repId</span>;<br>        &#125;<br><br>        <span class="hljs-keyword">return</span> userRepo.<span class="hljs-title function_">save</span>(user);<br>    &#125;<br><br>    <span class="hljs-keyword">private</span> <span class="hljs-built_in">boolean</span> <span class="hljs-title function_">isValidPhoneNumber</span>(<span class="hljs-params"><span class="hljs-built_in">String</span> phone</span>) &#123;<br>        <span class="hljs-title class_">String</span> pattern = <span class="hljs-string">&quot;^0[1-9]&#123;2,3&#125;-?\\d&#123;8&#125;$&quot;</span>;<br>        <span class="hljs-keyword">return</span> phone.<span class="hljs-title function_">matches</span>(pattern);<br>    &#125;<br>    <br>    <span class="hljs-keyword">private</span> <span class="hljs-title class_">String</span> <span class="hljs-title function_">getAreaCode</span>(<span class="hljs-params"><span class="hljs-built_in">String</span> phone</span>) &#123;<br>        <span class="hljs-comment">//...</span><br>    &#125;<br>    <br>    <span class="hljs-keyword">private</span> <span class="hljs-title class_">String</span> <span class="hljs-title function_">getOperatorCode</span>(<span class="hljs-params"><span class="hljs-built_in">String</span> phone</span>) &#123;<br>       <span class="hljs-comment">//...</span><br>    &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>我们定义了一个User类，一个注册接口的具体实现类，注册方法中先对参数进行校验，然后通过手机号分别获得姐属地编号和运营商编号，再通过这两个编号去查询数据表获取分组编号，最后构造用户对象来存入数据表。<strong>这样写看上去没什么问题，大部分人也都是这么写的，如果是一个小工程或者说迭代低频，甚至短期内有可能下线的系统，这样写可以说又快又好，但如果将这样的代码写在一个迭代频繁的大工程内，其实存在一些隐患</strong></p>
+<h2 id="代码审视"><a href="#代码审视" class="headerlink" title="代码审视"></a>代码审视</h2><h3 id="接口语义和参数校验"><a href="#接口语义和参数校验" class="headerlink" title="接口语义和参数校验"></a>接口语义和参数校验</h3><p>register方法存在两个类型为string的参数，第一个为用户名，第二个为手机号，方法内部一开始对其合法性进行了校验，当这段代码被编译后，方法只会保留参数类型而不会保留参数名，如果这段代码存在于近端包内被其他项目集成时，其他程序员并不了解这个方法的肉部逻辑，或者说仅仅因为失误他很有可能的会颠倒参数的顺序</p>
+<p><img src="/../DDD/2.png" srcset="/img/loading.gif" lazyload></p>
+<p><img src="/../DDD/3.png" srcset="/img/loading.gif" lazyload></p>
+<p>并且在代码编译器是无法检查出来的，此外，假设在未来系统开始支持通过用户名和身份证号进行注册，身份证号也是一个string，这是register可能就要被改造成registerByPhone和 registerByIDCard两个方法，假设后面又要通过手机号和身份证号注册呢？接口又得频繁修改，这么看来，原来的接口并不完善。</p>
+<p><img src="/../DDD/4.png" srcset="/img/loading.gif" lazyload></p>
+<p>接口定义修改目标：</p>
+<p>1.语义明确无歧义</p>
+<p>2.拓展性强一些</p>
+<p>3.最好带一定的自检性</p>
+<p><img src="/../DDD/5.png" srcset="/img/loading.gif" lazyload></p>
+<p> 再来看方法一开始对参数的校验逻辑，如果存在多个类似的方法，都要在开头进行校验，这里一定会存在大量的重复代码，而且一旦某种类型的参数校验逻辑需要修改，那么每个地方修还要意义监测修改，这显然不符合“开闭原则”。那么我们是否可以使用自定义类型来代替呢？自定义类型肯定有基本属性，此外，我们可以将对属性的校验逻辑封装到这个自定义类型中，这样接口就只会接收到通过校验的参数，并且还可以将参数校验异常和业务逻辑异常区分开来。</p>
+<p>自定义PhoneNumber类，这样我们在构PhoneNumber对象时，就会执行校验逻辑，确保被构建出来的对象一定是合法的，不再需要业务方法内部去做校验逻辑，将不同类型的校验逻辑内聚到了它自身之内，而且方法中使用了自定义类型，语义更加清晰，在编译器就会进行强类型校验，避免传参乱序</p>
+<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><code class="hljs typescript"><span class="hljs-keyword">public</span> <span class="hljs-title class_">User</span> <span class="hljs-title function_">register</span>(<span class="hljs-title class_">String</span> name, <span class="hljs-title class_">PhoneNumber</span> phone)<br><br><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">PhoneNumber</span> &#123;<br>    <span class="hljs-keyword">private</span> final <span class="hljs-title class_">String</span> <span class="hljs-built_in">number</span>;<br>    <span class="hljs-keyword">private</span> final <span class="hljs-title class_">String</span> pattern = <span class="hljs-string">&quot;^0?[1-9]&#123;2,3&#125;-?\\d&#123;8&#125;$&quot;</span>;<br>    <br>    <span class="hljs-keyword">public</span> <span class="hljs-title class_">String</span> <span class="hljs-title function_">getNumber</span>(<span class="hljs-params"></span>) &#123;<br>        <span class="hljs-keyword">return</span> <span class="hljs-built_in">number</span>;<br>    &#125;<br><br>    <span class="hljs-comment">// 仅存在含参构造器</span><br>    <span class="hljs-keyword">public</span> <span class="hljs-title class_">PhoneNumber</span>(<span class="hljs-title class_">String</span> <span class="hljs-built_in">number</span>) &#123;<br>        <span class="hljs-keyword">if</span> (<span class="hljs-built_in">number</span> == <span class="hljs-literal">null</span>) &#123;<br>            <span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">ValidationException</span>(<span class="hljs-string">&quot;number不能为空&quot;</span>);<br>        &#125; <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (<span class="hljs-title function_">isValid</span>(<span class="hljs-built_in">number</span>)) &#123;<br>            <span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">ValidationException</span>(<span class="hljs-string">&quot;number格式错误&quot;</span>);<br>        &#125;<br>        <span class="hljs-variable language_">this</span>.<span class="hljs-property">number</span> = <span class="hljs-built_in">number</span>;<br>    &#125;<br><br>    <span class="hljs-keyword">private</span> <span class="hljs-built_in">boolean</span> <span class="hljs-title function_">isValid</span>(<span class="hljs-params"><span class="hljs-built_in">String</span> <span class="hljs-built_in">number</span></span>) &#123;<br>        <span class="hljs-keyword">return</span> <span class="hljs-built_in">number</span>.<span class="hljs-title function_">matches</span>(pattern);<br>    &#125;<br><br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>此时代码就被我们改造成下面这样</p>
+<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br></pre></td><td class="code"><pre><code class="hljs typescript"><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">User</span> &#123;<br>    <span class="hljs-title class_">Long</span> userId;<br>    <span class="hljs-title class_">String</span> name;<br>    <span class="hljs-title class_">PhoneNumber</span> phone;<br>    <span class="hljs-title class_">Long</span> repId;<br>&#125;<br><br><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">RegistrationServiceImpl</span> <span class="hljs-keyword">implements</span> <span class="hljs-title class_">RegistrationService</span> &#123;<br><br>    <span class="hljs-keyword">private</span> <span class="hljs-title class_">SalesRepRepository</span> salesRepRepo;<br>    <span class="hljs-keyword">private</span> <span class="hljs-title class_">UserRepository</span> userRepo;<br><br>    <span class="hljs-keyword">public</span> <span class="hljs-title class_">User</span> <span class="hljs-title function_">register</span>(<span class="hljs-params"><span class="hljs-built_in">String</span> name, PhoneNumber phone</span>) &#123;<br>    <br>        <span class="hljs-comment">// 获取手机号归属地编号和运营商编号，然后通过编号找到区域内的SalesRep</span><br>        <span class="hljs-title class_">String</span> areaCode = <span class="hljs-title function_">getAreaCode</span>(phone);<br>        <span class="hljs-title class_">String</span> operatorCode = <span class="hljs-title function_">getOperatorCode</span>(phone);<br>        <span class="hljs-title class_">SalesRep</span> rep = salesRepRepo.<span class="hljs-title function_">findRep</span>(areaCode, operatorCode);<br><br>        <span class="hljs-comment">// 最后创建用户，落盘，然后返回</span><br>        <span class="hljs-title class_">User</span> user = <span class="hljs-keyword">new</span> <span class="hljs-title class_">User</span>();<br>        user.<span class="hljs-property">name</span> = name;<br>        user.<span class="hljs-property">phone</span> = phone;<br><br>        <span class="hljs-keyword">if</span> (rep != <span class="hljs-literal">null</span>) &#123;<br>            user.<span class="hljs-property">repId</span> = rep.<span class="hljs-property">repId</span>;<br>        &#125;<br><br>        <span class="hljs-keyword">return</span> userRepo.<span class="hljs-title function_">save</span>(user);<br>    &#125;<br>    <br>    <span class="hljs-keyword">private</span> <span class="hljs-title class_">String</span> <span class="hljs-title function_">getAreaCode</span>(<span class="hljs-params">PhoneNumber phone</span>) &#123;<br>        <span class="hljs-comment">//...</span><br>    &#125;<br>    <br>    <span class="hljs-keyword">private</span> <span class="hljs-title class_">String</span> <span class="hljs-title function_">getOperatorCode</span>(<span class="hljs-params">PhoneNumber phone</span>) &#123;<br>       <span class="hljs-comment">//...</span><br>    &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>可以看出接口语义更加清晰，拥有了一定的可拓展性，对参数的校验更加内聚了。</p>
+<h3 id="核心业务逻辑清晰度"><a href="#核心业务逻辑清晰度" class="headerlink" title="核心业务逻辑清晰度"></a>核心业务逻辑清晰度</h3><p>虽然上面的代码优化后优雅了一些，不过并不纯粹，RegfistrationService是用于对用户进行注册的服务，那么他所承担的职责仅仅限定为“注册”，而这段代码存在两个行为，一个是“获取手机号的归属地编码”，一个是“获取运营商编码” ，<strong>把他们放在“注册”这个业务域里其实并不合适，什么逻辑应该归属哪个业务域，这就是对“领域”的理解。</strong></p>
+<p><img src="/../DDD/6.png" srcset="/img/loading.gif" lazyload></p>
+<p>那我们为什么要在register方法里面写这些逻辑？仅仅是为了适配findRep这个函数，来对原始的参数进行拼接，就像是拿胶水来进行缝缝补补，这杯形象地称为是“胶水逻辑”</p>
+<p><img src="/../DDD/7.png" srcset="/img/loading.gif" lazyload></p>
+<p>那么如何改造我们的“胶水逻辑”？</p>
+<p>第一张方式，改造这个接口地入参</p>
+<p><img src="/../DDD/8.png" srcset="/img/loading.gif" lazyload></p>
+<p>假设方法地入参为PhoneNumber，就不必在register方法内进行胶水操作了。</p>
+<p>第二种方法，假如这个findRep是外部接口，我们没有办法去修改入参类型，那怎么办？<strong>“获取手机号地归属地编码”、“获取手机号地运营商编码”、这两个都是获取手机号相关的属性，应该内聚在手机号这个类型中</strong>，因此进一步优化</p>
+<p><img src="/../DDD/9.png" srcset="/img/loading.gif" lazyload></p>
+<p>优化之后：</p>
+<p><img src="/../DDD/10.png" srcset="/img/loading.gif" lazyload></p>
+<p>业务逻辑变得非常清晰，只留下“注册”这个领域内最本质的两个操作，获取用户信息，并存入数据表。</p>
+<h2 id="思考题"><a href="#思考题" class="headerlink" title="思考题"></a>思考题</h2><p><img src="/../DDD/11.png" srcset="/img/loading.gif" lazyload></p>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>在传统的pojo中，类中只包含属性和getter&#x2F;setter方法，这里的PhoneNumber却包含初始化、校验、属性处理等多种逻辑，这其实就是DDD和传统MVC开发的重要差异点之一，上面说的pojo只包含属性值，属于贫血模型，而像PhoneNumber不仅拥有属性，而且包含了与其属性相关的职责，是充血模型的一种，充血模型也有强弱程度之分，如果使用充血模型，那么把握它的强弱程度就需要丰富的经验了，这里我们将PhoneNumber这种类型称为DP(Domain Primitive),就像Integer、String是所有语言的primitive意义，在DDD里，DP可以说是一切模型、方法、架构的基础。它是在特定领域拥有精准定义可以自我验证，并且拥有行为的对象，可以认为是领域的最小组成部分。</p>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>DDD五板斧之一:Domain Primitive</div>
+      <div>http://example.com/2024/08/25/DDD五板斧之一/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>Author</div>
+          <div>彭</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>Posted on</div>
+          <div>August 25, 2024</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>Licensed under</div>
+          <div>
+            
+              
+              
+                <a target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - Attribution">
+                    <i class="iconfont icon-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2024/07/13/Python%E5%8D%8F%E7%A8%8B%E4%B8%8E%E7%8C%B4%E5%AD%90%E8%A1%A5%E4%B8%81/" title="Python协程和猴子补丁">
+                        <span class="hidden-mobile">Python协程和猴子补丁</span>
+                        <span class="visible-mobile">Next</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>Table of Contents</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">Search</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">Keyword</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.0/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.18.2/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">Blog works best with JavaScript enabled</div>
+  </noscript>
+</body>
+</html>
