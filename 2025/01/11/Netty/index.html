@@ -1,0 +1,694 @@
+
+
+<!DOCTYPE html>
+<html lang="en" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/fluid.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="彭">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="Netty整体结构  Core核心层：提供底层网络通信的通用抽象和实现，包括可拓展的事件模型、通用的通信API、支持零拷贝的ByteBuf等  Protocol Support协议支持层：覆盖了主流协议的编解码实现，如HTTP、SSL、Protobuf、压缩、大文件传输、WebSocket、文本、二进制等，自持自定义应用层协议。  Transport Service传输服务层:提供了网络传输能力的">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Netty">
+<meta property="og:url" content="http://example.com/2025/01/11/Netty/index.html">
+<meta property="og:site_name" content="PJF">
+<meta property="og:description" content="Netty整体结构  Core核心层：提供底层网络通信的通用抽象和实现，包括可拓展的事件模型、通用的通信API、支持零拷贝的ByteBuf等  Protocol Support协议支持层：覆盖了主流协议的编解码实现，如HTTP、SSL、Protobuf、压缩、大文件传输、WebSocket、文本、二进制等，自持自定义应用层协议。  Transport Service传输服务层:提供了网络传输能力的">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="http://example.com/netty_pic/1.png">
+<meta property="og:image" content="http://example.com/netty_pic/2.png">
+<meta property="og:image" content="http://example.com/netty_pic/3.png">
+<meta property="og:image" content="http://example.com/netty_pic/4.png">
+<meta property="og:image" content="http://example.com/netty_pic/5.png">
+<meta property="og:image" content="http://example.com/netty_pic/6.png">
+<meta property="og:image" content="http://example.com/netty_pic/7.png">
+<meta property="og:image" content="http://example.com/netty_pic/8.png">
+<meta property="og:image" content="http://example.com/netty_pic/9.png">
+<meta property="og:image" content="http://example.com/netty_pic/10.png">
+<meta property="og:image" content="http://example.com/netty_pic/11.png">
+<meta property="og:image" content="http://example.com/netty_pic/12.png">
+<meta property="og:image" content="http://example.com/netty_pic/13.png">
+<meta property="og:image" content="http://example.com/netty_pic/14.png">
+<meta property="og:image" content="http://example.com/netty_pic/15.png">
+<meta property="og:image" content="http://example.com/netty_pic/16.png">
+<meta property="og:image" content="http://example.com/netty_pic/17.png">
+<meta property="article:published_time" content="2025-01-11T12:28:54.659Z">
+<meta property="article:modified_time" content="2025-01-11T15:43:33.429Z">
+<meta property="article:author" content="彭">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="http://example.com/netty_pic/1.png">
+  
+  
+  
+  <title>Netty - PJF</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"example.com","root":"/","version":"1.9.4","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml"};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>PJF</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                <span>Home</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>Archives</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                <span>Categories</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>Tags</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                <span>About</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="Netty"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2025-01-11 20:28" pubdate>
+          January 11, 2025 pm
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          2.5k words
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          21 mins
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">Netty</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <h2 id="Netty整体结构"><a href="#Netty整体结构" class="headerlink" title="Netty整体结构"></a>Netty整体结构</h2><p><img src="/../netty_pic/1.png" srcset="/img/loading.gif" lazyload></p>
+<ul>
+<li><p>Core核心层：提供底层网络通信的通用抽象和实现，包括可拓展的事件模型、通用的通信API、支持零拷贝的ByteBuf等</p>
+</li>
+<li><p>Protocol Support协议支持层：覆盖了主流协议的编解码实现，如HTTP、SSL、Protobuf、压缩、大文件传输、WebSocket、文本、二进制等，<strong>自持自定义应用层协议</strong>。</p>
+</li>
+<li><p>Transport Service传输服务层:提供了网络传输能力的定义和实现方法，支持Socket、HTTP隧道、虚拟机管道等传输方式，Netty的模块设计具备较高的通用性和可拓展性。</p>
+</li>
+</ul>
+<h3 id="Netty逻辑处理架构"><a href="#Netty逻辑处理架构" class="headerlink" title="Netty逻辑处理架构"></a>Netty逻辑处理架构</h3><p><img src="/../netty_pic/2.png" srcset="/img/loading.gif" lazyload></p>
+<h4 id="网络通信层"><a href="#网络通信层" class="headerlink" title="网络通信层"></a>网络通信层</h4><p>网络通信层的职责是执行网络I&#x2F;O的操作，支持多种网络协议和I&#x2F;O模型的的链接操作，包括下列三个组件(<strong>BootStrap、ServerBootStrap、Channel</strong>)。</p>
+<h5 id="BootStrap与ServerBootStrap"><a href="#BootStrap与ServerBootStrap" class="headerlink" title="BootStrap与ServerBootStrap"></a>BootStrap与ServerBootStrap</h5><p>BootStrap主要负责整个Netty的启动、初始化、服务器连接等过程。</p>
+<p><img src="/../netty_pic/3.png" srcset="/img/loading.gif" lazyload></p>
+<ul>
+<li>BootStrap：可用于连接远端服务器，只绑定一个EventLoopGroup(Boss)</li>
+<li>ServerBootStrap:用于服务端启动绑定本地端口，绑定两个</li>
+</ul>
+<p>​		EventLoopGroup(Worker)</p>
+<p>每个服务器中都有一个Boss,会有一群做事情的Worker</p>
+<p>Boss会不同地接收新的连接，将连接分配给一个个Worker处理连接。</p>
+<h5 id="Channel"><a href="#Channel" class="headerlink" title="Channel"></a>Channel</h5><p>channel是网络通信地载体，提供了基本的API用于网络I&#x2F;O操作，如 register、bind、connect、read、write、flush等，netty自己实现的channel是以JDK NIO channel为基础的。</p>
+<p><img src="/../netty_pic/4.png" srcset="/img/loading.gif" lazyload></p>
+<p><img src="/../netty_pic/5.png" srcset="/img/loading.gif" lazyload></p>
+<h5 id="总结："><a href="#总结：" class="headerlink" title="总结："></a>总结：</h5><p><strong>BootStrap与ServerBootStrap</strong>分别负责客户端和服务端地启动；Channel是网络通信地载体，提供了与底层Socket交互地能力。</p>
+<h4 id="事件调度层："><a href="#事件调度层：" class="headerlink" title="事件调度层："></a>事件调度层：</h4><p>channel 生命周期内有多种状态，每种状态有相应的事件，如上图，那么这些是如何处理的呢？那么就要靠我们的事件调度层了。</p>
+<p>事件调度层的职责：<strong>通过Reactor线程模型对各类事件进行聚合处理；通过Selector主循环线程集成多种事件(IO事件、信号事件、定时事件)。</strong>实际的业务处理逻辑交由服务编排层的handle完成。</p>
+<p>事件调度层核心主键包括：EventLoopGroup和EventLoop。</p>
+<h5 id="EventLoopGroup和EventLoop"><a href="#EventLoopGroup和EventLoop" class="headerlink" title="EventLoopGroup和EventLoop"></a>EventLoopGroup和EventLoop</h5><p>EventLoopGroup和EventLoop与channel关系如下：</p>
+<p><img src="/../netty_pic/6.png" srcset="/img/loading.gif" lazyload></p>
+<p>1、<strong>EventLoopGroup本质是一个线程池，主要负责接受IO请求并分配线程执行处理请求</strong>。</p>
+<p>2、EventLoop同一时间会与一个线程进行绑定，每个EventLoop会处理多个channel</p>
+<p>3、每新建一个channel，会选择一个EventLoop进行绑定，每个channel的生命周期内，都可以对EventLoop进行多次绑定与解绑。</p>
+<p><img src="/../netty_pic/7.png" srcset="/img/loading.gif" lazyload></p>
+<p><strong>EventLoopGroup是Netty Reactor线程模型的具体实现方式。Netty 通过创建不同的EventLoopGroup的参数配置实现三种Reactor的线程模型</strong>：</p>
+<p><img src="/../netty_pic/8.png" srcset="/img/loading.gif" lazyload></p>
+<h4 id="服务编排层："><a href="#服务编排层：" class="headerlink" title="服务编排层："></a>服务编排层：</h4><p>服务编排层：负责组装各类服务，用以实现网络事件的动态编排和有序传播。主要组件：</p>
+<p>ChannelPipeLine、ChannelHandler、ChannelHandlerContext。</p>
+<p><strong>ChannelPipeLine负责组织各种ChannelHandler，实际数据的编解码以及加工处理操作由ChannelHandler完成</strong>。ChannelPipeLine可以理解为ChannelHandler的实例列表，内部通过双向链表将不同的ChannelHandler链接在一起。当IO读写事件触发时，ChannelPipeLine依次调用ChannelHandler对channel的数据进行拦截和处理。</p>
+<p>ChannelPipeLine是线程安全的，因为每一个新的channel会对应绑定一个新的ChannelPipeLine。一个ChannelPipeLine会关联一个EventLoop，一个EventLoop仅会绑定一个线程。</p>
+<p>ChannelPipeLine包含Inbound Handler和OutBound Handler两种处理器(入栈和出栈)。</p>
+<p><img src="/../netty_pic/9.png" srcset="/img/loading.gif" lazyload></p>
+<p><strong>客户端和服务端都有各自的ChannelPipeLine</strong>，</p>
+<p><img src="/../netty_pic/10.png" srcset="/img/loading.gif" lazyload></p>
+<h5 id="ChannelPipeLine、ChannelHandler、ChannelHandlerContext之间的关系"><a href="#ChannelPipeLine、ChannelHandler、ChannelHandlerContext之间的关系" class="headerlink" title="ChannelPipeLine、ChannelHandler、ChannelHandlerContext之间的关系"></a>ChannelPipeLine、ChannelHandler、ChannelHandlerContext之间的关系</h5><p><img src="/../netty_pic/11.png" srcset="/img/loading.gif" lazyload></p>
+<p>那么每个ChannelHandler绑定ChannelHandlerContext的作用是什么呢？</p>
+<p>1、保存ChannelHandler上下文，通过ChannelHandlerContext可以知道ChannelHandler与ChannelPipeLine的关联关系</p>
+<p>2、实现ChannelHandler之间的交互</p>
+<p>3、包含ChannelHandler生命周期的所有事件，如：connect、bind、read、flush、write、close等</p>
+<p>如果每个ChannelHandler都有一些通用的逻辑需要实现，没有ChannelHandlerContext这层模型抽象，那么就会有很多相同代码需要写</p>
+<h3 id="组件关系梳理"><a href="#组件关系梳理" class="headerlink" title="组件关系梳理"></a>组件关系梳理</h3><p><img src="/../netty_pic/12.png" srcset="/img/loading.gif" lazyload></p>
+<p>服务端启动时,有Boss EventLoopGroup和Worker EventLoopGroup两个组件，其中Boss 负责监听网络链接事件，当有新的网络链接事件到达时，将新的channel注册到Worker EventLoopGroup，EventLoopGroup会分配一个EventLoop该channel的读写事件，每个EventLoop都是单线程的，通过selector进行事件循环，当客户端发起读写事件时，服务端EventLoop会进行数据的读取，然后通过ChannelPipeLine触发各种监听器进行数据的加工处理。</p>
+<h3 id="源码包"><a href="#源码包" class="headerlink" title="源码包"></a>源码包</h3><ul>
+<li>Core核心层：</li>
+</ul>
+<p><img src="/../netty_pic/13.png" srcset="/img/loading.gif" lazyload></p>
+<p><img src="/../netty_pic/14.png" srcset="/img/loading.gif" lazyload></p>
+<ul>
+<li>Protocol Support协议支持层：</li>
+</ul>
+<p><img src="/../netty_pic/15.png" srcset="/img/loading.gif" lazyload></p>
+<p><img src="/../netty_pic/16.png" srcset="/img/loading.gif" lazyload></p>
+<ul>
+<li>Transport Service传输服务层:</li>
+</ul>
+<p><img src="/../netty_pic/17.png" srcset="/img/loading.gif" lazyload></p>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>Netty</div>
+      <div>http://example.com/2025/01/11/Netty/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>Author</div>
+          <div>彭</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>Posted on</div>
+          <div>January 11, 2025</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>Licensed under</div>
+          <div>
+            
+              
+              
+                <a target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - Attribution">
+                    <i class="iconfont icon-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2024/08/25/DDD%E4%BA%94%E6%9D%BF%E6%96%A7%E4%B9%8B%E4%B8%80/" title="DDD五板斧之一:Domain Primitive">
+                        <span class="hidden-mobile">DDD五板斧之一:Domain Primitive</span>
+                        <span class="visible-mobile">Next</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>Table of Contents</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">Search</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">Keyword</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.0/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.18.2/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">Blog works best with JavaScript enabled</div>
+  </noscript>
+</body>
+</html>
