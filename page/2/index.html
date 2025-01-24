@@ -224,6 +224,72 @@
     <article class="col-12 col-md-12 mx-auto index-info">
       <h1 class="index-header">
         
+        <a href="/2023/12/26/Redis%E4%B8%8EMySQL%E7%BC%93%E5%AD%98%E5%8F%8C%E5%86%99%E4%B8%80%E8%87%B4%E6%80%A7%E9%97%AE%E9%A2%98/" target="_self">
+          Redis与MySQL缓存双写一致性问题
+        </a>
+      </h1>
+
+      
+      <a class="index-excerpt index-excerpt__noimg" href="/2023/12/26/Redis%E4%B8%8EMySQL%E7%BC%93%E5%AD%98%E5%8F%8C%E5%86%99%E4%B8%80%E8%87%B4%E6%80%A7%E9%97%AE%E9%A2%98/" target="_self">
+        <div>
+          先来看一些常见的面试题  读写缓存 我们的读写缓存分为两种情况  同步直写缓存策略：完成第二部立即回写Redis 异步缓写缓存策略：不急立即写回Redis 正常业务运行中，MySQL数据变动了，但是可以在业务上容许出现一定时间后才作用于Redis，比如仓库、物流系统 异常情况出现了，不得不将失败的动作重新修补，有可能需要借助kafka或者RabbitMQ等消息中间件，实现重试重写    那么代码应
+        </div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2023-12-26 12:11" pubdate>
+              2023-12-26
+            </time>
+          </div>
+        
+        
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h1 class="index-header">
+        
+        <a href="/2023/12/23/Redis%E9%9B%86%E7%BE%A4/" target="_self">
+          Redis集群
+        </a>
+      </h1>
+
+      
+      <a class="index-excerpt index-excerpt__noimg" href="/2023/12/23/Redis%E9%9B%86%E7%BE%A4/" target="_self">
+        <div>
+          定义由于数据量过大，单个Master复制集难以承担，因此需要对多个复制集进行集群，形成水平扩展每个复制集只负责存储整个数据集的一部分，这就是Redis的集群，其作用是提供在多个Redis节点间共享数据的程序集  架构图：  特点：  Redis集群支持多个Master，每个Master又可以挂载多个Slave 由于Cluster自带Sentinel的故障转移机制，内置了高可用的支持，无需再去使用哨
+        </div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2023-12-23 20:53" pubdate>
+              2023-12-23
+            </time>
+          </div>
+        
+        
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h1 class="index-header">
+        
         <a href="/2023/12/16/%E9%9B%AA%E8%8A%B1%E7%AE%97%E6%B3%95/" target="_self">
           雪花算法
         </a>
@@ -473,72 +539,6 @@
             <i class="iconfont icon-date"></i>
             <time datetime="2023-10-11 18:14" pubdate>
               2023-10-11
-            </time>
-          </div>
-        
-        
-        
-      </div>
-    </article>
-  </div>
-
-  <div class="row mx-auto index-card">
-    
-    
-    <article class="col-12 col-md-12 mx-auto index-info">
-      <h1 class="index-header">
-        
-        <a href="/2023/10/05/Bean%E7%9A%84%E7%94%9F%E5%91%BD%E5%91%A8%E6%9C%9F/" target="_self">
-          Bean的生命周期
-        </a>
-      </h1>
-
-      
-      <a class="index-excerpt index-excerpt__noimg" href="/2023/10/05/Bean%E7%9A%84%E7%94%9F%E5%91%BD%E5%91%A8%E6%9C%9F/" target="_self">
-        <div>
-          总览先来一张全局图  再来一个小demo 结构如下  123456789101112131415161718192021222324252627282930313233343536373839404142434445@Componentpublic class User implements BeanNameAware , BeanFactoryAware, ApplicationContextA
-        </div>
-      </a>
-
-      <div class="index-btm post-metas">
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>
-            <time datetime="2023-10-05 20:39" pubdate>
-              2023-10-05
-            </time>
-          </div>
-        
-        
-        
-      </div>
-    </article>
-  </div>
-
-  <div class="row mx-auto index-card">
-    
-    
-    <article class="col-12 col-md-12 mx-auto index-info">
-      <h1 class="index-header">
-        
-        <a href="/2023/09/26/%E4%B8%BA%E4%BB%80%E4%B9%88%E8%A6%81%E5%9E%82%E7%9B%B4%E5%88%86%E8%A1%A8/" target="_self">
-          为什么要垂直分表
-        </a>
-      </h1>
-
-      
-      <a class="index-excerpt index-excerpt__noimg" href="/2023/09/26/%E4%B8%BA%E4%BB%80%E4%B9%88%E8%A6%81%E5%9E%82%E7%9B%B4%E5%88%86%E8%A1%A8/" target="_self">
-        <div>
-          问题 在以前，一张核心表的字段可能有上百个字段，这种肯定是有问题的，至于什么问题，后面分析 什么是垂直分表垂直分表则是将一张大表按“列”拆分为两张以上的小标，通过主外键关联来获取数据。 举例这是一张商品表拆分前与拆分后  拆分后的SQL变换  拆表原因先来看我们的InnoDB的存储结构  我们每一页(Page)默认的大小为16K，保存我们 页的叫做区(Extent)(1M)，我们一个区能够存储64
-        </div>
-      </a>
-
-      <div class="index-btm post-metas">
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>
-            <time datetime="2023-09-26 20:11" pubdate>
-              2023-09-26
             </time>
           </div>
         

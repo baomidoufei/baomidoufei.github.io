@@ -224,6 +224,72 @@
     <article class="col-12 col-md-12 mx-auto index-info">
       <h1 class="index-header">
         
+        <a href="/2025/01/24/epoll%E7%9A%84%E6%9C%AC%E8%B4%A8/" target="_self">
+          epoll的本质
+        </a>
+      </h1>
+
+      
+      <a class="index-excerpt index-excerpt__noimg" href="/2025/01/24/epoll%E7%9A%84%E6%9C%AC%E8%B4%A8/" target="_self">
+        <div>
+          本文会从网卡接收数据的流程讲起，串联起 CPU 中断、操作系统进程调度等知识；再一步步分析阻塞接收数据、select 到 epoll 的进化过程；最后探究 epoll 的实现细节。 从网卡接收数据说起计算机由 CPU、存储器（内存）与网络接口等部件组成，了解 epoll 本质的第一步，要从硬件的角度看计算机怎样接收网络数据。  下图展示了网卡接收数据的过程。   在①阶段，网卡收到网线传来的数据
+        </div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2025-01-24 12:36" pubdate>
+              2025-01-24
+            </time>
+          </div>
+        
+        
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h1 class="index-header">
+        
+        <a href="/2025/01/12/Netty-EventLoop%E5%AE%9E%E7%8E%B0%E5%8E%9F%E7%90%86%E5%92%8C%E6%9C%80%E4%BD%B3%E5%AE%9E%E8%B7%B5/" target="_self">
+          Netty EventLoop实现原理和最佳实践
+        </a>
+      </h1>
+
+      
+      <a class="index-excerpt index-excerpt__noimg" href="/2025/01/12/Netty-EventLoop%E5%AE%9E%E7%8E%B0%E5%8E%9F%E7%90%86%E5%92%8C%E6%9C%80%E4%BD%B3%E5%AE%9E%E8%B7%B5/" target="_self">
+        <div>
+          再谈Reactor线程模型线程模型的优劣直接决定了系统的吞吐量、可拓展性、安全性等，Reactor模式负责将读写事件分发给对应的读写事件处理者。 单线程模型 多线程模型 主从多线程模型 Reactor运行步骤 EventLoop是什么EventLoop是一种事件等待和处理的程序模型，可以解决多线程资源消耗高的问题。   EventLoop源码 select():轮询IO事件  processSel
+        </div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2025-01-12 11:41" pubdate>
+              2025-01-12
+            </time>
+          </div>
+        
+        
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h1 class="index-header">
+        
         <a href="/2025/01/11/Netty/" target="_self">
           Netty
         </a>
@@ -473,72 +539,6 @@
             <i class="iconfont icon-date"></i>
             <time datetime="2023-12-28 17:32" pubdate>
               2023-12-28
-            </time>
-          </div>
-        
-        
-        
-      </div>
-    </article>
-  </div>
-
-  <div class="row mx-auto index-card">
-    
-    
-    <article class="col-12 col-md-12 mx-auto index-info">
-      <h1 class="index-header">
-        
-        <a href="/2023/12/26/Redis%E4%B8%8EMySQL%E7%BC%93%E5%AD%98%E5%8F%8C%E5%86%99%E4%B8%80%E8%87%B4%E6%80%A7%E9%97%AE%E9%A2%98/" target="_self">
-          Redis与MySQL缓存双写一致性问题
-        </a>
-      </h1>
-
-      
-      <a class="index-excerpt index-excerpt__noimg" href="/2023/12/26/Redis%E4%B8%8EMySQL%E7%BC%93%E5%AD%98%E5%8F%8C%E5%86%99%E4%B8%80%E8%87%B4%E6%80%A7%E9%97%AE%E9%A2%98/" target="_self">
-        <div>
-          先来看一些常见的面试题  读写缓存 我们的读写缓存分为两种情况  同步直写缓存策略：完成第二部立即回写Redis 异步缓写缓存策略：不急立即写回Redis 正常业务运行中，MySQL数据变动了，但是可以在业务上容许出现一定时间后才作用于Redis，比如仓库、物流系统 异常情况出现了，不得不将失败的动作重新修补，有可能需要借助kafka或者RabbitMQ等消息中间件，实现重试重写    那么代码应
-        </div>
-      </a>
-
-      <div class="index-btm post-metas">
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>
-            <time datetime="2023-12-26 12:11" pubdate>
-              2023-12-26
-            </time>
-          </div>
-        
-        
-        
-      </div>
-    </article>
-  </div>
-
-  <div class="row mx-auto index-card">
-    
-    
-    <article class="col-12 col-md-12 mx-auto index-info">
-      <h1 class="index-header">
-        
-        <a href="/2023/12/23/Redis%E9%9B%86%E7%BE%A4/" target="_self">
-          Redis集群
-        </a>
-      </h1>
-
-      
-      <a class="index-excerpt index-excerpt__noimg" href="/2023/12/23/Redis%E9%9B%86%E7%BE%A4/" target="_self">
-        <div>
-          定义由于数据量过大，单个Master复制集难以承担，因此需要对多个复制集进行集群，形成水平扩展每个复制集只负责存储整个数据集的一部分，这就是Redis的集群，其作用是提供在多个Redis节点间共享数据的程序集  架构图：  特点：  Redis集群支持多个Master，每个Master又可以挂载多个Slave 由于Cluster自带Sentinel的故障转移机制，内置了高可用的支持，无需再去使用哨
-        </div>
-      </a>
-
-      <div class="index-btm post-metas">
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>
-            <time datetime="2023-12-23 20:53" pubdate>
-              2023-12-23
             </time>
           </div>
         

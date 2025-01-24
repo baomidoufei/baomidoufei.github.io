@@ -224,6 +224,72 @@
     <article class="col-12 col-md-12 mx-auto index-info">
       <h1 class="index-header">
         
+        <a href="/2023/10/05/Bean%E7%9A%84%E7%94%9F%E5%91%BD%E5%91%A8%E6%9C%9F/" target="_self">
+          Bean的生命周期
+        </a>
+      </h1>
+
+      
+      <a class="index-excerpt index-excerpt__noimg" href="/2023/10/05/Bean%E7%9A%84%E7%94%9F%E5%91%BD%E5%91%A8%E6%9C%9F/" target="_self">
+        <div>
+          总览先来一张全局图  再来一个小demo 结构如下  123456789101112131415161718192021222324252627282930313233343536373839404142434445@Componentpublic class User implements BeanNameAware , BeanFactoryAware, ApplicationContextA
+        </div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2023-10-05 20:39" pubdate>
+              2023-10-05
+            </time>
+          </div>
+        
+        
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h1 class="index-header">
+        
+        <a href="/2023/09/26/%E4%B8%BA%E4%BB%80%E4%B9%88%E8%A6%81%E5%9E%82%E7%9B%B4%E5%88%86%E8%A1%A8/" target="_self">
+          为什么要垂直分表
+        </a>
+      </h1>
+
+      
+      <a class="index-excerpt index-excerpt__noimg" href="/2023/09/26/%E4%B8%BA%E4%BB%80%E4%B9%88%E8%A6%81%E5%9E%82%E7%9B%B4%E5%88%86%E8%A1%A8/" target="_self">
+        <div>
+          问题 在以前，一张核心表的字段可能有上百个字段，这种肯定是有问题的，至于什么问题，后面分析 什么是垂直分表垂直分表则是将一张大表按“列”拆分为两张以上的小标，通过主外键关联来获取数据。 举例这是一张商品表拆分前与拆分后  拆分后的SQL变换  拆表原因先来看我们的InnoDB的存储结构  我们每一页(Page)默认的大小为16K，保存我们 页的叫做区(Extent)(1M)，我们一个区能够存储64
+        </div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2023-09-26 20:11" pubdate>
+              2023-09-26
+            </time>
+          </div>
+        
+        
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h1 class="index-header">
+        
         <a href="/2023/09/09/JVM%E5%AE%9E%E8%B7%B5%E9%97%AE%E9%A2%98%E6%8E%92%E6%9F%A5/" target="_self">
           JVM实践问题排查
         </a>
@@ -473,72 +539,6 @@
             <i class="iconfont icon-date"></i>
             <time datetime="2023-08-21 22:42" pubdate>
               2023-08-21
-            </time>
-          </div>
-        
-        
-        
-      </div>
-    </article>
-  </div>
-
-  <div class="row mx-auto index-card">
-    
-    
-    <article class="col-12 col-md-12 mx-auto index-info">
-      <h1 class="index-header">
-        
-        <a href="/2023/08/11/AQS/" target="_self">
-          AQS
-        </a>
-      </h1>
-
-      
-      <a class="index-excerpt index-excerpt__noimg" href="/2023/08/11/AQS/" target="_self">
-        <div>
-          AQS是什么？AQS全称为抽象队列同步器，是用来实现锁或者其它同步器组件的公共基础部分的抽象实现，是重量级基础框架及整个JuC体系的基石，主要用于解决锁分配给”谁”的问题  整体就是一个抽象的FIFO队列来完成资源获取线程的排队工作，并通过一个int类变量表示持有锁的状态  AQS的”产品” ReentrantLock CountDownLatch ReentrantReadWriteLock S
-        </div>
-      </a>
-
-      <div class="index-btm post-metas">
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>
-            <time datetime="2023-08-11 20:11" pubdate>
-              2023-08-11
-            </time>
-          </div>
-        
-        
-        
-      </div>
-    </article>
-  </div>
-
-  <div class="row mx-auto index-card">
-    
-    
-    <article class="col-12 col-md-12 mx-auto index-info">
-      <h1 class="index-header">
-        
-        <a href="/2023/07/31/CountDownLatch/" target="_self">
-          CountDownLatch
-        </a>
-      </h1>
-
-      
-      <a class="index-excerpt index-excerpt__noimg" href="/2023/07/31/CountDownLatch/" target="_self">
-        <div>
-          CountDownLatch概述用来进行线程同步协作，等待所有线程完成倒计时。 其中构造参数用来初始化等待计数值，await() 用来等待计数归零，countDown() 用来让计数减一 123456789101112131415161718192021222324public static void main(String[] args) throws InterruptedException
-        </div>
-      </a>
-
-      <div class="index-btm post-metas">
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>
-            <time datetime="2023-07-31 23:06" pubdate>
-              2023-07-31
             </time>
           </div>
         
